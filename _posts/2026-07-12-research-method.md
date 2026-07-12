@@ -1,6 +1,6 @@
 ---
 title: 인간-로봇 협업에서의 연구 방법론.
-date: 2026-07-12 16:00:00 +0900
+date: 2026-07-12 20:00:00 +0900
 categories: [블로그, Research]
 tags: [github, jekyll]
 ---
