@@ -9,14 +9,14 @@
   <link href="https://fonts.googleapis.com/css2?family=Lato:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
   <style>
     /* PDF 생성: google-chrome --headless --no-pdf-header-footer --print-to-pdf=files/cv.pdf cv.html */
-    @page { size: A4; margin: 16mm 17mm; }
+    @page { size: A4; margin: 13mm 17mm; }
     :root { --text: #1f2328; --muted: #59636e; --accent: #4f46e5; --rule: #d0d7de; }
     * { box-sizing: border-box; }
     html { background: #f3f4f6; }
     body {
       margin: 24px auto; max-width: 210mm; padding: 16mm 17mm;
       background: #ffffff; color: var(--text);
-      font-family: 'Lato', system-ui, sans-serif; font-size: 10pt; line-height: 1.45;
+      font-family: 'Lato', system-ui, sans-serif; font-size: 10pt; line-height: 1.4;
     }
     @media print { html { background: none; } body { margin: 0; padding: 0; max-width: none; } }
     a { color: var(--accent); text-decoration: none; }
@@ -30,7 +30,7 @@
     h2 {
       font-size: 10.5pt; font-weight: 700; text-transform: uppercase; letter-spacing: 1px;
       color: var(--accent); border-bottom: 1px solid var(--rule);
-      margin: 16px 0 7px; padding-bottom: 2px;
+      margin: 13px 0 6px; padding-bottom: 2px;
     }
     h3 { font-size: 9.5pt; font-weight: 700; color: var(--muted); margin: 8px 0 4px; }
     section { break-inside: avoid; }
@@ -50,7 +50,7 @@
     .skills dt { font-weight: 700; }
     .skills dd { margin: 0; }
 
-    footer { margin-top: 18px; text-align: right; color: var(--muted); font-size: 8.5pt; }
+    footer { margin-top: 8px; text-align: right; color: var(--muted); font-size: 8.5pt; }
   </style>
 </head>
 <body>
@@ -116,13 +116,6 @@
   <div class="entry">
     <div><strong>Graduate Researcher</strong>, Affective Artificial Intelligence Lab, Inha University</div>
     <div class="date">Mar. 2024 – Present</div>
-    <ul>
-      <li><strong>Robotics:</strong> Vision-language-action models for robotic manipulation on a UR5e arm — a visual contextual reasoning framework and human preference learning.</li>
-      <li><strong>Human-Robot Interaction:</strong> How a robot's speaking style affects continuous collaboration and whether people choose to work with it again.</li>
-      <li><strong>Ethical AI:</strong> ROBI, an educational robot for children's moral development.</li>
-      <li><strong>Brain-Computer Interfaces:</strong> Few-channel EEG data augmentation [J2] and calibration-aware fine-tuning of EEG foundation models.</li>
-      <li><strong>Wearable Sensing:</strong> mmWave-based wearable system for human detection in low-visibility rescue environments [J1].</li>
-    </ul>
   </div>
 </section>
 
