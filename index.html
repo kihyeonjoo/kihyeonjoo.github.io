@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Kihyeonjoo</title>
+  <meta name="description" content="Kihyeonjoo — Ph.D. student at Inha University working on robotics, human-robot interaction, and brain-computer interfaces.">
+  <meta property="og:title" content="Kihyeonjoo">
+  <meta property="og:description" content="Robotics · Human-Robot Interaction · Brain-Computer Interface">
+  <meta property="og:image" content="https://kihyeonjoo.github.io/images/profile.jpg">
+  <meta property="og:url" content="https://kihyeonjoo.github.io/">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🤖</text></svg>">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Lato:wght@400;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #ffffff;
+      --text: #1f2328;
+      --muted: #59636e;
+      --link: #4f46e5;
+      --link-hover: #0891b2;
+      --rule: #e5e7eb;
+    }
+    @media (prefers-color-scheme: dark) {
+      :root {
+        --bg: #0d1117;
+        --text: #e6edf3;
+        --muted: #9198a1;
+        --link: #8b93ff;
+        --link-hover: #22d3ee;
+        --rule: #30363d;
+      }
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'Lato', system-ui, -apple-system, 'Segoe UI', sans-serif;
+      font-size: 16px;
+      line-height: 1.65;
+    }
+    main { max-width: 820px; margin: 0 auto; padding: 56px 20px 32px; }
+    a { color: var(--link); text-decoration: none; }
+    a:hover { color: var(--link-hover); text-decoration: underline; }
+
+    .intro { display: flex; gap: 40px; align-items: center; }
+    .intro-text { flex: 1; }
+    h1 { font-size: 34px; font-weight: 400; margin: 0 0 2px; text-align: center; }
+    .tagline { text-align: center; color: var(--muted); margin: 0 0 20px; }
+    .links { text-align: center; margin: 20px 0 0; }
+    .links .sep { color: var(--muted); margin: 0 8px; }
+    .photo { width: 240px; flex-shrink: 0; }
+    .photo img { width: 100%; aspect-ratio: 1; border-radius: 50%; object-fit: cover; display: block; }
+
+    h2 { font-size: 22px; font-weight: 400; margin: 56px 0 4px; }
+    .area { display: flex; gap: 24px; padding: 20px 0; border-top: 1px solid var(--rule); }
+    .area:first-of-type { border-top: none; }
+    .tile {
+      width: 160px; height: 120px; flex-shrink: 0;
+      border-radius: 12px;
+      display: grid; place-items: center;
+      font-size: 48px;
+      background: linear-gradient(135deg, #4f46e5, #06b6d4);
+    }
+    .area h3 { margin: 0 0 2px; font-size: 18px; }
+    .area p { margin: 0 0 8px; color: var(--muted); }
+    .area ul { margin: 0; padding-left: 18px; }
+
+    footer { margin-top: 48px; font-size: 13px; color: var(--muted); text-align: right; }
+
+    @media (max-width: 640px) {
+      main { padding-top: 32px; }
+      .intro { flex-direction: column-reverse; gap: 20px; }
+      .photo { width: 180px; }
+      .area { flex-direction: column; gap: 12px; }
+      .tile { width: 100%; height: 72px; font-size: 32px; }
+    }
+  </style>
+</head>
+<body>
+<main>
+
+  <section class="intro">
+    <div class="intro-text">
+      <h1>Kihyeonjoo</h1>
+      <p class="tagline">Robotics · Human-Robot Interaction · Brain-Computer Interface</p>
+      <p>
+        I am a Ph.D. student in Electrical and Computer Engineering at
+        <a href="https://www.inha.ac.kr/">Inha University</a> in Incheon, South Korea.
+        <!-- 지도교수/연구실을 넣으려면: advised by <a href="URL">Prof. NAME</a> in the <a href="URL">LAB NAME</a>. -->
+      </p>
+      <p>
+        My research aims to build robots that understand people. I work on robot manipulation
+        that reasons about visual context and learns from human preferences, on interaction
+        that keeps people collaborating with robots over time, and on brain-computer interfaces
+        that make EEG models practical with few channels and little calibration.
+      </p>
+      <p>
+        I received my B.S. in Information and Communication Engineering from Inha University.
+      </p>
+      <p class="links">
+        <a href="mailto:kihyeonjoo@gmail.com">Email</a>
+        <span class="sep">/</span>
+        <a href="https://github.com/kihyeonjoo">GitHub</a>
+        <!-- 링크가 생기면 주석을 풀고 URL을 채우세요 -->
+        <!-- <span class="sep">/</span> <a href="SCHOLAR_URL">Google Scholar</a> -->
+        <!-- <span class="sep">/</span> <a href="files/cv.pdf">CV</a> -->
+      </p>
+    </div>
+    <div class="photo">
+      <img src="images/profile.jpg" alt="Photo of Kihyeonjoo">
+    </div>
+  </section>
+
+  <h2>Research</h2>
+
+  <!-- 프로젝트 이미지/GIF가 생기면 .tile div를 <img class="tile" src="images/xxx.gif" alt="..."> 로 바꾸세요 -->
+  <section class="area">
+    <div class="tile" aria-hidden="true">🤖</div>
+    <div>
+      <h3>Robotics</h3>
+      <p>Robot manipulation that reasons about visual context and adapts to what people prefer.</p>
+      <ul>
+        <li><strong>Visual Contextual Reasoning Framework</strong> <!-- · <a href="URL">paper</a> · <a href="URL">code</a> --></li>
+        <li><strong>Human Preference Learning for Robotic Manipulation</strong> <!-- · <a href="URL">paper</a> · <a href="URL">code</a> --></li>
+      </ul>
+    </div>
+  </section>
+
+  <section class="area">
+    <div class="tile" aria-hidden="true">🤝</div>
+    <div>
+      <h3>Human-Robot Interaction</h3>
+      <p>How a robot's way of speaking shapes ongoing collaboration, and whether people choose to work with it again.</p>
+      <ul>
+        <li><strong>Speaking Style for Continuous Collaboration and Reselection</strong> <!-- · <a href="URL">paper</a> · <a href="URL">code</a> --></li>
+      </ul>
+    </div>
+  </section>
+
+  <section class="area">
+    <div class="tile" aria-hidden="true">🧠</div>
+    <div>
+      <h3>Brain-Computer Interface</h3>
+      <p>Making EEG-based models practical for real users, with fewer electrodes and less calibration.</p>
+      <ul>
+        <li><strong>Few-Channel EEG Augmentation</strong> <!-- · <a href="URL">paper</a> · <a href="URL">code</a> --></li>
+        <li><strong>Calibration-Aware Fine-Tuning for EEG Foundation Model</strong> <!-- · <a href="URL">paper</a> · <a href="URL">code</a> --></li>
+      </ul>
+    </div>
+  </section>
+
+  <footer>
+    Design adapted from <a href="https://github.com/jonbarron/jonbarron.github.io">Jon Barron's website</a>.
+  </footer>
+
+</main>
+</body>
+</html>
