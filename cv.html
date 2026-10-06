@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Kihyeon Joo — CV</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Lato:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+  <style>
+    /* PDF 생성: google-chrome --headless --no-pdf-header-footer --print-to-pdf=files/cv.pdf cv.html */
+    @page { size: A4; margin: 16mm 17mm; }
+    :root { --text: #1f2328; --muted: #59636e; --accent: #4f46e5; --rule: #d0d7de; }
+    * { box-sizing: border-box; }
+    html { background: #f3f4f6; }
+    body {
+      margin: 24px auto; max-width: 210mm; padding: 16mm 17mm;
+      background: #ffffff; color: var(--text);
+      font-family: 'Lato', system-ui, sans-serif; font-size: 10pt; line-height: 1.45;
+    }
+    @media print { html { background: none; } body { margin: 0; padding: 0; max-width: none; } }
+    a { color: var(--accent); text-decoration: none; }
+
+    header { text-align: center; margin-bottom: 14px; }
+    h1 { font-size: 22pt; font-weight: 400; letter-spacing: 0.5px; margin: 0; }
+    .role { margin: 2px 0 6px; color: var(--muted); }
+    .contact span { white-space: nowrap; }
+    .contact span + span::before { content: "·"; color: var(--muted); margin: 0 7px; }
+
+    h2 {
+      font-size: 10.5pt; font-weight: 700; text-transform: uppercase; letter-spacing: 1px;
+      color: var(--accent); border-bottom: 1px solid var(--rule);
+      margin: 16px 0 7px; padding-bottom: 2px;
+    }
+    h3 { font-size: 9.5pt; font-weight: 700; color: var(--muted); margin: 8px 0 4px; }
+    section { break-inside: avoid; }
+
+    .entry { display: grid; grid-template-columns: 1fr auto; column-gap: 12px; margin-bottom: 6px; break-inside: avoid; }
+    .entry .date { color: var(--muted); white-space: nowrap; text-align: right; }
+    .entry .sub { grid-column: 1 / -1; color: var(--muted); }
+    .entry ul { grid-column: 1 / -1; margin: 2px 0 0; padding-left: 16px; }
+    .entry li { margin: 1px 0; }
+
+    .pubs { list-style: none; margin: 0; padding: 0; }
+    .pubs li { display: grid; grid-template-columns: 30px 1fr; margin-bottom: 5px; break-inside: avoid; }
+    .pubs .tag { color: var(--muted); }
+    .note { color: var(--muted); font-size: 9pt; }
+
+    .skills { display: grid; grid-template-columns: 110px 1fr; row-gap: 2px; margin: 0; }
+    .skills dt { font-weight: 700; }
+    .skills dd { margin: 0; }
+
+    footer { margin-top: 18px; text-align: right; color: var(--muted); font-size: 8.5pt; }
+  </style>
+</head>
+<body>
+
+<header>
+  <h1>Kihyeon Joo</h1>
+  <p class="role">M.S./Ph.D. Integrated Student · Department of Electrical and Computer Engineering, Inha University</p>
+  <p class="contact">
+    <span><a href="mailto:kihyeonjoo@inha.edu">kihyeonjoo@inha.edu</a></span>
+    <span><a href="https://kihyeonjoo.github.io">kihyeonjoo.github.io</a></span>
+    <br>
+    <span><a href="https://github.com/kihyeonjoo">github.com/kihyeonjoo</a></span>
+    <span><a href="https://www.linkedin.com/in/kihyeon-joo-221a752ab/">linkedin.com/in/kihyeon-joo-221a752ab</a></span>
+  </p>
+</header>
+
+<section>
+  <h2>Research Interests</h2>
+  <p style="margin:0">
+    Robotics (vision-language-action models, human preference learning) ·
+    Human-Robot Interaction · Ethical AI (educational robots for moral development) ·
+    Brain-Computer Interfaces (EEG emotion recognition, EEG foundation models)
+  </p>
+</section>
+
+<section>
+  <h2>Education</h2>
+  <div class="entry">
+    <div><strong>Inha University</strong>, Incheon, South Korea</div>
+    <div class="date">Mar. 2024 – Present</div>
+    <div class="sub">M.S./Ph.D. Integrated Program in Electrical and Computer Engineering · Advisor: Prof. Byung Hyung Kim</div>
+  </div>
+  <div class="entry">
+    <div><strong>Inha University</strong>, Incheon, South Korea</div>
+    <div class="date">2024</div>
+    <div class="sub">B.S. in Information and Communication Engineering · Advisor: Prof. Yongwoo Lee</div>
+  </div>
+</section>
+
+<section>
+  <h2>Publications</h2>
+  <h3>Domestic Journals <span class="note">(in Korean)</span></h3>
+  <ol class="pubs">
+    <li><span class="tag">[J2]</span><span><strong>K. Joo</strong>, C. Woo, and B. H. Kim,
+      “Diffusion-Based Data Augmentation for Few-Channel EEG Emotion Recognition Using Class-Conditional DDPM,”
+      <em>Journal of Biomedical Engineering Research</em>, vol. 47, no. 1, pp. 1–10, Feb. 2026.
+      <a href="https://www.kci.go.kr/kciportal/landing/article.kci?arti_id=ART003310104">[link]</a></span></li>
+    <li><span class="tag">[J1]</span><span><strong>K. Joo</strong> and B. H. Kim,
+      “AEGIS: A mmWave-based Wearable System for Efficient Human Detection in Low-Visibility Rescue Environments,”
+      <em>Journal of Korea Multimedia Society</em>, vol. 28, no. 12, pp. 1914–1929, Dec. 2025.
+      <a href="https://doi.org/10.9717/kmms.2025.28.12.1914">[doi]</a></span></li>
+  </ol>
+</section>
+
+<section>
+  <h2>Research Experience</h2>
+  <div class="entry">
+    <div><strong>Graduate Researcher</strong>, Affective Artificial Intelligence Lab, Inha University</div>
+    <div class="date">Mar. 2024 – Present</div>
+    <ul>
+      <li><strong>Robotics:</strong> Vision-language-action models for robotic manipulation on a UR5e arm — a visual contextual reasoning framework and human preference learning.</li>
+      <li><strong>Human-Robot Interaction:</strong> How a robot's speaking style affects continuous collaboration and whether people choose to work with it again.</li>
+      <li><strong>Ethical AI:</strong> ROBI, an educational robot for children's moral development.</li>
+      <li><strong>Brain-Computer Interfaces:</strong> Few-channel EEG data augmentation [J2] and calibration-aware fine-tuning of EEG foundation models.</li>
+      <li><strong>Wearable Sensing:</strong> mmWave-based wearable system for human detection in low-visibility rescue environments [J1].</li>
+    </ul>
+  </div>
+</section>
+
+<section>
+  <h2>Research Projects</h2>
+  <div class="entry">
+    <div>Development of XR Content Agent Technology Based on Emotion and Affect Reasoning</div>
+    <div class="date">Apr. 2026 – Dec. 2028</div>
+    <div class="sub">Institute of Information &amp; Communications Technology Planning &amp; Evaluation (IITP) · Lead Researcher</div>
+  </div>
+</section>
+
+<section>
+  <h2>Honors &amp; Scholarships</h2>
+  <div class="entry">
+    <div><strong>Inha Vision Fellowship</strong>, Inha University</div>
+    <div class="date">2026 – Present</div>
+  </div>
+  <div class="entry">
+    <div><strong>AI Convergence Innovation Human Resources Development Scholarship</strong>, IITP / MSIT</div>
+    <div class="date">2024 – 2025</div>
+  </div>
+</section>
+
+<section>
+  <h2>Teaching Experience</h2>
+  <div class="entry">
+    <div><strong>Teaching Assistant</strong>, Reinforcement Learning, Inha University</div>
+    <div class="date">2024</div>
+  </div>
+</section>
+
+<section>
+  <h2>Skills</h2>
+  <dl class="skills">
+    <dt>Programming</dt><dd>Python, PyTorch, Hugging Face</dd>
+    <dt>Robotics</dt><dd>ROS2, MoveIt2, Isaac Sim, Intel RealSense, UR5e</dd>
+    <dt>BCI / EEG</dt><dd>MNE-Python, Braindecode, scikit-learn</dd>
+    <dt>Environment</dt><dd>Ubuntu, CUDA, Conda</dd>
+  </dl>
+</section>
+
+<footer>Last updated: October 2026</footer>
+
+</body>
+</html>
