@@ -8,6 +8,9 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Hahmlet:wght@500;700;800&family=IBM+Plex+Sans+KR:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.11/katex.min.css" integrity="sha384-nB0miv6/jRmo5UMMR1wu3Gz6NLsoTkbqJghGIsx//Rlm+ZU03BU6SQNC66uf4l5+" crossorigin="anonymous">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.11/katex.min.js" integrity="sha384-7zkQWkzuo3B5mTepMUcHkMB5jZaolc2xDwL6VFqjFALcbeS9Ggm/Yr2r3Dy4lfFg" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.11/contrib/auto-render.min.js" integrity="sha384-43gviWU0YVjaDtb/GhzOouOXtZMP/7XUzwPTstBeZFe/+rCMvRwr4yROQP43s0Xk" crossorigin="anonymous"></script>
 <style>
 /* Layout: a lab-notebook textbook. A sticky chapter rail in BCI pipeline order on the left; a 68ch reading column with wider experiment benches on the right. Bench charts sit on an EEG chart-paper grid. */
 :root{
@@ -105,7 +108,12 @@ h3{text-wrap:balance}
 .defn{max-width:68ch;margin:0 0 1.2em;padding:14px 16px;border:1px solid var(--line);border-radius:6px;background:color-mix(in srgb,var(--trace) 6%,var(--panel))}
 .defn .lbl{font-family:var(--f-mono);font-size:12px;color:var(--muted);display:block;margin-bottom:4px}
 .defn p{margin:0;font-family:var(--f-display);font-weight:500;font-size:18px;line-height:1.6}
-.formula{font-family:var(--f-mono);font-size:14.5px;background:var(--panel);border:1px solid var(--line);border-radius:4px;padding:10px 14px;overflow-x:auto;white-space:nowrap;margin:0 0 1em;max-width:68ch}
+.formula{font-family:var(--f-body);font-size:15px;background:var(--panel);border:1px solid var(--line);border-radius:4px;padding:10px 14px;overflow-x:auto;margin:0 0 1em;max-width:68ch}
+/* math: typeset with KaTeX; wide formulas scroll inside their box */
+.katex{font-size:1.06em}
+.formula .katex-display{margin:2px 0 6px;text-align:left;overflow-x:auto;overflow-y:hidden;padding-block:3px}
+.formula .katex-display>.katex{text-align:left;font-size:1.14em;white-space:nowrap}
+@media (max-width:640px){.formula .katex-display>.katex{font-size:1em}.formula{padding:10px}}
 .formula small{font-family:var(--f-body);color:var(--muted);font-size:12.5px;white-space:normal;display:block;margin-top:4px}
 .tbl-wrap{overflow-x:auto;margin:0 0 1.2em;max-width:100%}
 table{border-collapse:collapse;width:100%;font-size:14.5px;line-height:1.55}
@@ -392,10 +400,10 @@ footer.colophon{max-width:1200px;margin:56px auto 0;padding-top:20px;border-top:
     <div class="readouts">
       <div class="ro"><span>Summed amplitude (one source = 1)</span><b id="sync-amp">–</b></div>
       <div class="ro"><span>Fully synchronous (×N)</span><b id="sync-full">–</b></div>
-      <div class="ro"><span>Random phases (×√N)</span><b id="sync-rand">–</b></div>
+      <div class="ro"><span>Random phases (×\(\sqrt{N}\))</span><b id="sync-rand">–</b></div>
       <div class="ro"><span>State</span><b id="sync-chip"></b></div>
     </div>
-    <p class="formula">E|S|² = N + N(N−1)·e<sup>−σ²</sup><small>This is the expected value when each source’s phase follows a normal distribution with standard deviation σ (in radians). With σ = 0, |S| = N. With large σ, |S| ≈ √N. The grid on the left draws a sample of 144 sources.</small></p>
+    <p class="formula">\[\mathbb{E}\,\lvert S\rvert^{2}=N+N(N-1)\,e^{-\sigma^{2}}\]<small>This is the expected value when each source’s phase follows a normal distribution with standard deviation \(\sigma\) (in radians). With \(\sigma=0\), \(\lvert S\rvert=N\). With large \(\sigma\), \(\lvert S\rvert\approx\sqrt{N}\). The grid on the left draws a sample of 144 sources.</small></p>
   </figure>
   <div class="prose">
     <p>For the same reason, the <b>inverse problem</b> of locating sources from a scalp potential map has no unique answer. A map that one dipole explains can also be explained by two dipoles, or ten (Wolpaw ch. 3).</p>
@@ -523,7 +531,7 @@ footer.colophon{max-width:1200px;margin:56px auto 0;padding-top:20px;border-top:
     <h3>Spatial filters</h3>
     <p>Temporal filters work on frequency. <b>Spatial filters</b> combine several electrodes instead (Rao §4.5.1). They suppress components spread across the whole scalp and keep components concentrated at one site. They help most with local signals such as sensorimotor rhythms (Wolpaw ch. 13).</p>
   </div>
-  <div class="formula">Common average reference (CAR): V<sub>i</sub><sup>CAR</sup> = V<sub>i</sub> − (1/n)·Σ<sub>j</sub> V<sub>j</sub><br>Laplacian: V<sub>C3</sub><sup>Lap</sup> = V<sub>C3</sub> − ¼·(V<sub>FC3</sub> + V<sub>C1</sub> + V<sub>C5</sub> + V<sub>CP3</sub>)<small>CAR subtracts the mean of all channels, and the Laplacian subtracts the mean of the surrounding electrodes. Both work by cancelling common signals that spread widely.</small></div>
+  <div class="formula">\[\begin{aligned}\text{CAR:}\quad V_i^{\text{CAR}}&=V_i-\frac{1}{n}\sum_{j}V_j\\ \text{Laplacian:}\quad V_{C3}^{\text{Lap}}&=V_{C3}-\frac{1}{4}\left(V_{FC3}+V_{C1}+V_{C5}+V_{CP3}\right)\end{aligned}\]<small>CAR subtracts the mean of all channels, and the Laplacian subtracts the mean of the surrounding electrodes. Both work by cancelling common signals that spread widely.</small></div>
   <div class="quiz" data-ch="5"></div>
 </section>
 
@@ -538,7 +546,7 @@ footer.colophon{max-width:1200px;margin:56px auto 0;padding-top:20px;border-top:
     <p>Moving a hand, or imagining the movement, lowers mu and beta power over the hand area of the opposite hemisphere. This is <b>event-related desynchronization (ERD)</b>. The right hand shows it at C3 and the left hand at C4. Foot imagery produces ERD near the midline at Cz, while power over the hand areas rises. Wolpaw ch. 13 calls this <b>focal ERD/surround ERS</b>. The beta rebound, a brief rise in beta power after a movement ends, is another form of ERS.</p>
     <p>The standard calculation of Pfurtscheller and Aranibar (1979) has four steps. Band-pass filter each trial, square the samples to get power, average across trials, and compare with the power in a reference interval just before the event.</p>
   </div>
-  <p class="formula">ERD% = (A − R) / R × 100<small>A is the band power after the event and R is the band power in the reference interval. Negative values mean ERD (a decrease), and positive values mean ERS (an increase).</small></p>
+  <p class="formula">\[\mathrm{ERD}\%=\frac{A-R}{R}\times 100\]<small>\(A\) is the band power after the event and \(R\) is the band power in the reference interval. Negative values mean ERD (a decrease), and positive values mean ERS (an increase).</small></p>
   <figure class="bench" id="b6-1">
     <figcaption class="bench-head"><span class="bench-no">Experiment 6-1</span><h3>Motor imagery and ERD</h3><p>Assume the user starts imagining at the cue at 0 s and keeps going until 4 s. Change the imagined movement, and try averaging a single trial. One trial barely shows ERD.</p></figcaption>
     <div class="controls">
@@ -558,7 +566,7 @@ footer.colophon{max-width:1200px;margin:56px auto 0;padding-top:20px;border-top:
     <h3>Common spatial patterns (CSP)</h3>
     <p>CSP is a supervised method that learns spatial filters from labeled training data. It picks the electrode weights that make the filtered output’s variance as large as possible for one class and as small as possible for the other (Rao §4.5.4). The variance of a band-passed signal is the power in that band, so CSP directly sharpens the band-power features that motor imagery BCIs use (Ramoser et al. 2000).</p>
   </div>
-  <p class="formula">R<sub>A</sub> w = λ (R<sub>A</sub> + R<sub>B</sub>) w<small>R<sub>A</sub> and R<sub>B</sub> are the channel covariance matrices of the two classes. The w with the largest λ maximizes class A’s share of the variance, and the w with the smallest λ maximizes class B’s share.</small></p>
+  <p class="formula">\[R_A\,\mathbf{w}=\lambda\,(R_A+R_B)\,\mathbf{w}\]<small>\(R_A\) and \(R_B\) are the channel covariance matrices of the two classes. The \(\mathbf{w}\) with the largest \(\lambda\) maximizes class A’s share of the variance, and the \(\mathbf{w}\) with the smallest \(\lambda\) maximizes class B’s share.</small></p>
   <figure class="bench" id="b6-2">
     <figcaption class="bench-head"><span class="bench-no">Experiment 6-2</span><h3>The directions CSP finds</h3><p>Each dot is the band-passed signal of two channels (C3, C4) at one instant. The two classes have the same mean and differ only in how they spread. The solid line is CSP filter w₁ and the dashed line is w₂.</p></figcaption>
     <div class="controls">
@@ -586,7 +594,7 @@ footer.colophon{max-width:1200px;margin:56px auto 0;padding-top:20px;border-top:
     <h3>Linear discriminant analysis (LDA)</h3>
     <p>LDA assumes the two classes are normal distributions with equal covariance and finds the line (a hyperplane in higher dimensions) that separates them. It is simple and fast, so online BCIs use it widely. Its strong assumptions make it fragile with non-normal data and outliers (Rao §5.1.1).</p>
   </div>
-  <p class="formula">w = Σ⁻¹(μ₁ − μ₂),  k = wᵀ(μ₁ + μ₂)/2,  class 1 if wᵀx &gt; k<small>Σ⁻¹ corrects for correlation and unequal variance between channels. When the two channels share a component that rises and falls together, the LDA boundary tilts away from the perpendicular to the line joining the means.</small></p>
+  <p class="formula">\[\begin{aligned}\mathbf{w}&=\Sigma^{-1}(\boldsymbol{\mu}_1-\boldsymbol{\mu}_2)\\ k&=\tfrac{1}{2}\,\mathbf{w}^{\top}(\boldsymbol{\mu}_1+\boldsymbol{\mu}_2)\\ \mathbf{w}^{\top}\mathbf{x}&>k\ \Rightarrow\ \text{class 1}\end{aligned}\]<small>\(\Sigma^{-1}\) corrects for correlation and unequal variance between channels. When the two channels share a component that rises and falls together, the LDA boundary tilts away from the perpendicular to the line joining the means.</small></p>
   <div class="prose">
     <h3>Generalization and nonstationarity</h3>
     <p>A model that is perfect on its training data does worse on new data. The gap, called <b>overfitting</b>, grows with less training data and more model freedom. Cross-validation estimates generalization by splitting the data and alternating between training and testing (Rao §5.1.4).</p>
@@ -688,7 +696,7 @@ footer.colophon{max-width:1200px;margin:56px auto 0;padding-top:20px;border-top:
     <h3>Invasive BCIs and the population vector</h3>
     <p>Each motor cortex neuron has a <b>preferred direction</b> and fires most when the arm moves that way. Its firing rate follows the cosine of the angle between the movement direction and the preferred direction (Wolpaw ch. 2, 7). Georgopoulos et al. (1986) showed that the <b>population vector</b>, the sum of the neurons’ preferred directions weighted by their firing rates, points in the actual movement direction. Practical BCIs go further and decode velocity and position with linear regression or Kalman filters (Rao ch. 7).</p>
   </div>
-  <p class="formula">r<sub>i</sub>(θ) = r₀ + (r<sub>max</sub> − r₀)·cos(θ − θ<sub>i</sub>),  d = Σ<sub>i</sub> p<sub>i</sub>·(r<sub>i</sub> − r₀)/r<sub>max</sub><small>θ<sub>i</sub> and p<sub>i</sub> are neuron i’s preferred direction as an angle and as a unit vector, and r₀ is the baseline firing rate. The second equation is Rao’s equation 7.1.</small></p>
+  <p class="formula">\[\begin{aligned}r_i(\theta)&=r_0+(r_{\max}-r_0)\cos(\theta-\theta_i)\\ \mathbf{d}&=\sum_{i}\mathbf{p}_i\,\frac{r_i-r_0}{r_{\max}}\end{aligned}\]<small>\(\theta_i\) and \(\mathbf{p}_i\) are neuron \(i\)’s preferred direction as an angle and as a unit vector, and \(r_0\) is the baseline firing rate. The second equation is Rao’s equation 7.1.</small></p>
   <figure class="bench" id="b8-4">
     <figcaption class="bench-head"><span class="bench-no">Experiment 8-4</span><h3>Reading direction from a population vector</h3><p>Drag inside the circle or use the slider to set the intended arm-movement direction. Each thin line is one neuron’s contribution, the black arrow is the intended direction, and the red arrow is the decoded direction.</p></figcaption>
     <div class="controls">
@@ -702,7 +710,7 @@ footer.colophon{max-width:1200px;margin:56px auto 0;padding-top:20px;border-top:
       <canvas class="cv" id="pv-err" style="height:300px" role="img" aria-label="Mean decoding error by number of neurons"></canvas>
     </div>
     <div class="readouts" id="pv-ro"></div>
-    <p class="note">Example values are r₀ = 20 Hz, r<sub>max</sub> = 50 Hz, and a 0.5 s counting window. A noise level of 1.0 matches the variability of Poisson-distributed spike counts.</p>
+    <p class="note">Example values are \(r_0=20\) Hz, \(r_{\max}=50\) Hz, and a 0.5 s counting window. A noise level of 1.0 matches the variability of Poisson-distributed spike counts.</p>
   </figure>
   <div class="quiz" data-ch="8"></div>
 </section>
@@ -713,10 +721,10 @@ footer.colophon{max-width:1200px;margin:56px auto 0;padding-top:20px;border-top:
   <h2>Evaluation and Information Transfer Rate</h2>
   <p class="refs">Textbooks: <b>Wolpaw</b> ch. 8, 20 · <b>Rao</b> §5.1.4</p>
   <div class="prose">
-    <p>Accuracy alone makes BCIs hard to compare. An accuracy of 80% means something very different with 2 options than with 36. The chance level, the probability of a correct guess, is 1/N for N options. A confusion matrix shows which selections get mistaken for which, and the kappa coefficient κ = (p<sub>o</sub> − p<sub>e</sub>)/(1 − p<sub>e</sub>) gives agreement corrected for chance (Rao §5.1.4).</p>
+    <p>Accuracy alone makes BCIs hard to compare. An accuracy of 80% means something very different with 2 options than with 36. The chance level, the probability of a correct guess, is \(1/N\) for \(N\) options. A confusion matrix shows which selections get mistaken for which, and the kappa coefficient \(\kappa=(p_o-p_e)/(1-p_e)\) gives agreement corrected for chance (Rao §5.1.4).</p>
     <p>Wolpaw et al. (2002) proposed the <b>information transfer rate (ITR, bit rate)</b> from communication theory to capture speed and accuracy in a single number. It assumes that every option is equally likely to be intended and that errors spread evenly over the other options.</p>
   </div>
-  <p class="formula">B = log₂N + P·log₂P + (1 − P)·log₂[(1 − P)/(N − 1)]   [bits/selection]<br>ITR = B × selections per minute   [bits/min]<small>N is the number of options and P is accuracy. This is the equation of Wolpaw ch. 8, fig. 8.12.</small></p>
+  <p class="formula">\[\begin{aligned}B&=\log_2 N+P\log_2 P+(1-P)\log_2\frac{1-P}{N-1}\quad[\text{bits/selection}]\\ \mathrm{ITR}&=B\times\text{selections per minute}\quad[\text{bits/min}]\end{aligned}\]<small>\(N\) is the number of options and \(P\) is accuracy. This is the equation of Wolpaw ch. 8, fig. 8.12.</small></p>
   <div class="prose">
     <p>Wolpaw ch. 8 sets two rules for using ITR. Count the information in the final output only, and leave out information in the process that leads to it, such as a cursor’s trajectory. Count the time as the full interval from the start of one selection to the start of the next. The benchmark is <b>online evaluation</b>, with the user receiving real feedback during use.</p>
   </div>
@@ -2400,6 +2408,14 @@ paintProgress();
   q.addEventListener('input', render);
   render();
 })();
+
+/* ════════════ Typeset math in the page ════════════ */
+if (window.renderMathInElement) {
+  renderMathInElement(document.body, {
+    delimiters: [{ left: '\\[', right: '\\]', display: true }, { left: '\\(', right: '\\)', display: false }],
+    throwOnError: false, strict: 'ignore', ignoredClasses: ['quiz', 'gloss']
+  });
+}
 
 })();
 
