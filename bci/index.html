@@ -106,7 +106,7 @@ h3{text-wrap:balance}
 .formula small{font-family:var(--f-body);color:var(--muted);font-size:12.5px;white-space:normal;display:block;margin-top:4px}
 .tbl-wrap{overflow-x:auto;margin:0 0 1.2em;max-width:100%}
 table{border-collapse:collapse;width:100%;font-size:14.5px;line-height:1.55}
-th,td{padding:8px 10px;border-bottom:1px solid var(--line);text-align:left;vertical-align:top}
+th,td{padding:8px 10px;border-bottom:1px solid var(--line);text-align:left;vertical-align:top;overflow-wrap:break-word}
 thead th{font-weight:600;color:var(--muted);font-size:13px;white-space:nowrap}
 tbody th{font-weight:600}
 .b-delta{color:var(--delta)} .b-theta{color:var(--theta)} .b-alpha{color:var(--alpha)} .b-beta{color:var(--beta)} .b-gamma{color:var(--gamma)}
@@ -255,7 +255,7 @@ footer.colophon{max-width:1200px;margin:56px auto 0;padding-top:20px;border-top:
   html{scroll-behavior:auto}
   *{transition:none!important;animation:none!important}
 }
-.homelink{max-width:1200px;margin:0 auto;padding-block:18px 0;font-family:var(--f-mono);font-size:13px}
+.homelink{max-width:1200px;margin:0 auto;padding-block:18px 0;font-family:var(--f-mono);font-size:13px;display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap}
 .homelink a{text-decoration:none}
 .homelink a:hover{text-decoration:underline}
 </style>
@@ -264,9 +264,11 @@ footer.colophon{max-width:1200px;margin:56px auto 0;padding-top:20px;border-top:
 <meta property="og:description" content="뇌 신호가 명령이 되기까지를 11개 장의 실험과 확인 문제로 배우는 BCI 학습서">
 <meta property="og:url" content="https://kihyeonjoo.github.io/bci/">
 <meta property="og:locale" content="ko_KR">
+<link rel="alternate" hreflang="ko" href="https://kihyeonjoo.github.io/bci/">
+<link rel="alternate" hreflang="en" href="https://kihyeonjoo.github.io/bci/en/">
 </head>
 <body>
-<nav class="homelink" aria-label="사이트"><a href="/">← Kihyeon Joo</a></nav>
+<nav class="homelink" aria-label="사이트"><a href="/">← Kihyeon Joo</a><a href="en/" lang="en" hreflang="en">English</a></nav>
 
 <header class="masthead">
   <div>
@@ -869,7 +871,7 @@ footer.colophon{max-width:1200px;margin:56px auto 0;padding-top:20px;border-top:
 
 <footer class="colophon">
   <p>이 학습서의 신호와 그래프는 교재의 서술과 수치를 바탕으로 만든 시뮬레이션이며 실제 측정 데이터가 아닙니다. 확인 문제의 진도는 이 브라우저에만 저장됩니다.</p>
-  <p><a href="/">Kihyeon Joo 홈페이지로 돌아가기</a></p>
+  <p><a href="/">Kihyeon Joo 홈페이지로 돌아가기</a> · <a href="en/" lang="en">English version</a></p>
 </footer>
 <script>
 (() => {

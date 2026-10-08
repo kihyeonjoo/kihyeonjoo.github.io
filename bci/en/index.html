@@ -1,0 +1,2405 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>BCI Concept Workbook</title>
+<meta name="description" content="Learn how brain signals become machine commands through hands-on experiments and check questions in 11 chapters.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Hahmlet:wght@500;700;800&family=IBM+Plex+Sans+KR:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+/* Layout: a lab-notebook textbook. A sticky chapter rail in BCI pipeline order on the left; a 68ch reading column with wider experiment benches on the right. Bench charts sit on an EEG chart-paper grid. */
+:root{
+  --paper:#f1f4f1;      /* chart-paper ground: a neutral leaning green-gray */
+  --panel:#fbfcfb;
+  --line:#c9d3cc;
+  --grid:#dce4de;
+  --ink:#16201b;
+  --muted:#55625b;
+  --trace:#1d44b0;      /* ink blue: signal traces, emphasis */
+  --mark:#c41f4e;       /* event marker: stimulus onsets, targets */
+  --ok:#1d7a4b; --warn:#9a6400; --bad:#b3261e;
+  --delta:#6a4c9c; --theta:#24799a; --alpha:#2c8653; --beta:#b56f0c; --gamma:#ad346a;
+  --f-display:"Hahmlet","Noto Serif KR","AppleMyungjo","Batang",serif;
+  --f-body:"IBM Plex Sans KR","Apple SD Gothic Neo","Malgun Gothic","Noto Sans KR",system-ui,sans-serif;
+  --f-mono:"IBM Plex Mono",ui-monospace,"SFMono-Regular",Menlo,Consolas,monospace;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --paper:#0e1412; --panel:#151d1a; --line:#2c3933; --grid:#1f2a26; --ink:#e4ece7; --muted:#97a69e;
+    --trace:#8eb0ff; --mark:#ff6189; --ok:#5ccb8e; --warn:#e8b04c; --bad:#ff7a70;
+    --delta:#b39cec; --theta:#62c4e4; --alpha:#6fd59c; --beta:#f0b54a; --gamma:#f37db3;
+    color-scheme:dark;
+  }
+}
+:root[data-theme="dark"]{
+  --paper:#0e1412; --panel:#151d1a; --line:#2c3933; --grid:#1f2a26; --ink:#e4ece7; --muted:#97a69e;
+  --trace:#8eb0ff; --mark:#ff6189; --ok:#5ccb8e; --warn:#e8b04c; --bad:#ff7a70;
+  --delta:#b39cec; --theta:#62c4e4; --alpha:#6fd59c; --beta:#f0b54a; --gamma:#f37db3;
+  color-scheme:dark;
+}
+*{box-sizing:border-box}
+[hidden]{display:none!important}
+html{scroll-behavior:smooth}
+body{margin:0;background:var(--paper);color:var(--ink);font-family:var(--f-body);font-size:16px;line-height:1.72;
+  padding-inline:clamp(16px,4vw,40px);padding-block:0 72px;-webkit-font-smoothing:antialiased;word-break:keep-all;overflow-wrap:anywhere}
+a{color:var(--trace);text-underline-offset:3px}
+:focus-visible{outline:2px solid var(--trace);outline-offset:2px}
+p{margin:0 0 .9em}
+sub,sup{line-height:0}
+.mono{font-family:var(--f-mono)}
+.num{font-variant-numeric:tabular-nums}
+
+/* ── masthead ── */
+.masthead{max-width:1200px;margin:0 auto;padding-block:44px 32px;display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.3fr);gap:36px;align-items:start}
+.eyebrow{font-family:var(--f-mono);font-size:12.5px;letter-spacing:.08em;color:var(--muted);margin:0}
+h1{font-family:var(--f-display);font-weight:800;font-size:clamp(42px,6.2vw,68px);line-height:1.04;margin:.18em 0 .32em;letter-spacing:-.015em;text-wrap:balance}
+.lead{font-size:17px;max-width:44ch;margin-bottom:1.1em}
+.srcline{font-size:13.5px;color:var(--muted);max-width:52ch}
+.monitor{background:var(--panel);border:1px solid var(--line);border-radius:6px;padding:14px;display:grid;gap:10px;min-width:0}
+.monitor-top{display:flex;flex-wrap:wrap;gap:8px 12px;align-items:center;justify-content:space-between}
+.monitor-title{font-family:var(--f-mono);font-size:12.5px;letter-spacing:.06em;color:var(--muted)}
+.rec{display:inline-block;width:8px;height:8px;border-radius:50%;background:var(--mark);margin-right:6px;vertical-align:1px}
+.paused .rec{background:var(--muted)}
+
+/* pipeline map */
+.pipeline{max-width:1200px;margin:0 auto 8px;padding:0;list-style:none;display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:0;border:1px solid var(--line);border-radius:6px;background:var(--panel);counter-reset:none}
+.pipeline li{padding:12px 14px;border-right:1px solid var(--line);display:grid;gap:2px;align-content:start;min-width:0}
+.pipeline li:last-child{border-right:0}
+.pipeline .k{font-family:var(--f-mono);font-size:12px;color:var(--trace)}
+.pipeline .n{font-weight:600}
+.pipeline .d{font-size:13px;color:var(--muted)}
+.loopnote{max-width:1200px;margin:0 auto 40px;font-size:13.5px;color:var(--muted)}
+
+/* ── page frame ── */
+.shell{max-width:1200px;margin:0 auto;display:grid;grid-template-columns:224px minmax(0,1fr);gap:52px}
+.rail{position:sticky;top:calc(env(safe-area-inset-top,0px) + 16px);align-self:start;max-height:calc(100vh - 32px);overflow:auto;padding-block:6px 12px}
+.rail-head{font-family:var(--f-mono);font-size:12.5px;color:var(--muted);margin:0 0 8px;display:flex;justify-content:space-between;gap:8px}
+.rail ol{list-style:none;margin:0;padding:0;display:grid;gap:1px}
+.rail a{display:grid;grid-template-columns:22px minmax(0,1fr) 10px;gap:8px;align-items:center;padding:6px 8px;border-radius:4px;color:var(--ink);text-decoration:none;font-size:14px;line-height:1.35}
+.rail a:hover{background:color-mix(in srgb,var(--trace) 8%,transparent)}
+.rail a.cur{background:color-mix(in srgb,var(--trace) 12%,transparent)}
+.rail .no{font-family:var(--f-mono);font-size:12.5px;color:var(--muted)}
+.rail .ts{display:none}
+.dot{width:10px;height:10px;border-radius:50%;border:1.5px solid var(--line)}
+.dot.half{border-color:var(--warn);background:linear-gradient(90deg,var(--warn) 50%,transparent 50%)}
+.dot.done{border-color:var(--ok);background:var(--ok)}
+.rail-foot{margin-top:12px;display:flex;flex-wrap:wrap;gap:6px;align-items:center;font-size:13px;color:var(--muted)}
+main{min-width:0}
+
+.chapter{padding-block:48px 20px;border-top:1px solid var(--line);scroll-margin-top:72px}
+.chapter:first-child{border-top:0;padding-top:8px}
+.ch-no{font-family:var(--f-mono);font-size:13px;color:var(--trace);letter-spacing:.06em;margin:0}
+h2{font-family:var(--f-display);font-weight:700;font-size:clamp(28px,3.4vw,38px);line-height:1.18;margin:.12em 0 .35em;text-wrap:balance;letter-spacing:-.01em}
+h3{text-wrap:balance}
+.refs{font-size:13.5px;color:var(--muted);margin:0 0 1.4em}
+.refs b{font-weight:600;color:var(--ink)}
+.prose{max-width:68ch}
+.prose h3{font-size:19px;font-weight:600;margin:1.6em 0 .4em}
+.prose ul,.prose ol{padding-left:1.25em;margin:0 0 1em}
+.prose li{margin-bottom:.3em}
+.defn{max-width:68ch;margin:0 0 1.2em;padding:14px 16px;border:1px solid var(--line);border-radius:6px;background:color-mix(in srgb,var(--trace) 6%,var(--panel))}
+.defn .lbl{font-family:var(--f-mono);font-size:12px;color:var(--muted);display:block;margin-bottom:4px}
+.defn p{margin:0;font-family:var(--f-display);font-weight:500;font-size:18px;line-height:1.6}
+.formula{font-family:var(--f-mono);font-size:14.5px;background:var(--panel);border:1px solid var(--line);border-radius:4px;padding:10px 14px;overflow-x:auto;white-space:nowrap;margin:0 0 1em;max-width:68ch}
+.formula small{font-family:var(--f-body);color:var(--muted);font-size:12.5px;white-space:normal;display:block;margin-top:4px}
+.tbl-wrap{overflow-x:auto;margin:0 0 1.2em;max-width:100%}
+table{border-collapse:collapse;width:100%;font-size:14.5px;line-height:1.55}
+th,td{padding:8px 10px;border-bottom:1px solid var(--line);text-align:left;vertical-align:top;overflow-wrap:break-word}
+thead th{font-weight:600;color:var(--muted);font-size:13px;white-space:nowrap}
+tbody th{font-weight:600}
+.b-delta{color:var(--delta)} .b-theta{color:var(--theta)} .b-alpha{color:var(--alpha)} .b-beta{color:var(--beta)} .b-gamma{color:var(--gamma)}
+
+/* ── experiment benches ── */
+.bench{margin:28px 0;background:var(--panel);border:1px solid var(--line);border-radius:6px;padding:18px;display:grid;gap:14px;min-width:0}
+.bench-head{display:grid;gap:2px}
+.bench-no{font-family:var(--f-mono);font-size:12px;letter-spacing:.06em;color:var(--trace)}
+.bench-head h3{margin:0;font-size:18.5px;font-weight:600;line-height:1.4}
+.bench-head p{margin:2px 0 0;color:var(--muted);font-size:14.5px;max-width:72ch}
+.controls{display:flex;flex-wrap:wrap;gap:12px 22px;align-items:end}
+.ctl{display:grid;gap:3px;flex:1 1 190px;min-width:0}
+.ctl label,.ctl .lab{font-size:13.5px;color:var(--muted);display:flex;justify-content:space-between;gap:8px}
+.ctl output{font-family:var(--f-mono);color:var(--ink);font-variant-numeric:tabular-nums;white-space:nowrap}
+input[type=range]{width:100%;accent-color:var(--trace);margin:4px 0}
+input[type=search],input[type=number],select{font:inherit;font-size:14.5px;color:var(--ink);background:var(--paper);border:1px solid var(--line);border-radius:4px;padding:6px 10px;max-width:100%}
+.btn{font:inherit;font-size:14px;line-height:1.3;padding:7px 12px;border:1px solid var(--line);background:var(--paper);color:var(--ink);border-radius:4px;cursor:pointer}
+.btn:hover{border-color:var(--ink)}
+.btn[aria-pressed="true"]{background:var(--ink);color:var(--paper);border-color:var(--ink)}
+.btn.quiet{border-color:transparent;background:transparent;color:var(--muted);padding-inline:6px}
+.btn.quiet:hover{color:var(--ink)}
+.btn.danger{border-color:var(--bad);color:var(--bad)}
+.btnrow{display:flex;flex-wrap:wrap;gap:6px;align-items:center}
+.seg{display:inline-flex;flex-wrap:wrap;border:1px solid var(--line);border-radius:4px;overflow:hidden;max-width:100%}
+.seg button{font:inherit;font-size:14px;line-height:1.3;padding:7px 12px;border:0;border-right:1px solid var(--line);background:var(--paper);color:var(--ink);cursor:pointer}
+.seg button:last-child{border-right:0}
+.seg button[aria-pressed="true"]{background:var(--ink);color:var(--paper)}
+.cv{display:block;width:100%;border-radius:4px;background:var(--paper);touch-action:pan-y}
+.cv.drag{touch-action:none;cursor:crosshair}
+.readouts{display:flex;flex-wrap:wrap;gap:10px 28px;align-items:end}
+.ro{display:grid;gap:1px;min-width:0}
+.ro span{font-size:12.5px;color:var(--muted)}
+.ro b{font-family:var(--f-mono);font-size:20px;font-weight:500;font-variant-numeric:tabular-nums;line-height:1.3}
+.ro b small{font-size:13px;color:var(--muted);font-weight:400}
+.chip{display:inline-flex;align-items:center;gap:6px;font-size:12.5px;line-height:1.5;padding:1px 9px;border-radius:999px;border:1px solid currentColor;white-space:nowrap}
+.chip.ok{color:var(--ok)} .chip.warn{color:var(--warn)} .chip.bad{color:var(--bad)} .chip.neutral{color:var(--muted)} .chip.info{color:var(--trace)}
+.note{font-size:13.5px;color:var(--muted);margin:0;max-width:78ch}
+.legend{display:flex;flex-wrap:wrap;gap:6px 16px;font-size:13px;color:var(--muted);align-items:center}
+.sw{display:inline-block;width:12px;height:12px;border-radius:2px;vertical-align:-1px;margin-right:5px}
+.split{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:18px;align-items:start}
+.split3{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}
+.detail{border:1px solid var(--line);border-radius:6px;padding:12px 14px;background:var(--paper);font-size:14.5px;min-width:0}
+.detail h4{margin:0 0 4px;font-size:16px}
+.detail p{margin:0 0 .5em}
+.detail p:last-child{margin:0}
+.tagrow{display:flex;flex-wrap:wrap;gap:6px;margin:6px 0}
+.small{font-size:13px;color:var(--muted)}
+
+/* ch. 1 verdict cards */
+.cards{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:10px}
+.card{border:1px solid var(--line);border-radius:6px;padding:12px;background:var(--paper);display:grid;gap:8px;align-content:start;min-width:0}
+.card p{margin:0;font-size:14.5px}
+.card .verdict{font-size:13.5px;line-height:1.55}
+.card.right{border-color:var(--ok)} .card.wrong{border-color:var(--bad)}
+
+/* 10–20 map */
+.head-svg{width:100%;max-width:440px;height:auto;display:block;margin-inline:auto}
+.head-svg .outline{fill:var(--paper);stroke:var(--ink);stroke-width:1.5}
+.head-svg .guide{fill:none;stroke:var(--grid);stroke-width:1}
+.head-svg .el{cursor:pointer}
+.head-svg .el circle{fill:var(--panel);stroke:var(--ink);stroke-width:1.2}
+.head-svg .el text{fill:var(--ink);font-family:var(--f-mono);font-size:10.5px;text-anchor:middle;dominant-baseline:central;pointer-events:none}
+.head-svg .el.hl circle{fill:var(--trace);stroke:var(--trace)}
+.head-svg .el.hl text{fill:var(--panel)}
+.head-svg .el.sel circle{stroke:var(--mark);stroke-width:3}
+.head-svg .el:focus-visible{outline:none}
+.head-svg .el:focus-visible circle{stroke:var(--mark);stroke-width:3}
+.head-svg .lm{fill:var(--muted);font-family:var(--f-mono);font-size:10px;text-anchor:middle}
+
+/* ch. 10 */
+.process{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:6px}
+.process button{font:inherit;text-align:left;padding:10px;border:1px solid var(--line);border-radius:4px;background:var(--paper);color:var(--ink);cursor:pointer;display:grid;gap:2px;min-width:0}
+.process button .k{font-family:var(--f-mono);font-size:11.5px;color:var(--muted)}
+.process button .t{font-weight:600;font-size:14.5px;line-height:1.35}
+.process button .f{font-size:12px;color:var(--muted)}
+.process button[aria-pressed="true"]{border-color:var(--trace);background:color-mix(in srgb,var(--trace) 10%,var(--paper))}
+.capbar{display:flex;height:26px;border:1px solid var(--line);border-radius:4px;overflow:hidden;font-size:12px;font-family:var(--f-mono)}
+.capbar div{display:flex;align-items:center;padding-inline:8px;white-space:nowrap;overflow:hidden;transition:flex-basis .25s}
+.waffle{display:grid;grid-template-columns:repeat(20,minmax(0,1fr));gap:3px;max-width:560px}
+.waffle i{display:block;aspect-ratio:1;border-radius:2px;max-width:100%}
+.w-keep{background:var(--ok)} .w-lost{background:var(--beta)} .w-caught{background:var(--trace)} .w-miss{background:var(--bad)}
+
+/* speller */
+.speller{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:4px;max-width:340px}
+.speller button{font-family:var(--f-mono);font-size:16px;aspect-ratio:1;border:1px solid var(--line);border-radius:3px;background:var(--paper);color:var(--ink);cursor:pointer;padding:0}
+.speller button.target{border-color:var(--mark);border-width:2px}
+.speller button.picked{background:var(--ink);color:var(--paper)}
+.speller button.picked.ok{background:var(--ok);border-color:var(--ok);color:var(--paper)}
+.speller button.picked.no{background:var(--bad);border-color:var(--bad);color:var(--paper)}
+.ssvep-targets{display:grid;grid-template-columns:repeat(auto-fit,minmax(110px,1fr));gap:8px}
+.ssvep-targets button{font:inherit;padding:10px;border:1px solid var(--line);border-radius:4px;background:var(--paper);color:var(--ink);cursor:pointer;display:grid;gap:2px;text-align:left}
+.ssvep-targets button b{font-family:var(--f-mono);font-size:18px;font-weight:500}
+.ssvep-targets button span{font-size:12.5px;color:var(--muted)}
+.ssvep-targets button[aria-pressed="true"]{border-color:var(--mark);box-shadow:inset 0 0 0 1px var(--mark)}
+.timeline{display:grid;grid-template-columns:repeat(24,minmax(0,1fr));gap:2px}
+.timeline i{display:block;height:22px;border-radius:2px;background:var(--grid);font-style:normal;font-family:var(--f-mono);font-size:10px;color:var(--paper);text-align:center;line-height:22px;overflow:hidden}
+
+/* check questions */
+.quiz{margin:30px 0 6px;display:grid;gap:12px;max-width:78ch}
+.quiz-head{display:flex;justify-content:space-between;gap:8px;align-items:baseline;font-family:var(--f-mono);font-size:12.5px;letter-spacing:.05em;color:var(--muted)}
+.q{border:1px solid var(--line);border-radius:6px;padding:14px 16px;background:var(--panel)}
+.q .qt{margin:0 0 10px;font-weight:500}
+.q .qt .qn{font-family:var(--f-mono);color:var(--muted);margin-right:6px;font-weight:400}
+.q .opts{display:grid;gap:6px}
+.q .opt{font:inherit;font-size:15px;line-height:1.5;text-align:left;padding:8px 12px;border:1px solid var(--line);border-radius:4px;background:var(--paper);color:var(--ink);cursor:pointer}
+.q .opt:hover{border-color:var(--ink)}
+.q .opt.right{border-color:var(--ok);background:color-mix(in srgb,var(--ok) 12%,var(--paper))}
+.q .opt.wrong{border-color:var(--bad);background:color-mix(in srgb,var(--bad) 9%,var(--paper))}
+.q .why{margin:10px 0 0;font-size:14.5px}
+.q .why b{font-weight:600}
+
+/* glossary, sources */
+.gloss{display:grid;grid-template-columns:minmax(150px,220px) minmax(0,1fr);gap:0;margin:0;border-top:1px solid var(--line);max-width:78ch}
+.gloss dt,.gloss dd{padding:9px 0;border-bottom:1px solid var(--line);margin:0}
+.gloss dt{font-weight:600;padding-right:14px}
+.gloss dt small{display:block;font-family:var(--f-mono);font-weight:400;font-size:12px;color:var(--muted)}
+.gloss dd{font-size:15px}
+.empty{color:var(--muted);font-size:14px}
+footer.colophon{max-width:1200px;margin:56px auto 0;padding-top:20px;border-top:1px solid var(--line);font-size:13px;color:var(--muted)}
+
+@media (max-width:980px){
+  .masthead{grid-template-columns:minmax(0,1fr);gap:22px;padding-block:32px 24px}
+  .pipeline{grid-template-columns:minmax(0,1fr)}
+  .pipeline li{border-right:0;border-bottom:1px solid var(--line);grid-template-columns:auto auto minmax(0,1fr);gap:4px 10px;align-items:baseline}
+  .pipeline li:last-child{border-bottom:0}
+  .shell{grid-template-columns:minmax(0,1fr);gap:0}
+  .rail{top:env(safe-area-inset-top,0px);z-index:5;background:var(--paper);border-bottom:1px solid var(--line);max-height:none;overflow:visible;padding-block:8px}
+  .rail-head{margin-bottom:4px}
+  .rail ol{display:flex;gap:4px;overflow-x:auto;scrollbar-width:thin;padding-bottom:4px}
+  .rail a{grid-template-columns:auto auto 10px;white-space:nowrap;padding:5px 9px;border:1px solid var(--line)}
+  .rail .t{display:none}
+  .rail .ts{display:inline}
+  .rail-foot{display:none}
+  .chapter{scroll-margin-top:110px}
+  .process{grid-template-columns:repeat(auto-fit,minmax(130px,1fr))}
+}
+@media (max-width:640px){
+  .split,.split3{grid-template-columns:minmax(0,1fr)}
+  .bench{padding:14px}
+  .gloss{grid-template-columns:minmax(0,1fr)}
+  .gloss dt{border-bottom:0;padding-bottom:0}
+  .timeline{grid-template-columns:repeat(12,minmax(0,1fr))}
+  .defn p{font-size:16.5px}
+}
+@media (prefers-reduced-motion: reduce){
+  html{scroll-behavior:auto}
+  *{transition:none!important;animation:none!important}
+}
+.homelink{max-width:1200px;margin:0 auto;padding-block:18px 0;font-family:var(--f-mono);font-size:13px;display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap}
+.homelink a{text-decoration:none}
+.homelink a:hover{text-decoration:underline}
+</style>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🧠</text></svg>">
+<meta property="og:title" content="BCI Concept Workbook">
+<meta property="og:description" content="Learn how brain signals become machine commands through hands-on experiments and check questions in 11 chapters.">
+<meta property="og:url" content="https://kihyeonjoo.github.io/bci/en/">
+<meta property="og:locale" content="en_US">
+<link rel="alternate" hreflang="ko" href="https://kihyeonjoo.github.io/bci/">
+<link rel="alternate" hreflang="en" href="https://kihyeonjoo.github.io/bci/en/">
+</head>
+<body>
+<nav class="homelink" aria-label="Site"><a href="/">← Kihyeon Joo</a><a href="../" lang="ko" hreflang="ko">한국어</a></nav>
+
+<header class="masthead">
+  <div>
+    <p class="eyebrow">Brain–computer interfaces · A university-level concept workbook</p>
+    <h1>BCI Concept Workbook</h1>
+    <p class="lead">Follow brain signals all the way to machine commands in 11 chapters. Every chapter has hands-on experiments and check questions.</p>
+    <p class="srcline">The workbook draws on four textbooks. They are Wolpaw &amp; Wolpaw, <i>Brain–Computer Interfaces: Principles and Practice</i> (2012); Rao, <i>Brain–Computer Interfacing: An Introduction</i> (2013); Siuly, Li &amp; Zhang, <i>EEG Signal Analysis and Classification</i> (2016); and chapters 14–17 of Armony &amp; Vuilleumier (eds.), <i>The Cambridge Handbook of Human Affective Neuroscience</i> (2013). Each chapter header names the matching textbook chapters. Every signal in the experiments is a simulation built from values in these books.</p>
+  </div>
+  <figure class="monitor" id="hero" style="margin:0">
+    <div class="monitor-top">
+      <span class="monitor-title"><span class="rec"></span>Simulated EEG · 4 channels · 6 s</span>
+      <div class="btnrow">
+        <button class="btn" id="hero-eyes" aria-pressed="false">Close eyes</button>
+        <button class="btn" id="hero-mi" aria-pressed="false">Imagine right-hand movement</button>
+        <button class="btn quiet" id="hero-pause" aria-pressed="false">Pause</button>
+      </div>
+    </div>
+    <canvas class="cv" id="hero-cv" style="height:236px" role="img" aria-label="Simulated EEG on four channels: Fp1, C3, Pz, O1"></canvas>
+    <p class="note" id="hero-note">Closing the eyes raises 8–13 Hz alpha at O1 and Pz. Imagining right-hand movement shrinks the mu rhythm at C3, over the opposite motor cortex. The large waves on Fp1 are eye-blink artifacts.</p>
+  </figure>
+</header>
+
+<ol class="pipeline" aria-label="BCI processing stages">
+  <li><span class="k">Stage 1</span><a class="n" href="#ch3">Signal acquisition</a><span class="d">Record brain activity with electrodes and sensors · Ch. 2–3</span></li>
+  <li><span class="k">Stage 2</span><a class="n" href="#ch5">Preprocessing</a><span class="d">Filter out noise and artifacts · Ch. 4–5</span></li>
+  <li><span class="k">Stage 3</span><a class="n" href="#ch6">Feature extraction</a><span class="d">Pull out measurements that carry intent · Ch. 6</span></li>
+  <li><span class="k">Stage 4</span><a class="n" href="#ch7">Feature translation</a><span class="d">Turn measurements into commands · Ch. 7</span></li>
+  <li><span class="k">Stage 5</span><a class="n" href="#ch8">Commands and applications</a><span class="d">Spellers, cursors, robot arms · Ch. 8–11</span></li>
+</ol>
+<p class="loopnote">The user watches the output and adjusts their brain activity in response. This feedback loop makes a BCI a closed loop in which the user and the system adapt together (Wolpaw ch. 1, fig. 1.3).</p>
+
+<div class="shell">
+<nav class="rail" aria-label="Chapters">
+  <p class="rail-head"><span>Chapters</span><span>Done <b id="prog-count" class="num">0</b>/11</span></p>
+  <ol id="rail-list">
+    <li><a href="#ch1"><span class="no">1</span><span class="t">What Is a BCI?</span><span class="ts">Definition</span><span class="dot" data-ch="1"></span></a></li>
+    <li><a href="#ch2"><span class="no">2</span><span class="t">Where Brain Signals Come From</span><span class="ts">Origins</span><span class="dot" data-ch="2"></span></a></li>
+    <li><a href="#ch3"><span class="no">3</span><span class="t">Measuring Brain Signals</span><span class="ts">Measurement</span><span class="dot" data-ch="3"></span></a></li>
+    <li><a href="#ch4"><span class="no">4</span><span class="t">EEG Rhythms and Frequency</span><span class="ts">Rhythms</span><span class="dot" data-ch="4"></span></a></li>
+    <li><a href="#ch5"><span class="no">5</span><span class="t">Preprocessing: Noise and Artifacts</span><span class="ts">Preprocessing</span><span class="dot" data-ch="5"></span></a></li>
+    <li><a href="#ch6"><span class="no">6</span><span class="t">Feature Extraction: ERD and CSP</span><span class="ts">Features</span><span class="dot" data-ch="6"></span></a></li>
+    <li><a href="#ch7"><span class="no">7</span><span class="t">Feature Translation: Classification and Adaptation</span><span class="ts">Classification</span><span class="dot" data-ch="7"></span></a></li>
+    <li><a href="#ch8"><span class="no">8</span><span class="t">Major BCI Paradigms</span><span class="ts">Paradigms</span><span class="dot" data-ch="8"></span></a></li>
+    <li><a href="#ch9"><span class="no">9</span><span class="t">Evaluation and Information Transfer Rate</span><span class="ts">Evaluation</span><span class="dot" data-ch="9"></span></a></li>
+    <li><a href="#ch10"><span class="no">10</span><span class="t">Emotion and Cognition</span><span class="ts">Emotion</span><span class="dot" data-ch="10"></span></a></li>
+    <li><a href="#ch11"><span class="no">11</span><span class="t">Applications and Ethics</span><span class="ts">Applications</span><span class="dot" data-ch="11"></span></a></li>
+    <li><a href="#glossary"><span class="no">··</span><span class="t">Glossary</span><span class="ts">Glossary</span><span></span></a></li>
+    <li><a href="#sources"><span class="no">··</span><span class="t">Textbook Map</span><span class="ts">Textbooks</span><span></span></a></li>
+  </ol>
+  <div class="rail-foot">
+    <span class="dot done"></span>All check questions correct
+    <span class="dot half"></span>In progress
+    <span id="reset-wrap"><button class="btn quiet" id="prog-reset">Clear progress</button></span>
+  </div>
+</nav>
+
+<main>
+
+<!-- ───────────── Chapter 1 ───────────── -->
+<section class="chapter" id="ch1">
+  <p class="ch-no">Chapter 1</p>
+  <h2>What Is a BCI?</h2>
+  <p class="refs">Textbooks: <b>Wolpaw</b> ch. 1 · <b>Rao</b> ch. 1, 6</p>
+  <div class="defn"><span class="lbl">Definition · Wolpaw &amp; Wolpaw (2012), p. 3</span>
+    <p>A BCI is a system that measures CNS activity and converts it into artificial output that replaces, restores, enhances, supplements, or improves natural CNS output and thereby changes the ongoing interactions between the CNS and its external or internal environment.</p>
+  </div>
+  <div class="prose">
+    <p>The brain has two natural ways to act on the world. Neuromuscular output moves the muscles, and hormonal output releases hormones. A BCI adds a third path. It builds commands straight from brain signals, with no muscles or hormones in between.</p>
+    <p>The last clause of the definition matters. A BCI’s output changes the environment, and the changed environment comes back to the brain as sensory input, or feedback. A device that only records or monitors brain activity therefore does not count as a BCI.</p>
+    <h3>Five uses of BCI output</h3>
+  </div>
+  <div class="tbl-wrap">
+    <table>
+      <thead><tr><th>Use</th><th>Example from Wolpaw ch. 1</th></tr></thead>
+      <tbody>
+        <tr><th>Replace</th><td>A person who can no longer speak types words with a BCI, and a speech synthesizer says them. A person who has lost limb control drives a motorized wheelchair.</td></tr>
+        <tr><th>Restore</th><td>A person whose hands are paralyzed by spinal cord injury uses a BCI to stimulate the paralyzed muscles and grasp again.</td></tr>
+        <tr><th>Enhance</th><td>During driving or sentry duty, a BCI detects the brain activity that precedes a lapse of attention and sounds an alert that restores attention.</td></tr>
+        <tr><th>Supplement</th><td>A person moves a cursor with a joystick and selects items with a BCI. A BCI controls a third, robotic arm.</td></tr>
+        <tr><th>Improve</th><td>After a stroke, a BCI reads signals from the damaged cortex and drives muscle stimulation or an orthosis. Repeated use induces plasticity that improves the natural output itself.</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="prose">
+    <h3>Common distinctions</h3>
+    <ul>
+      <li>A <b>dependent BCI</b> uses brain signals that depend on muscle activity, such as visual evoked potentials that change with gaze direction. An <b>independent BCI</b> uses signals produced without muscles. Sensorimotor rhythms modulated by motor imagery are the classic example. Real BCIs usually fall somewhere in between.</li>
+      <li>A <b>hybrid BCI</b> combines two kinds of brain signals, or combines BCI output with muscle-based output.</li>
+      <li>A <b>passive BCI</b> uses signals tied to the user’s state, such as attention level. Wolpaw places these systems mostly in the enhance or supplement categories.</li>
+      <li><b>BMI</b> (brain–machine interface) is the term used mainly in implanted-electrode research. Today BMI and BCI mean the same thing.</li>
+    </ul>
+  </div>
+  <figure class="bench" id="b1-1">
+    <figcaption class="bench-head"><span class="bench-no">Experiment 1-1</span><h3>BCI or not?</h3><p>Judge each case by Wolpaw’s definition. Each verdict shows the reasoning and the output type.</p></figcaption>
+    <div class="cards" id="bci-cards"></div>
+    <div class="readouts"><div class="ro"><span>Correct verdicts</span><b id="bci-score" class="num">0 / 8</b></div><button class="btn quiet" id="bci-reset">Start over</button></div>
+  </figure>
+  <div class="quiz" data-ch="1"></div>
+</section>
+
+<!-- ───────────── Chapter 2 ───────────── -->
+<section class="chapter" id="ch2">
+  <p class="ch-no">Chapter 2</p>
+  <h2>Where Brain Signals Come From</h2>
+  <p class="refs">Textbooks: <b>Wolpaw</b> ch. 2–3 · <b>Rao</b> ch. 2 · <b>Siuly</b> §1.2</p>
+  <div class="prose">
+    <p>Neurons produce two kinds of electrical signals. An <b>action potential</b> (spike) travels along the axon and lasts about 1 ms. A <b>postsynaptic potential</b> arises at the synapse and lasts tens of milliseconds. A microelectrode inside the cortex can pick up the spikes of single neurons. Scalp EEG mostly picks up the sum of many synaptic currents.</p>
+    <p>Pyramidal cells in the cerebral cortex stand side by side, perpendicular to the cortical surface. When synaptic current flows the same way in many of them, a patch of cortex acts like a single <b>dipole layer</b>. Its potential passes through the cerebrospinal fluid, skull, and scalp to reach the electrode.</p>
+    <p><b>Synchrony</b> is the key. Nunez (Wolpaw ch. 3) estimates that a source region must be synchronous over about 6 cm² of cortex to appear on the scalp without averaging. Typical EEG of 20–100 µV needs synchrony over tens of square centimeters. This is why a drop in EEG amplitude is called <b>desynchronization</b>. The ERD in chapter 6 is exactly this effect.</p>
+  </div>
+  <figure class="bench" id="b2-1">
+    <figcaption class="bench-head"><span class="bench-no">Experiment 2-1</span><h3>Synchrony creates scalp potentials</h3><p>Each arrow is one cortical column oscillating at 10 Hz, and its direction is the phase of the oscillation. Reduce the phase spread and watch the arrows line up and the summed signal grow.</p></figcaption>
+    <div class="controls">
+      <div class="ctl"><label for="sync-sigma">Phase spread σ <output id="sync-sigma-o">60°</output></label><input type="range" id="sync-sigma" min="0" max="180" step="1" value="60"></div>
+      <div class="ctl"><label for="sync-n">Number of sources N <output id="sync-n-o">10,000</output></label><input type="range" id="sync-n" min="1" max="5" step="0.05" value="4"></div>
+    </div>
+    <canvas class="cv" id="sync-cv" style="height:260px" role="img" aria-label="Grid of phase arrows and the summed signal"></canvas>
+    <div class="readouts">
+      <div class="ro"><span>Summed amplitude (one source = 1)</span><b id="sync-amp">–</b></div>
+      <div class="ro"><span>Fully synchronous (×N)</span><b id="sync-full">–</b></div>
+      <div class="ro"><span>Random phases (×√N)</span><b id="sync-rand">–</b></div>
+      <div class="ro"><span>State</span><b id="sync-chip"></b></div>
+    </div>
+    <p class="formula">E|S|² = N + N(N−1)·e<sup>−σ²</sup><small>This is the expected value when each source’s phase follows a normal distribution with standard deviation σ (in radians). With σ = 0, |S| = N. With large σ, |S| ≈ √N. The grid on the left draws a sample of 144 sources.</small></p>
+  </figure>
+  <div class="prose">
+    <p>For the same reason, the <b>inverse problem</b> of locating sources from a scalp potential map has no unique answer. A map that one dipole explains can also be explained by two dipoles, or ten (Wolpaw ch. 3).</p>
+  </div>
+  <div class="quiz" data-ch="2"></div>
+</section>
+
+<!-- ───────────── Chapter 3 ───────────── -->
+<section class="chapter" id="ch3">
+  <p class="ch-no">Chapter 3</p>
+  <h2>Measuring Brain Signals</h2>
+  <p class="refs">Textbooks: <b>Wolpaw</b> ch. 3–6 · <b>Rao</b> ch. 3 · <b>Siuly</b> §1.1</p>
+  <div class="prose">
+    <p>Recording methods differ in how close the electrode gets to the brain (invasiveness) and in what they measure. Methods that measure electrical signals (spikes, LFP, ECoG, EEG, MEG) follow changes on the millisecond scale. Methods that measure blood flow (fMRI, fNIRS) stay on the scale of seconds because blood vessels respond slowly. A vessel takes about 2 s to respond to increased oxygen demand, and blood flow takes about another 12 s to fall back (Wolpaw ch. 4).</p>
+    <p>EEG has poor spatial resolution because the cerebrospinal fluid, skull, and scalp act as a volume conductor and a low-pass filter that smear the potential (Rao ch. 3). Placing electrodes on the cortical surface (ECoG) or inside the cortex (microelectrodes) raises resolution but brings surgical risk.</p>
+  </div>
+  <figure class="bench" id="b3-1">
+    <figcaption class="bench-head"><span class="bench-no">Experiment 3-1</span><h3>Spatial and temporal resolution map</h3><p>Each box spans the range given in the textbooks. Tap a box or a button below for details. Both axes are logarithmic, and precision increases toward the lower left.</p></figcaption>
+    <canvas class="cv" id="mod-cv" style="height:340px" role="img" aria-label="Spatial and temporal resolution of recording methods"></canvas>
+    <div class="legend"><span><i class="sw" style="background:var(--mark)"></i>Inside the cortex (invasive)</span><span><i class="sw" style="background:var(--beta)"></i>Cortical surface (semi-invasive)</span><span><i class="sw" style="background:var(--trace)"></i>Scalp or outside the head (noninvasive)</span><span>Solid: electrical signal · Dashed: blood-flow signal</span></div>
+    <div class="btnrow" id="mod-chips" role="group" aria-label="Choose a recording method"></div>
+    <div class="detail" id="mod-detail" aria-live="polite"></div>
+  </figure>
+  <div class="prose">
+    <h3>The international 10–20 system</h3>
+    <p>This is the standard layout for scalp electrodes (Jasper 1958). Positions sit at 10% or 20% steps of two distances, from the nasion to the inion and between the two preauricular points. The letter names the region. Fp is the frontal pole, F frontal, C central, T temporal, P parietal, and O occipital. Odd numbers are on the left, even numbers on the right, and z marks the midline (Siuly §1.1).</p>
+    <p>An EEG voltage is always a difference between two electrodes. Measuring every channel against one reference electrode gives a referential (monopolar) montage. Measuring the difference between neighboring electrodes gives a bipolar montage.</p>
+  </div>
+  <figure class="bench" id="b3-2">
+    <figcaption class="bench-head"><span class="bench-no">Experiment 3-2</span><h3>10–20 electrode map</h3><p>Pick a paradigm to highlight the electrodes it mainly uses. Tap an electrode to see how to read its name.</p></figcaption>
+    <div class="seg" id="tt-par" role="group" aria-label="Choose a paradigm">
+      <button data-p="none" aria-pressed="true">All</button><button data-p="smr" aria-pressed="false">Motor imagery</button><button data-p="p300" aria-pressed="false">P300</button><button data-p="ssvep" aria-pressed="false">SSVEP</button><button data-p="errp" aria-pressed="false">ErrP</button><button data-p="eog" aria-pressed="false">Eye artifacts</button>
+    </div>
+    <div class="split">
+      <svg class="head-svg" id="tt-svg" viewBox="0 0 400 410" role="group" aria-label="10–20 electrode layout. The nose is at the top."></svg>
+      <div class="detail" id="tt-detail" aria-live="polite"></div>
+    </div>
+  </figure>
+  <div class="quiz" data-ch="3"></div>
+</section>
+
+<!-- ───────────── Chapter 4 ───────────── -->
+<section class="chapter" id="ch4">
+  <p class="ch-no">Chapter 4</p>
+  <h2>EEG Rhythms and Frequency</h2>
+  <p class="refs">Textbooks: <b>Siuly</b> §1.3 · <b>Rao</b> §4.2 · <b>Wolpaw</b> ch. 6, 13</p>
+  <div class="prose">
+    <p>EEG is a mix of overlapping rhythms. Adult scalp EEG ranges from about 1 to 100 µV and is divided into five frequency bands (Siuly §1.3). Band edges vary slightly between textbooks and studies.</p>
+  </div>
+  <div class="tbl-wrap">
+    <table>
+      <thead><tr><th>Band</th><th>Range</th><th>Where it appears</th></tr></thead>
+      <tbody>
+        <tr><th class="b-delta">Delta δ</th><td class="num">0.5–4 Hz</td><td>Deep sleep. The largest and slowest waves.</td></tr>
+        <tr><th class="b-theta">Theta θ</th><td class="num">4–8 Hz</td><td>Increases with drowsiness and deep meditation.</td></tr>
+        <tr><th class="b-alpha">Alpha α</th><td class="num">8–13 Hz</td><td>Prominent over the occipital area with the eyes closed and relaxed, and shrinks when the eyes open. The same band over sensorimotor areas is the <b>mu (μ) rhythm</b>, which shrinks with movement or imagined movement.</td></tr>
+        <tr><th class="b-beta">Beta β</th><td class="num">13–30 Hz</td><td>Active thinking and concentration. A brief <b>beta rebound</b> follows the end of a movement (Wolpaw ch. 13).</td></tr>
+        <tr><th class="b-gamma">Gamma γ</th><td class="num">Above 30 Hz</td><td>Linked to many cognitive and motor functions. In scalp EEG it mixes easily with muscle noise.</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="prose">
+    <p>The raw waveform mixes all the rhythms, so they are hard to tell apart by eye. The Fourier transform splits a signal into a sum of sines and cosines and shows the strength of each frequency as a <b>power spectrum</b> (Rao §4.2). Digital recording must respect the sampling theorem. The sampling rate must exceed twice the highest frequency in the signal, or high frequencies masquerade as low ones. This is <b>aliasing</b>.</p>
+  </div>
+  <figure class="bench" id="b4-1">
+    <figcaption class="bench-head"><span class="bench-no">Experiment 4-1</span><h3>Rhythm synthesizer</h3><p>Change the strength of each band and watch the waveform and the spectrum change together. The state buttons use example values based on the textbook descriptions.</p></figcaption>
+    <div class="btnrow" id="syn-presets">
+      <button class="btn" data-pre="open" aria-pressed="true">Awake (eyes open)</button><button class="btn" data-pre="closed" aria-pressed="false">Eyes closed, relaxed</button><button class="btn" data-pre="drowsy" aria-pressed="false">Drowsy</button><button class="btn" data-pre="sws" aria-pressed="false">Deep sleep</button><button class="btn" data-pre="focus" aria-pressed="false">Focused task</button><button class="btn quiet" id="syn-reseed">New noise</button>
+    </div>
+    <div class="controls">
+      <div class="ctl"><label for="syn-delta"><span class="b-delta">Delta δ</span><output id="syn-delta-o">3 µV</output></label><input type="range" id="syn-delta" min="0" max="40" step="0.5" value="3"></div>
+      <div class="ctl"><label for="syn-theta"><span class="b-theta">Theta θ</span><output id="syn-theta-o">3 µV</output></label><input type="range" id="syn-theta" min="0" max="40" step="0.5" value="3"></div>
+      <div class="ctl"><label for="syn-alpha"><span class="b-alpha">Alpha α</span><output id="syn-alpha-o">5 µV</output></label><input type="range" id="syn-alpha" min="0" max="40" step="0.5" value="5"></div>
+      <div class="ctl"><label for="syn-beta"><span class="b-beta">Beta β</span><output id="syn-beta-o">4 µV</output></label><input type="range" id="syn-beta" min="0" max="40" step="0.5" value="4"></div>
+      <div class="ctl"><label for="syn-gamma"><span class="b-gamma">Gamma γ</span><output id="syn-gamma-o">1 µV</output></label><input type="range" id="syn-gamma" min="0" max="40" step="0.5" value="1"></div>
+    </div>
+    <canvas class="cv" id="syn-time" style="height:170px" role="img" aria-label="Four seconds of synthesized EEG"></canvas>
+    <canvas class="cv" id="syn-spec" style="height:210px" role="img" aria-label="Power spectrum of the synthesized EEG"></canvas>
+    <div class="readouts" id="syn-ro"></div>
+    <p class="note">Values are the RMS amplitude (µV) of each band component. Every state includes weak background activity whose power falls as frequency rises (a 1/f shape).</p>
+  </figure>
+  <div class="quiz" data-ch="4"></div>
+</section>
+
+<!-- ───────────── Chapter 5 ───────────── -->
+<section class="chapter" id="ch5">
+  <p class="ch-no">Chapter 5</p>
+  <h2>Preprocessing: Noise and Artifacts</h2>
+  <p class="refs">Textbooks: <b>Rao</b> §4.5–4.6 · <b>Wolpaw</b> ch. 6–7, 13 · <b>Siuly</b> §1.3</p>
+  <div class="prose">
+    <p>Signals that come from outside the brain are <b>artifacts</b>. EEG almost always contains them, and they are often larger than the brain signals of interest (Siuly §1.3). Preprocessing aims to remove as much artifact as possible while keeping the brain signal.</p>
+  </div>
+  <div class="tbl-wrap">
+    <table>
+      <thead><tr><th>Artifact</th><th>Cause</th><th>Frequency and location</th><th>Main remedy</th></tr></thead>
+      <tbody>
+        <tr><th>Ocular (EOG)</th><td>Blinks and eye movements</td><td>Large waves below about 4 Hz, largest at the frontal sites Fp1 and Fp2</td><td>Regression on an EOG channel, ICA</td></tr>
+        <tr><th>Muscle (EMG)</th><td>Contraction of jaw, forehead, and neck muscles</td><td>Broadband above 20 Hz, overlapping beta and gamma</td><td>Rejecting the segment, ICA, low-pass filtering (partly)</td></tr>
+        <tr><th>Line noise</th><td>Alternating current from nearby electrical equipment</td><td>A sharp peak at 60 Hz in Korea and North America, 50 Hz in Europe</td><td>Notch (band-stop) filter</td></tr>
+        <tr><th>Baseline drift</th><td>Changing electrode contact, sweat</td><td>Slow wander below 0.5 Hz</td><td>High-pass filter, reapplying the electrode</td></tr>
+        <tr><th>Cardiac (ECG)</th><td>Heartbeat</td><td>Sharp waves about once a second</td><td>Regression, ICA</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="prose">
+    <p><b>Temporal filters</b> separate signals by frequency. A high-pass filter removes slow components, a low-pass filter removes fast ones, and a notch filter removes a single frequency. A filter cannot separate brain signal from artifact where their frequencies overlap. Rao (§4.6) therefore lists thresholding, band-stop filtering, linear regression, PCA, and ICA as tools to combine as each situation requires.</p>
+  </div>
+  <figure class="bench" id="b5-1">
+    <figcaption class="bench-head"><span class="bench-no">Experiment 5-1</span><h3>Filter bench</h3><p>Mix artifacts into the Fp1 channel and switch filters on. The chips below show how much of each artifact survives the filters.</p></figcaption>
+    <div class="controls">
+      <div class="ctl"><span class="lab">Artifacts to mix in</span><div class="btnrow" id="flt-arts">
+        <button class="btn" data-a="blink" aria-pressed="true">Eye blinks</button><button class="btn" data-a="emg" aria-pressed="true">Muscle</button><button class="btn" data-a="line" aria-pressed="true">60 Hz mains</button><button class="btn" data-a="drift" aria-pressed="true">Baseline drift</button>
+      </div></div>
+      <div class="ctl"><span class="lab">Filters to apply</span><div class="btnrow" id="flt-filters">
+        <button class="btn" data-f="hp" aria-pressed="false">High-pass 1 Hz</button><button class="btn" data-f="lp" aria-pressed="false">Low-pass 40 Hz</button><button class="btn" data-f="notch" aria-pressed="false">Notch 60 Hz</button>
+      </div></div>
+    </div>
+    <canvas class="cv" id="flt-time" style="height:210px" role="img" aria-label="Fp1 waveform before and after filtering"></canvas>
+    <canvas class="cv" id="flt-spec" style="height:190px" role="img" aria-label="Power spectrum before and after filtering"></canvas>
+    <div class="legend"><span><i class="sw" style="background:var(--muted)"></i>Before filtering</span><span><i class="sw" style="background:var(--trace)"></i>After filtering</span><span><i class="sw" style="background:var(--alpha)"></i>Clean EEG (ground truth)</span></div>
+    <div class="tagrow" id="flt-res" aria-live="polite"></div>
+    <p class="note" id="flt-note"></p>
+  </figure>
+  <div class="prose">
+    <h3>Spatial filters</h3>
+    <p>Temporal filters work on frequency. <b>Spatial filters</b> combine several electrodes instead (Rao §4.5.1). They suppress components spread across the whole scalp and keep components concentrated at one site. They help most with local signals such as sensorimotor rhythms (Wolpaw ch. 13).</p>
+  </div>
+  <div class="formula">Common average reference (CAR): V<sub>i</sub><sup>CAR</sup> = V<sub>i</sub> − (1/n)·Σ<sub>j</sub> V<sub>j</sub><br>Laplacian: V<sub>C3</sub><sup>Lap</sup> = V<sub>C3</sub> − ¼·(V<sub>FC3</sub> + V<sub>C1</sub> + V<sub>C5</sub> + V<sub>CP3</sub>)<small>CAR subtracts the mean of all channels, and the Laplacian subtracts the mean of the surrounding electrodes. Both work by cancelling common signals that spread widely.</small></div>
+  <div class="quiz" data-ch="5"></div>
+</section>
+
+<!-- ───────────── Chapter 6 ───────────── -->
+<section class="chapter" id="ch6">
+  <p class="ch-no">Chapter 6</p>
+  <h2>Feature Extraction: ERD/ERS and CSP</h2>
+  <p class="refs">Textbooks: <b>Wolpaw</b> ch. 7, 13 · <b>Rao</b> §4.5.4, §9.1.1 · <b>Siuly</b> ch. 8</p>
+  <div class="prose">
+    <p>A <b>feature</b> is a measurement of the signal that reflects the user’s intent. Common examples are the amplitude of an EEG rhythm, the voltage at a set time after a stimulus, and a neuron’s firing rate (Wolpaw ch. 1). A good feature changes a lot when intent changes and little with everything else.</p>
+    <h3>ERD and ERS</h3>
+    <p>Moving a hand, or imagining the movement, lowers mu and beta power over the hand area of the opposite hemisphere. This is <b>event-related desynchronization (ERD)</b>. The right hand shows it at C3 and the left hand at C4. Foot imagery produces ERD near the midline at Cz, while power over the hand areas rises. Wolpaw ch. 13 calls this <b>focal ERD/surround ERS</b>. The beta rebound, a brief rise in beta power after a movement ends, is another form of ERS.</p>
+    <p>The standard calculation of Pfurtscheller and Aranibar (1979) has four steps. Band-pass filter each trial, square the samples to get power, average across trials, and compare with the power in a reference interval just before the event.</p>
+  </div>
+  <p class="formula">ERD% = (A − R) / R × 100<small>A is the band power after the event and R is the band power in the reference interval. Negative values mean ERD (a decrease), and positive values mean ERS (an increase).</small></p>
+  <figure class="bench" id="b6-1">
+    <figcaption class="bench-head"><span class="bench-no">Experiment 6-1</span><h3>Motor imagery and ERD</h3><p>Assume the user starts imagining at the cue at 0 s and keeps going until 4 s. Change the imagined movement, and try averaging a single trial. One trial barely shows ERD.</p></figcaption>
+    <div class="controls">
+      <div class="ctl"><span class="lab">Imagined movement</span><div class="seg" id="erd-task" role="group" aria-label="Imagined movement"><button data-t="right" aria-pressed="true">Right hand</button><button data-t="left" aria-pressed="false">Left hand</button><button data-t="foot" aria-pressed="false">Both feet</button></div></div>
+      <div class="ctl"><label for="erd-n">Trials averaged <output id="erd-n-o">30</output></label><input type="range" id="erd-n" min="1" max="60" step="1" value="30"></div>
+      <div class="ctl" style="flex:0 0 auto"><button class="btn quiet" id="erd-reseed">New trials</button></div>
+    </div>
+    <div class="split3">
+      <canvas class="cv" id="erd-C3" style="height:190px" role="img" aria-label="ERD curve at C3"></canvas>
+      <canvas class="cv" id="erd-Cz" style="height:190px" role="img" aria-label="ERD curve at Cz"></canvas>
+      <canvas class="cv" id="erd-C4" style="height:190px" role="img" aria-label="ERD curve at C4"></canvas>
+    </div>
+    <div class="readouts" id="erd-ro"></div>
+    <p class="note">Power is computed in the mu band (8–13 Hz). The gray band is the reference interval (−1.75 to −0.5 s), and the red vertical line is the cue. Effect sizes are simulation values chosen to follow the trends in the figures of Wolpaw ch. 13.</p>
+  </figure>
+  <div class="prose">
+    <h3>Common spatial patterns (CSP)</h3>
+    <p>CSP is a supervised method that learns spatial filters from labeled training data. It picks the electrode weights that make the filtered output’s variance as large as possible for one class and as small as possible for the other (Rao §4.5.4). The variance of a band-passed signal is the power in that band, so CSP directly sharpens the band-power features that motor imagery BCIs use (Ramoser et al. 2000).</p>
+  </div>
+  <p class="formula">R<sub>A</sub> w = λ (R<sub>A</sub> + R<sub>B</sub>) w<small>R<sub>A</sub> and R<sub>B</sub> are the channel covariance matrices of the two classes. The w with the largest λ maximizes class A’s share of the variance, and the w with the smallest λ maximizes class B’s share.</small></p>
+  <figure class="bench" id="b6-2">
+    <figcaption class="bench-head"><span class="bench-no">Experiment 6-2</span><h3>The directions CSP finds</h3><p>Each dot is the band-passed signal of two channels (C3, C4) at one instant. The two classes have the same mean and differ only in how they spread. The solid line is CSP filter w₁ and the dashed line is w₂.</p></figcaption>
+    <div class="controls">
+      <div class="ctl"><label for="csp-ang">Angle between the classes’ variance axes <output id="csp-ang-o">60°</output></label><input type="range" id="csp-ang" min="0" max="90" step="1" value="60"></div>
+      <div class="ctl"><label for="csp-ani">Elongation of the spread <output id="csp-ani-o">3.0</output></label><input type="range" id="csp-ani" min="1" max="6" step="0.1" value="3"></div>
+      <div class="ctl" style="flex:0 0 auto"><button class="btn quiet" id="csp-reseed">New samples</button></div>
+    </div>
+    <div class="split">
+      <canvas class="cv" id="csp-scatter" style="height:300px" role="img" aria-label="Scatter plot of two classes with CSP filter directions"></canvas>
+      <canvas class="cv" id="csp-bars" style="height:300px" role="img" aria-label="Variance compared across channels and CSP filters"></canvas>
+    </div>
+    <div class="legend"><span><i class="sw" style="background:var(--trace)"></i>Class A · left-hand imagery</span><span><i class="sw" style="background:var(--mark)"></i>Class B · right-hand imagery</span></div>
+    <p class="note" id="csp-note"></p>
+  </figure>
+  <div class="quiz" data-ch="6"></div>
+</section>
+
+<!-- ───────────── Chapter 7 ───────────── -->
+<section class="chapter" id="ch7">
+  <p class="ch-no">Chapter 7</p>
+  <h2>Feature Translation: Classification and Adaptation</h2>
+  <p class="refs">Textbooks: <b>Wolpaw</b> ch. 8 · <b>Rao</b> ch. 5 · <b>Siuly</b> §3.4</p>
+  <div class="prose">
+    <p><b>Feature translation</b> turns features into device commands. Choosing one of a few options calls for classification. Producing a continuous value, such as cursor velocity, calls for regression (Wolpaw ch. 8).</p>
+    <h3>Linear discriminant analysis (LDA)</h3>
+    <p>LDA assumes the two classes are normal distributions with equal covariance and finds the line (a hyperplane in higher dimensions) that separates them. It is simple and fast, so online BCIs use it widely. Its strong assumptions make it fragile with non-normal data and outliers (Rao §5.1.1).</p>
+  </div>
+  <p class="formula">w = Σ⁻¹(μ₁ − μ₂),  k = wᵀ(μ₁ + μ₂)/2,  class 1 if wᵀx &gt; k<small>Σ⁻¹ corrects for correlation and unequal variance between channels. When the two channels share a component that rises and falls together, the LDA boundary tilts away from the perpendicular to the line joining the means.</small></p>
+  <div class="prose">
+    <h3>Generalization and nonstationarity</h3>
+    <p>A model that is perfect on its training data does worse on new data. The gap, called <b>overfitting</b>, grows with less training data and more model freedom. Cross-validation estimates generalization by splitting the data and alternating between training and testing (Rao §5.1.4).</p>
+    <p>BCIs face one more problem. As users tire, gain experience and change strategy, or as a disease progresses, the statistics of the features change. Such data are <b>nonstationary</b>. More of the original training data cannot fix this, and the translation algorithm has to adapt. Wolpaw ch. 8 notes that adapting to changes in the mean is easy and adapting to changes in covariance is hard. Users also learn from feedback, so good BCIs are designed for the user and the algorithm to adapt together. This is <b>co-adaptation</b>.</p>
+  </div>
+  <figure class="bench" id="b7-1">
+    <figcaption class="bench-head"><span class="bench-no">Experiment 7-1</span><h3>The LDA boundary and session changes</h3><p>The horizontal axis is log mu-band power at C3 and the vertical axis is the same at C4. Left-hand imagery lowers C4 power, and right-hand imagery lowers C3 power. Filled dots are training data and hollow dots are test data.</p></figcaption>
+    <div class="controls">
+      <div class="ctl"><label for="lda-sep">Class separation <output id="lda-sep-o">1.6</output></label><input type="range" id="lda-sep" min="0.4" max="3" step="0.1" value="1.6"></div>
+      <div class="ctl"><label for="lda-n">Training trials per class <output id="lda-n-o">20</output></label><input type="range" id="lda-n" min="3" max="120" step="1" value="20"></div>
+    </div>
+    <div class="btnrow">
+      <button class="btn" id="lda-shift" aria-pressed="false">Next-day session (distribution shift)</button>
+      <button class="btn" id="lda-adapt" aria-pressed="false">Turn on mean adaptation</button>
+      <button class="btn quiet" id="lda-reseed">New data</button>
+    </div>
+    <canvas class="cv" id="lda-cv" style="height:340px" role="img" aria-label="Scatter plot of two classes with the LDA decision boundary"></canvas>
+    <div class="legend"><span><i class="sw" style="background:var(--trace)"></i>Left-hand imagery</span><span><i class="sw" style="background:var(--mark)"></i>Right-hand imagery</span><span>● training · ○ test · solid line: decision boundary</span></div>
+    <div class="readouts" id="lda-ro"></div>
+    <p class="note" id="lda-note"></p>
+  </figure>
+  <div class="quiz" data-ch="7"></div>
+</section>
+
+<!-- ───────────── Chapter 8 ───────────── -->
+<section class="chapter" id="ch8">
+  <p class="ch-no">Chapter 8</p>
+  <h2>Major BCI Paradigms</h2>
+  <p class="refs">Textbooks: <b>Wolpaw</b> ch. 2, 12–16 · <b>Rao</b> ch. 6–7, §9.1</p>
+  <div class="prose">
+    <p>BCIs use two broad kinds of brain responses. <b>Evoked responses</b> come from external stimuli (P300, SSVEP). <b>Self-regulated activity</b> is produced by the user (sensorimotor rhythms, slow cortical potentials, neuronal population activity) (Rao ch. 6).</p>
+  </div>
+  <div class="tbl-wrap">
+    <table>
+      <thead><tr><th>Paradigm</th><th>What the user does</th><th>Signal and location</th><th>Trade-offs</th></tr></thead>
+      <tbody>
+        <tr><th>P300</th><td>Attends to rare target stimuli and counts them</td><td>A positive wave 250–750 ms after the stimulus, largest at Pz</td><td>Needs almost no training and is used in real-world spellers</td></tr>
+        <tr><th>SSVEP</th><td>Looks at a target flickering at a fixed frequency</td><td>The stimulus frequency and its harmonics, over occipital O1 and O2</td><td>High information transfer rate, but relies on gaze control</td></tr>
+        <tr><th>Sensorimotor rhythms</th><td>Imagines moving a hand or foot</td><td>Mu and beta ERD/ERS at C3, Cz, and C4</td><td>Needs no stimulus, but users must train</td></tr>
+        <tr><th>Slow cortical potentials</th><td>Pushes the potential up or down while watching feedback</td><td>Slow potential shifts over several seconds</td><td>Needs long training (Wolpaw ch. 14)</td></tr>
+        <tr><th>Intracortical populations</th><td>Intends an arm movement</td><td>Firing rates of motor cortex neurons</td><td>Most precise, but needs surgery (Wolpaw ch. 16)</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="prose">
+    <h3>The P300 and the oddball paradigm</h3>
+    <p>The P300 is a positive potential evoked by rare events. Its latency is usually around 300 ms but varies between 250 and 750 ms. It is largest over the centro-parietal scalp and shrinks with distance from there. The conditions that evoke it form the <b>oddball paradigm</b>, which has three requirements. Stimuli fall into two classes, one class is rarer, and the user performs a task that sorts the stimuli into the classes (Wolpaw ch. 12; Donchin &amp; Coles 1988).</p>
+    <p>The P300 is smaller than the background EEG, so a single trial rarely shows it. Averaging many trials aligned to stimulus onset cancels the background activity, which is unrelated to the stimulus, and leaves the P300. The remaining noise falls in proportion to the square root of the number of trials N.</p>
+  </div>
+  <figure class="bench" id="b8-1">
+    <figcaption class="bench-head"><span class="bench-no">Experiment 8-1</span><h3>Averaging reveals the P300</h3><p>EEG for target stimuli (rare X) and non-target stimuli (frequent O) is averaged, aligned to stimulus onset. Increase the number of averaged trials and switch electrodes.</p></figcaption>
+    <div class="controls">
+      <div class="ctl"><label for="p3-n">Target trials averaged <output id="p3-n-o">8</output></label><input type="range" id="p3-n" min="0" max="6" step="1" value="3"></div>
+      <div class="ctl"><span class="lab">Electrode</span><div class="seg" id="p3-el" role="group" aria-label="Electrode"><button data-e="Fz" aria-pressed="false">Fz</button><button data-e="Cz" aria-pressed="false">Cz</button><button data-e="Pz" aria-pressed="true">Pz</button></div></div>
+      <div class="ctl" style="flex:0 0 auto"><button class="btn quiet" id="p3-reseed">New trials</button></div>
+    </div>
+    <canvas class="cv" id="p3-cv" style="height:260px" role="img" aria-label="Average ERPs for target and non-target stimuli"></canvas>
+    <div class="legend"><span><i class="sw" style="background:var(--mark)"></i>Target (X, 20%)</span><span><i class="sw" style="background:var(--muted)"></i>Non-target (O, 80%)</span><span>Positive is up</span></div>
+    <div class="readouts" id="p3-ro"></div>
+    <p class="note">Non-target averages use four times as many trials as target averages. The simulation sets single-trial background EEG at about 10 µV RMS and the P300 at about 8 µV at Pz.</p>
+  </figure>
+  <div class="prose">
+    <p>Farwell and Donchin (1988) built a speller that flashes the rows and columns of a 6×6 letter matrix in random order. Only the row and the column that contain the target letter evoke a P300, so the cell where the strongest row and column meet is the chosen letter. Twelve flashes, one for each of the six rows and six columns, make one sequence. In the first study, 95% accuracy took 26 s per letter (Wolpaw ch. 12).</p>
+  </div>
+  <figure class="bench" id="b8-2">
+    <figcaption class="bench-head"><span class="bench-no">Experiment 8-2</span><h3>P300 speller: accuracy versus speed</h3><p>Tap a target letter, then press Select one letter. More repetitions raise accuracy but also lengthen the time per letter. The chart shows accuracy and information transfer rate for each number of repetitions.</p></figcaption>
+    <div class="controls">
+      <div class="ctl"><label for="sp-reps">Sequence repetitions <output id="sp-reps-o">5</output></label><input type="range" id="sp-reps" min="1" max="15" step="1" value="5"></div>
+      <div class="ctl"><label for="sp-d">Single-flash discriminability d′ <output id="sp-d-o">0.80</output></label><input type="range" id="sp-d" min="0.3" max="2" step="0.05" value="0.8"></div>
+    </div>
+    <div class="split">
+      <div style="display:grid;gap:10px;align-content:start;min-width:0">
+        <div class="speller" id="sp-grid" role="group" aria-label="6×6 letter matrix. Tap a letter to make it the target."></div>
+        <div class="btnrow"><button class="btn" id="sp-run">Select one letter</button><button class="btn quiet" id="sp-run20">Spell 20 letters</button></div>
+      </div>
+      <canvas class="cv" id="sp-cv" style="height:260px" role="img" aria-label="Accuracy and information transfer rate by number of repetitions"></canvas>
+    </div>
+    <div class="readouts" id="sp-ro"></div>
+    <p class="note">Assumes a stimulus onset asynchrony of 125 ms (Farwell &amp; Donchin 1988) and a 2.5 s pause between letters. d′ is the difference between the classifier’s mean scores for target and non-target flashes, divided by their standard deviation.</p>
+  </figure>
+  <div class="prose">
+    <h3>SSVEP</h3>
+    <p>Looking at a stimulus that flickers faster than 5 Hz makes the visual cortex oscillate at the same frequency. This is the <b>steady-state visual evoked potential (SSVEP)</b>. Give each option its own flicker frequency, and the spectrum of occipital EEG reveals which target the user is looking at. A 7 Hz stimulus produces peaks at 7, 14, and 21 Hz (Rao §9.1.4).</p>
+    <p>The phone-dialing BCI of Cheng et al. (2002) flickered 13 buttons at 6–14 Hz. It ran an FFT on O1 and O2 every 0.3 s and used, as each candidate’s feature, the amplitude at that frequency plus the amplitude at its second harmonic. It chose the largest candidate whose feature exceeded twice the mean amplitude from 4 to 35 Hz, and it confirmed a selection only after the same decision came up four times in a row. Eight of 13 subjects dialed the number they wanted, with an average information transfer rate of 27.15 bits/min. The study first removed frequencies with strong power during eyes-closed rest from the stimulus set (Rao §9.1.4).</p>
+  </div>
+  <figure class="bench" id="b8-3">
+    <figcaption class="bench-head"><span class="bench-no">Experiment 8-3</span><h3>SSVEP frequency detection</h3><p>Choose the target to look at. The detection rule is the Cheng et al. method described above. Flickering screens can trigger photosensitive seizures, so this page never flickers and shows the frequencies as numbers only.</p></figcaption>
+    <div class="ssvep-targets" id="ss-targets" role="group" aria-label="Target to look at"></div>
+    <div class="controls">
+      <div class="ctl"><label for="ss-amp">SSVEP strength <output id="ss-amp-o">1.2 µV</output></label><input type="range" id="ss-amp" min="0" max="3" step="0.1" value="1.2"></div>
+      <div class="ctl"><label for="ss-win">Analysis window <output id="ss-win-o">2 s</output></label><input type="range" id="ss-win" min="0" max="3" step="1" value="2"></div>
+      <div class="ctl" style="flex:0 0 auto"><button class="btn" id="ss-alpha" aria-pressed="false">Strong alpha (relaxed, as with eyes closed)</button></div>
+    </div>
+    <canvas class="cv" id="ss-cv" style="height:250px" role="img" aria-label="O1 amplitude spectrum and detection threshold"></canvas>
+    <div style="display:grid;gap:6px"><span class="small">24 decisions, one every 0.3 s (four identical decisions in a row confirm a selection)</span><div class="timeline" id="ss-tl"></div></div>
+    <div class="readouts" id="ss-ro"></div>
+  </figure>
+  <div class="prose">
+    <h3>Invasive BCIs and the population vector</h3>
+    <p>Each motor cortex neuron has a <b>preferred direction</b> and fires most when the arm moves that way. Its firing rate follows the cosine of the angle between the movement direction and the preferred direction (Wolpaw ch. 2, 7). Georgopoulos et al. (1986) showed that the <b>population vector</b>, the sum of the neurons’ preferred directions weighted by their firing rates, points in the actual movement direction. Practical BCIs go further and decode velocity and position with linear regression or Kalman filters (Rao ch. 7).</p>
+  </div>
+  <p class="formula">r<sub>i</sub>(θ) = r₀ + (r<sub>max</sub> − r₀)·cos(θ − θ<sub>i</sub>),  d = Σ<sub>i</sub> p<sub>i</sub>·(r<sub>i</sub> − r₀)/r<sub>max</sub><small>θ<sub>i</sub> and p<sub>i</sub> are neuron i’s preferred direction as an angle and as a unit vector, and r₀ is the baseline firing rate. The second equation is Rao’s equation 7.1.</small></p>
+  <figure class="bench" id="b8-4">
+    <figcaption class="bench-head"><span class="bench-no">Experiment 8-4</span><h3>Reading direction from a population vector</h3><p>Drag inside the circle or use the slider to set the intended arm-movement direction. Each thin line is one neuron’s contribution, the black arrow is the intended direction, and the red arrow is the decoded direction.</p></figcaption>
+    <div class="controls">
+      <div class="ctl"><label for="pv-dir">Intended direction <output id="pv-dir-o">45°</output></label><input type="range" id="pv-dir" min="0" max="359" step="1" value="45"></div>
+      <div class="ctl"><label for="pv-n">Recorded neurons <output id="pv-n-o">24</output></label><input type="range" id="pv-n" min="3" max="200" step="1" value="24"></div>
+      <div class="ctl"><label for="pv-noise">Firing noise <output id="pv-noise-o">1.0</output></label><input type="range" id="pv-noise" min="0" max="3" step="0.1" value="1"></div>
+      <div class="ctl" style="flex:0 0 auto"><button class="btn quiet" id="pv-reseed">New population</button></div>
+    </div>
+    <div class="split">
+      <canvas class="cv drag" id="pv-cv" style="height:300px" role="img" aria-label="Neuron contributions and the decoded direction"></canvas>
+      <canvas class="cv" id="pv-err" style="height:300px" role="img" aria-label="Mean decoding error by number of neurons"></canvas>
+    </div>
+    <div class="readouts" id="pv-ro"></div>
+    <p class="note">Example values are r₀ = 20 Hz, r<sub>max</sub> = 50 Hz, and a 0.5 s counting window. A noise level of 1.0 matches the variability of Poisson-distributed spike counts.</p>
+  </figure>
+  <div class="quiz" data-ch="8"></div>
+</section>
+
+<!-- ───────────── Chapter 9 ───────────── -->
+<section class="chapter" id="ch9">
+  <p class="ch-no">Chapter 9</p>
+  <h2>Evaluation and Information Transfer Rate</h2>
+  <p class="refs">Textbooks: <b>Wolpaw</b> ch. 8, 20 · <b>Rao</b> §5.1.4</p>
+  <div class="prose">
+    <p>Accuracy alone makes BCIs hard to compare. An accuracy of 80% means something very different with 2 options than with 36. The chance level, the probability of a correct guess, is 1/N for N options. A confusion matrix shows which selections get mistaken for which, and the kappa coefficient κ = (p<sub>o</sub> − p<sub>e</sub>)/(1 − p<sub>e</sub>) gives agreement corrected for chance (Rao §5.1.4).</p>
+    <p>Wolpaw et al. (2002) proposed the <b>information transfer rate (ITR, bit rate)</b> from communication theory to capture speed and accuracy in a single number. It assumes that every option is equally likely to be intended and that errors spread evenly over the other options.</p>
+  </div>
+  <p class="formula">B = log₂N + P·log₂P + (1 − P)·log₂[(1 − P)/(N − 1)]   [bits/selection]<br>ITR = B × selections per minute   [bits/min]<small>N is the number of options and P is accuracy. This is the equation of Wolpaw ch. 8, fig. 8.12.</small></p>
+  <div class="prose">
+    <p>Wolpaw ch. 8 sets two rules for using ITR. Count the information in the final output only, and leave out information in the process that leads to it, such as a cursor’s trajectory. Count the time as the full interval from the start of one selection to the start of the next. The benchmark is <b>online evaluation</b>, with the user receiving real feedback during use.</p>
+  </div>
+  <figure class="bench" id="b9-1">
+    <figcaption class="bench-head"><span class="bench-no">Experiment 9-1</span><h3>ITR calculator</h3><p>Change the number of options, the accuracy, and the selections per minute. The curves use the same calculation as Wolpaw fig. 8.12.</p></figcaption>
+    <div class="btnrow" id="itr-ex"><span class="small">Textbook examples</span>
+      <button class="btn" data-n="2" data-p="90" data-s="12">N=2, 90%</button><button class="btn" data-n="2" data-p="80" data-s="12">N=2, 80%</button><button class="btn" data-n="4" data-p="65" data-s="12">N=4, 65%</button><button class="btn" data-n="36" data-p="70" data-s="12">P300 6×6, 70%</button>
+    </div>
+    <div class="controls">
+      <div class="ctl"><label for="itr-n">Options N <output id="itr-n-o">4</output></label><input type="range" id="itr-n" min="2" max="64" step="1" value="4"></div>
+      <div class="ctl"><label for="itr-p">Accuracy P <output id="itr-p-o">80%</output></label><input type="range" id="itr-p" min="0" max="100" step="0.5" value="80"></div>
+      <div class="ctl"><label for="itr-s">Selections per minute <output id="itr-s-o">12</output></label><input type="range" id="itr-s" min="1" max="40" step="1" value="12"></div>
+    </div>
+    <canvas class="cv" id="itr-cv" style="height:300px" role="img" aria-label="Bits per selection against accuracy for several numbers of options"></canvas>
+    <div class="readouts" id="itr-ro"></div>
+    <p class="note" id="itr-note"></p>
+  </figure>
+  <div class="quiz" data-ch="9"></div>
+</section>
+
+<!-- ───────────── Chapter 10 ───────────── -->
+<section class="chapter" id="ch10">
+  <p class="ch-no">Chapter 10</p>
+  <h2>Emotion and Cognition: Foundations of Affective BCI</h2>
+  <p class="refs">Textbooks: <b>Cambridge Handbook</b> ch. 14–17 · <b>Rao</b> §9.1.6, §12.2 · <b>Wolpaw</b> ch. 1, 23</p>
+  <div class="prose">
+    <p>BCI users are people who feel emotions and pay attention. Emotion and attention change the signals a BCI reads, and they can also be what a BCI reads. Systems that detect lapses of attention and raise an alert (Wolpaw’s enhance example in ch. 1) and systems that estimate workload (Rao §12.2) are examples. This chapter reads Part IV of the Cambridge Handbook, on cognition–emotion interactions, from a BCI perspective.</p>
+    <h3>Emotion captures attention</h3>
+    <p>When several stimuli compete for processing resources, emotionally meaningful ones are detected first or interfere with other tasks. People who fear spiders or snakes find those targets faster among pictures of mushrooms (ch. 14; Flykt &amp; Caldara 2006). In EEG, early components 100–200 ms after the stimulus (P1, N1) grow for emotional faces and scenes, and after 300–400 ms the P3 and the sustained <b>late positive potential (LPP)</b> change (ch. 14).</p>
+    <h3>Attention limits emotional processing</h3>
+    <p>A long-standing view held that emotional processing is automatic. Pessoa and colleagues tested it. When participants did a very demanding task at the edge of the screen, the difference in amygdala and visual cortex responses to fearful and neutral faces at the center disappeared (Pessoa et al. 2002). When task difficulty varied in steps, the difference appeared only in the easy condition (Pessoa et al. 2005). The ERP early posterior negativity (EPN) also shrank sharply during demanding attention tasks (Schupp et al. 2007).</p>
+    <p>Some evidence points the other way. An MEG study found that fearful faces still evoked an attention-related component (N2pc) under high load (Fenker et al. 2010). Chapter 15 ties these results together with Lavie’s concept of perceptual load. When a task leaves resources unused, the spare capacity spills over to emotional stimuli that are irrelevant to the task.</p>
+    <p>One result is directly useful to BCI researchers. Emotional pictures shown in the background during a demanding task reduced the SSVEP driven by the task stimuli (Müller, Andersen &amp; Keil 2008). The authors read this as the emotional stimuli pulling processing resources away from the task. The SSVEP BCIs of chapter 8 may therefore depend on the user’s emotional state too.</p>
+  </div>
+  <figure class="bench" id="b10-1">
+    <figcaption class="bench-head"><span class="bench-no">Experiment 10-1</span><h3>Task load and emotional stimulus processing</h3><p>Change the difficulty of the peripheral task. The bars show the amygdala response to a face at the center of the screen. This is a schematic of the direction of the Pessoa et al. (2005) results, so the bar heights are not measurements.</p></figcaption>
+    <div class="seg" id="ld-level" role="group" aria-label="Difficulty of the peripheral task"><button data-l="0" aria-pressed="true">Easy</button><button data-l="1" aria-pressed="false">Medium</button><button data-l="2" aria-pressed="false">Hard</button></div>
+    <div style="display:grid;gap:4px;max-width:560px"><span class="small">Processing resources (Lavie’s perceptual load concept)</span><div class="capbar" id="ld-cap"><div id="ld-task" style="background:var(--trace);color:var(--panel)">Task</div><div id="ld-spare" style="background:var(--grid);color:var(--ink)">Spare capacity</div></div></div>
+    <canvas class="cv" id="ld-cv" style="height:220px" role="img" aria-label="Schematic amygdala responses to fearful and neutral faces by task difficulty"></canvas>
+    <p class="note" id="ld-note"></p>
+  </figure>
+  <div class="prose">
+    <h3>Emotion regulation</h3>
+    <p>Chapter 16 organizes emotion regulation strategies with Gross’s process model. Strategies differ in where they intervene as an emotion unfolds (situation, attention, appraisal, response). Antecedent-focused strategies act before the response appears, and response-focused strategies act after it. Real emotions can skip steps or loop back, so read the model as a simplified map (ch. 16).</p>
+  </div>
+  <figure class="bench" id="b10-2">
+    <figcaption class="bench-head"><span class="bench-no">Experiment 10-2</span><h3>Where emotion regulation strategies intervene</h3><p>Tap a step to see its strategies, the related brain regions, and the clues that EEG can offer.</p></figcaption>
+    <div class="process" id="gr-steps" role="group" aria-label="Steps of Gross’s process model"></div>
+    <div class="detail" id="gr-detail" aria-live="polite"></div>
+  </figure>
+  <div class="prose">
+    <h3>Value, prediction error, and error potentials</h3>
+    <p>Chapter 17 breaks value-based decision making into several signals. Outcome value arises when an outcome is experienced (orbitofrontal cortex), decision value is assigned to each option, and chosen value follows a choice. The <b>prediction error</b>, the difference between expectation and outcome, is the signal that drives value learning.</p>
+    <p>BCIs have a similar signal. When a BCI produces an output the user did not intend, the user’s brain responds with an <b>error-related potential (ErrP)</b>. ErrPs are clearest over the frontocentral midline (Fz, Cz) and can be detected in single trials. Buttfield et al. (2006) made a robot move the wrong way on purpose 20% of the time, then used 1–10 Hz EEG from 50–650 ms after feedback to correctly classify 79.9% of error trials and 82.4% of correct trials (Rao §9.1.6). Writing in 2013, Rao noted that no study had yet combined ErrP detection with a working BCI. Later studies went on to use ErrPs as reward signals for robot learning, for example Iturrate et al. (2015, Scientific Reports) and Salazar-Gomez et al. (2017, ICRA).</p>
+  </div>
+  <figure class="bench" id="b10-3">
+    <figcaption class="bench-head"><span class="bench-no">Experiment 10-3</span><h3>Filtering BCI output with ErrPs</h3><p>Suppose the system cancels every output that triggers a detected ErrP. Each cell is one selection. The detector’s default performance comes from Buttfield et al. (2006).</p></figcaption>
+    <div class="controls">
+      <div class="ctl"><label for="ep-acc">BCI accuracy <output id="ep-acc-o">80%</output></label><input type="range" id="ep-acc" min="50" max="99" step="1" value="80"></div>
+      <div class="ctl"><label for="ep-sens">Error-trial detection rate <output id="ep-sens-o">79.9%</output></label><input type="range" id="ep-sens" min="50" max="100" step="0.1" value="79.9"></div>
+      <div class="ctl"><label for="ep-spec">Correct-trial pass rate <output id="ep-spec-o">82.4%</output></label><input type="range" id="ep-spec" min="50" max="100" step="0.1" value="82.4"></div>
+    </div>
+    <div class="waffle" id="ep-waffle" role="img" aria-label="Outcomes of 100 selections"></div>
+    <div class="legend"><span><i class="sw w-keep"></i>Correct output, kept</span><span><i class="sw w-lost"></i>Correct output, canceled</span><span><i class="sw w-caught"></i>Wrong output, canceled</span><span><i class="sw w-miss"></i>Wrong output, kept</span></div>
+    <div class="readouts" id="ep-ro"></div>
+  </figure>
+  <div class="quiz" data-ch="10"></div>
+</section>
+
+<!-- ───────────── Chapter 11 ───────────── -->
+<section class="chapter" id="ch11">
+  <p class="ch-no">Chapter 11</p>
+  <h2>Applications and Ethics</h2>
+  <p class="refs">Textbooks: <b>Wolpaw</b> ch. 11, 19–25 · <b>Rao</b> ch. 12–13</p>
+  <div class="prose">
+    <p>The first aim of BCI research is to give new means of communication and control to people who have trouble using their muscles, such as people with amyotrophic lateral sclerosis (ALS), spinal cord injury, stroke, or cerebral palsy (Wolpaw ch. 19). Applications are also spreading beyond medicine (Rao ch. 12; Wolpaw ch. 23).</p>
+  </div>
+  <div class="tbl-wrap">
+    <table>
+      <thead><tr><th>Application</th><th>Main signals</th><th>Field</th><th>Textbook</th></tr></thead>
+      <tbody>
+        <tr><th>Spellers and communication</th><td>P300, SSVEP, sensorimotor rhythms</td><td>Medical</td><td>Rao 12.1.5 · Wolpaw 11</td></tr>
+        <tr><th>Motorized wheelchairs</th><td>Sensorimotor rhythms, P300</td><td>Medical</td><td>Rao 12.1.6</td></tr>
+        <tr><th>Functional electrical stimulation of paralyzed hands</th><td>Sensorimotor rhythms, intracortical signals</td><td>Medical</td><td>Rao 11.4, 12.1.2</td></tr>
+        <tr><th>Stroke rehabilitation</th><td>Sensorimotor rhythms (ERD)</td><td>Medical</td><td>Wolpaw 22 · Rao 12.1.4</td></tr>
+        <tr><th>Robot arm and prosthesis control</th><td>Intracortical neurons, ECoG</td><td>Medical</td><td>Rao 7 · Wolpaw 16</td></tr>
+        <tr><th>Attention monitoring, workload estimation</th><td>EEG rhythms</td><td>Non-medical</td><td>Rao 12.2.5–12.2.6 · Wolpaw 23</td></tr>
+        <tr><th>Robotic avatars, virtual-world navigation</th><td>P300, sensorimotor rhythms</td><td>Non-medical</td><td>Rao 12.2.1–12.2.2</td></tr>
+        <tr><th>Games and entertainment</th><td>SSVEP, sensorimotor rhythms, P300</td><td>Non-medical</td><td>Rao 12.2.12</td></tr>
+        <tr><th>Personal identification and security</th><td>Individual characteristics of EEG</td><td>Non-medical</td><td>Rao 12.2.8</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="prose">
+    <h3>From the lab to daily life</h3>
+    <p>Lab demonstrations are not enough to bring BCIs into daily life. Real users must be shown to use them independently at home over long periods and to benefit from them (Wolpaw ch. 20–21). In 2012, Wolpaw ch. 12 judged P300 BCIs to be essentially the only BCIs that severely disabled people use outside the lab, every day, for important purposes.</p>
+    <h3>Ethical issues</h3>
+    <ul>
+      <li><b>Balancing risk and benefit.</b> Implanted BCIs carry the risks of surgery, infection, and tissue damage. The expected benefit has to outweigh them (Rao §13.1.1).</li>
+      <li><b>Informed consent.</b> Getting consent to research from someone who can barely communicate is itself difficult (Rao §13.1.2; Wolpaw ch. 24).</li>
+      <li><b>Misuse.</b> The technology can drift from its purpose, through unwanted or military use (Rao §13.2).</li>
+      <li><b>Security and privacy.</b> Brain signals can carry information the user never meant to reveal, and BCI devices can be attacked (Rao §13.3).</li>
+      <li><b>Legal responsibility.</b> When a BCI output causes harm, the law has to settle whether responsibility lies with the user, the manufacturer, or the algorithm (Rao §13.4).</li>
+      <li><b>Justice and equity.</b> Expensive technology may reach only a few people, and use for enhancement may widen inequality (Rao §13.5).</li>
+      <li><b>Managing expectations.</b> Media hype and real performance are far apart. Patients and families should not be led into unrealistic hopes (Rao, preface; Wolpaw ch. 25).</li>
+    </ul>
+  </div>
+  <div class="quiz" data-ch="11"></div>
+</section>
+
+<!-- ───────────── Appendices ───────────── -->
+<section class="chapter" id="glossary">
+  <p class="ch-no">Appendix A</p>
+  <h2>Glossary</h2>
+  <div class="ctl" style="max-width:380px;margin-bottom:14px"><label for="gl-q">Find a term</label><input type="search" id="gl-q" placeholder="e.g. ERD, oddball, covariance" autocomplete="off"></div>
+  <dl class="gloss" id="gl-list"></dl>
+  <p class="empty" id="gl-empty" hidden>No matching terms. Try an abbreviation or a different word.</p>
+</section>
+
+<section class="chapter" id="sources">
+  <p class="ch-no">Appendix B</p>
+  <h2>Textbook Map</h2>
+  <div class="prose"><p>This table matches the chapters of this workbook to the chapters of the source textbooks. Start here when you want to study a concept in more depth.</p></div>
+  <div class="tbl-wrap">
+    <table>
+      <thead><tr><th>Chapter</th><th>Wolpaw &amp; Wolpaw 2012</th><th>Rao 2013</th><th>Siuly et al. 2016</th><th>Cambridge Handbook</th></tr></thead>
+      <tbody>
+        <tr><th>1 What is a BCI</th><td>1</td><td>1, 6</td><td>–</td><td>–</td></tr>
+        <tr><th>2 Signal origins</th><td>2, 3</td><td>2</td><td>1.2</td><td>–</td></tr>
+        <tr><th>3 Measurement</th><td>3, 4, 5, 6</td><td>3</td><td>1.1</td><td>–</td></tr>
+        <tr><th>4 Rhythms</th><td>6, 13</td><td>4.2</td><td>1.3</td><td>–</td></tr>
+        <tr><th>5 Preprocessing</th><td>6, 7, 13</td><td>4.5–4.6</td><td>1.3</td><td>–</td></tr>
+        <tr><th>6 Feature extraction</th><td>7, 13</td><td>4.5.4, 9.1.1</td><td>8</td><td>–</td></tr>
+        <tr><th>7 Classification</th><td>8</td><td>5</td><td>3.4, 8–12</td><td>–</td></tr>
+        <tr><th>8 Paradigms</th><td>2, 12, 14, 16</td><td>6, 7, 9</td><td>2.10</td><td>–</td></tr>
+        <tr><th>9 Evaluation</th><td>8, 20</td><td>5.1.4</td><td>–</td><td>–</td></tr>
+        <tr><th>10 Emotion and cognition</th><td>1, 23</td><td>9.1.6, 12.2</td><td>–</td><td>14, 15, 16, 17</td></tr>
+        <tr><th>11 Applications and ethics</th><td>11, 19–25</td><td>12, 13</td><td>2</td><td>–</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="prose">
+    <h3>References</h3>
+    <ul>
+      <li>Wolpaw, J. R., &amp; Wolpaw, E. W. (Eds.) (2012). <i>Brain–Computer Interfaces: Principles and Practice</i>. Oxford University Press.</li>
+      <li>Rao, R. P. N. (2013). <i>Brain–Computer Interfacing: An Introduction</i>. Cambridge University Press.</li>
+      <li>Siuly, S., Li, Y., &amp; Zhang, Y. (2016). <i>EEG Signal Analysis and Classification: Techniques and Applications</i>. Springer.</li>
+      <li>Armony, J., &amp; Vuilleumier, P. (Eds.) (2013). <i>The Cambridge Handbook of Human Affective Neuroscience</i>. Cambridge University Press. Part IV: ch. 14 (Domínguez-Borràs &amp; Vuilleumier), ch. 15 (Pessoa, Oliveira &amp; Pereira), ch. 16 (Phan &amp; Sripada), ch. 17 (O’Doherty).</li>
+    </ul>
+  </div>
+</section>
+
+</main>
+</div>
+
+<footer class="colophon">
+  <p>The signals and charts in this workbook are simulations built from the descriptions and values in the textbooks. They are not real recordings. Check-question progress is saved only in this browser.</p>
+  <p><a href="/">Back to Kihyeon Joo’s homepage</a> · <a href="../" lang="ko">한국어판</a></p>
+</footer>
+<script>
+(() => {
+'use strict';
+
+/* ════════════ Shared tools ════════════ */
+const $ = (s, r = document) => r.querySelector(s);
+const $$ = (s, r = document) => Array.from(r.querySelectorAll(s));
+const TAU = Math.PI * 2;
+const clamp = (v, a, b) => Math.min(b, Math.max(a, v));
+const nf = (v, d = 1) => Number(v).toLocaleString('en-US', { minimumFractionDigits: d, maximumFractionDigits: d });
+const REDUCE = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+const MONO = '"IBM Plex Mono", ui-monospace, Menlo, monospace';
+const SANS = '"IBM Plex Sans KR", "Apple SD Gothic Neo", "Malgun Gothic", sans-serif';
+
+function rng(seed) {
+  let a = seed >>> 0;
+  return () => {
+    a = (a + 0x6D2B79F5) | 0;
+    let t = Math.imul(a ^ (a >>> 15), 1 | a);
+    t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t;
+    return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
+  };
+}
+function gauss(r) { let u = 0; while (u === 0) u = r(); return Math.sqrt(-2 * Math.log(u)) * Math.cos(TAU * r()); }
+const rms = x => { let s = 0; for (let i = 0; i < x.length; i++) s += x[i] * x[i]; return Math.sqrt(s / x.length); };
+
+/* Theme colors */
+const C = {};
+const TOK = ['paper', 'panel', 'line', 'grid', 'ink', 'muted', 'trace', 'mark', 'ok', 'warn', 'bad', 'delta', 'theta', 'alpha', 'beta', 'gamma'];
+function readColors() {
+  const cs = getComputedStyle(document.documentElement);
+  TOK.forEach(k => { C[k] = cs.getPropertyValue('--' + k).trim() || '#888888'; });
+}
+function rgba(hex, a) {
+  let h = hex.replace('#', '');
+  if (h.length === 3) h = h.split('').map(c => c + c).join('');
+  const n = parseInt(h, 16);
+  return `rgba(${(n >> 16) & 255},${(n >> 8) & 255},${n & 255},${a})`;
+}
+readColors();
+
+/* Canvas registry: redraw on resize and theme change */
+const plots = [];
+function plot(id, draw) {
+  const cv = document.getElementById(id);
+  if (!cv) return null;
+  const p = { cv, ctx: cv.getContext('2d'), w: 0, h: 0, draw };
+  p.fit = () => {
+    const r = cv.getBoundingClientRect();
+    const dpr = Math.min(window.devicePixelRatio || 1, 2);
+    const w = Math.max(1, Math.round(r.width)), h = Math.max(1, Math.round(r.height));
+    if (w !== p.w || h !== p.h || cv.width !== Math.round(w * dpr)) {
+      p.w = w; p.h = h; cv.width = Math.round(w * dpr); cv.height = Math.round(h * dpr);
+      p.ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    }
+  };
+  p.render = () => { p.fit(); p.ctx.clearRect(0, 0, p.w, p.h); try { draw(p); } catch (e) { console.error(e); } };
+  if ('ResizeObserver' in window) new ResizeObserver(() => p.render()).observe(cv);
+  plots.push(p);
+  return p;
+}
+function redrawAll() { readColors(); plots.forEach(p => p.render()); }
+window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', redrawAll);
+new MutationObserver(redrawAll).observe(document.documentElement, { attributes: true, attributeFilter: ['data-theme'] });
+
+function raf(fn) { let q = false; return () => { if (q) return; q = true; requestAnimationFrame(() => { q = false; fn(); }); }; }
+
+/* Axes and grid */
+function frame(p, o) {
+  const ctx = p.ctx;
+  const L = o.l ?? 46, R = o.r ?? 12, T = o.t ?? (o.yl ? 22 : 10), B = o.b ?? (o.xl ? 34 : 22);
+  const W = Math.max(10, p.w - L - R), H = Math.max(10, p.h - T - B);
+  const tx = o.xlog ? Math.log10 : v => v, ty = o.ylog ? Math.log10 : v => v;
+  const ax0 = tx(o.x0), ax1 = tx(o.x1), ay0 = ty(o.y0), ay1 = ty(o.y1);
+  const X = v => L + (tx(v) - ax0) / (ax1 - ax0) * W;
+  const Y = v => T + H - (ty(v) - ay0) / (ay1 - ay0) * H;
+  ctx.save();
+  ctx.font = `11px ${MONO}`; ctx.lineWidth = 1;
+  ctx.fillStyle = C.panel; ctx.fillRect(L, T, W, H);
+  ctx.strokeStyle = C.grid; ctx.fillStyle = C.muted;
+  ctx.textAlign = 'center'; ctx.textBaseline = 'top';
+  (o.xt || []).forEach(v => {
+    const x = Math.round(X(v)) + 0.5;
+    ctx.beginPath(); ctx.moveTo(x, T); ctx.lineTo(x, T + H); ctx.stroke();
+    ctx.fillText(o.xf ? o.xf(v) : String(v), x, T + H + 5);
+  });
+  ctx.textAlign = 'right'; ctx.textBaseline = 'middle';
+  (o.yt || []).forEach(v => {
+    const y = Math.round(Y(v)) + 0.5;
+    ctx.beginPath(); ctx.moveTo(L, y); ctx.lineTo(L + W, y); ctx.stroke();
+    ctx.fillText(o.yf ? o.yf(v) : String(v), L - 6, y);
+  });
+  if (o.y2) {
+    ctx.textAlign = 'left';
+    o.y2.ticks.forEach(v => ctx.fillText(o.y2.f(v), L + W + 6, Y(v)));
+  }
+  ctx.strokeStyle = C.line; ctx.strokeRect(L + 0.5, T + 0.5, W - 1, H - 1);
+  if (o.yl) { ctx.textAlign = 'left'; ctx.textBaseline = 'top'; ctx.fillText(o.yl, 4, 4); }
+  if (o.y2 && o.y2.label) { ctx.textAlign = 'right'; ctx.textBaseline = 'top'; ctx.fillText(o.y2.label, p.w - 4, 4); }
+  if (o.xl) { ctx.textAlign = 'right'; ctx.textBaseline = 'bottom'; ctx.fillText(o.xl, L + W, p.h - 2); }
+  ctx.restore();
+  return {
+    X, Y, L, T, W, H,
+    clip() { ctx.save(); ctx.beginPath(); ctx.rect(L, T, W, H); ctx.clip(); },
+    unclip() { ctx.restore(); }
+  };
+}
+function poly(ctx, n, fx, fy, col, lw = 1.5, dash) {
+  ctx.beginPath();
+  for (let i = 0; i < n; i++) { const x = fx(i), y = fy(i); if (i) ctx.lineTo(x, y); else ctx.moveTo(x, y); }
+  ctx.strokeStyle = col; ctx.lineWidth = lw; ctx.lineJoin = 'round';
+  ctx.setLineDash(dash || []); ctx.stroke(); ctx.setLineDash([]);
+}
+function vline(ctx, x, T, H, col, dash, lw = 1.2) {
+  ctx.beginPath(); ctx.moveTo(Math.round(x) + 0.5, T); ctx.lineTo(Math.round(x) + 0.5, T + H);
+  ctx.strokeStyle = col; ctx.lineWidth = lw; ctx.setLineDash(dash || []); ctx.stroke(); ctx.setLineDash([]);
+}
+function niceMax(v, steps = [10, 15, 20, 25, 30, 40, 50, 60, 80, 100, 150, 200, 300, 400]) {
+  for (const s of steps) if (v <= s) return s;
+  return Math.ceil(v / 100) * 100;
+}
+function label(ctx, txt, x, y, col, align = 'left', base = 'top', font = `12px ${MONO}`) {
+  ctx.save(); ctx.font = font; ctx.fillStyle = col; ctx.textAlign = align; ctx.textBaseline = base; ctx.fillText(txt, x, y); ctx.restore();
+}
+
+/* ════════════ Signal processing ════════════ */
+function fft(re, im) {
+  const n = re.length;
+  for (let i = 1, j = 0; i < n; i++) {
+    let bit = n >> 1;
+    for (; j & bit; bit >>= 1) j ^= bit;
+    j ^= bit;
+    if (i < j) { let t = re[i]; re[i] = re[j]; re[j] = t; t = im[i]; im[i] = im[j]; im[j] = t; }
+  }
+  for (let len = 2; len <= n; len <<= 1) {
+    const ang = -TAU / len, wr = Math.cos(ang), wi = Math.sin(ang), half = len >> 1;
+    for (let i = 0; i < n; i += len) {
+      let cr = 1, ci = 0;
+      for (let k = 0; k < half; k++) {
+        const a = i + k, b = a + half;
+        const tr = re[b] * cr - im[b] * ci, ti = re[b] * ci + im[b] * cr;
+        re[b] = re[a] - tr; im[b] = im[a] - ti; re[a] += tr; im[a] += ti;
+        const nc = cr * wr - ci * wi; ci = cr * wi + ci * wr; cr = nc;
+      }
+    }
+  }
+}
+/* Gaussian noise with spectral shape shape(f), unit RMS */
+function specNoise(n, fs, shape, r) {
+  const re = new Float64Array(n), im = new Float64Array(n);
+  for (let k = 1; k < n / 2; k++) {
+    const a = shape(k * fs / n);
+    if (!(a > 0)) continue;
+    const g1 = gauss(r) * a, g2 = gauss(r) * a;
+    re[k] = g1; im[k] = g2; re[n - k] = g1; im[n - k] = -g2;
+  }
+  fft(re, im);
+  const s = rms(re) || 1;
+  const out = new Float64Array(n);
+  for (let i = 0; i < n; i++) out[i] = re[i] / s;
+  return out;
+}
+const peak = (fc, bw) => f => Math.exp(-0.5 * ((f - fc) / bw) ** 2);
+const pinkShape = (beta = 1.7, lo = 0.4) => f => (f < lo ? 0 : Math.pow(f, -beta / 2));
+const bandShape = (f1, f2, edge = 1) => f => (f < f1 - 3 * edge || f > f2 + 3 * edge ? 0 :
+  (f < f1 ? Math.exp(-0.5 * ((f1 - f) / edge) ** 2) : f > f2 ? Math.exp(-0.5 * ((f - f2) / edge) ** 2) : 1));
+
+/* Welch amplitude spectrum (segment nseg, 50% overlap, Hann window) */
+function welch(x, fs, nseg) {
+  const step = nseg >> 1, P = new Float64Array(nseg / 2 + 1);
+  const w = new Float64Array(nseg); let ws = 0;
+  for (let i = 0; i < nseg; i++) { w[i] = 0.5 - 0.5 * Math.cos(TAU * i / (nseg - 1)); ws += w[i]; }
+  const re = new Float64Array(nseg), im = new Float64Array(nseg);
+  let cnt = 0;
+  for (let s = 0; s + nseg <= x.length; s += step) {
+    let m = 0; for (let i = 0; i < nseg; i++) m += x[s + i]; m /= nseg;
+    for (let i = 0; i < nseg; i++) { re[i] = (x[s + i] - m) * w[i]; im[i] = 0; }
+    fft(re, im);
+    for (let k = 0; k <= nseg / 2; k++) { const a = 2 * Math.hypot(re[k], im[k]) / ws; P[k] += a * a; }
+    cnt++;
+  }
+  for (let k = 0; k < P.length; k++) P[k] = Math.sqrt(P[k] / Math.max(1, cnt));
+  return { a: P, df: fs / nseg };
+}
+/* Biquad filter, RBJ cookbook formulas */
+function bq(type, f0, fs, Q) {
+  const w0 = TAU * f0 / fs, c = Math.cos(w0), s = Math.sin(w0), al = s / (2 * Q);
+  let b0, b1, b2; const a0 = 1 + al, a1 = -2 * c, a2 = 1 - al;
+  if (type === 'lp') { b0 = (1 - c) / 2; b1 = 1 - c; b2 = (1 - c) / 2; }
+  else if (type === 'hp') { b0 = (1 + c) / 2; b1 = -(1 + c); b2 = (1 + c) / 2; }
+  else if (type === 'bp') { b0 = al; b1 = 0; b2 = -al; }
+  else { b0 = 1; b1 = -2 * c; b2 = 1; } // notch
+  return { b0: b0 / a0, b1: b1 / a0, b2: b2 / a0, a1: a1 / a0, a2: a2 / a0 };
+}
+function runBQ(x, c) {
+  const y = new Float64Array(x.length);
+  let x1 = 0, x2 = 0, y1 = 0, y2 = 0;
+  for (let i = 0; i < x.length; i++) {
+    const xi = x[i], yi = c.b0 * xi + c.b1 * x1 + c.b2 * x2 - c.a1 * y1 - c.a2 * y2;
+    x2 = x1; x1 = xi; y2 = y1; y1 = yi; y[i] = yi;
+  }
+  return y;
+}
+/* Zero-phase filter (forward and backward), ends padded by odd reflection */
+function filtfilt(x, sections) {
+  const n = x.length, pad = Math.min(n - 2, 300);
+  let y = new Float64Array(n + 2 * pad);
+  for (let i = 0; i < pad; i++) { y[i] = 2 * x[0] - x[pad - i]; y[n + pad + i] = 2 * x[n - 1] - x[n - 2 - i]; }
+  y.set(x, pad);
+  for (const c of sections) { y = runBQ(y, c); y.reverse(); y = runBQ(y, c); y.reverse(); }
+  return y.slice(pad, pad + n);
+}
+const butter = (type, f, fs) => [bq(type, f, fs, 0.5412), bq(type, f, fs, 1.3066)];
+
+/* Standard normal CDF */
+function erf(x) {
+  const s = Math.sign(x); x = Math.abs(x);
+  const t = 1 / (1 + 0.3275911 * x);
+  const y = 1 - (((((1.061405429 * t - 1.453152027) * t) + 1.421413741) * t - 0.284496736) * t + 0.254829592) * t * Math.exp(-x * x);
+  return s * y;
+}
+const Phi = z => 0.5 * (1 + erf(z / Math.SQRT2));
+
+/* Wolpaw 2002 information transfer rate (bits/selection) */
+function bitsPerSel(N, P) {
+  if (N < 2 || P <= 1 / N) return 0;
+  if (P >= 1) return Math.log2(N);
+  return Math.log2(N) + P * Math.log2(P) + (1 - P) * Math.log2((1 - P) / (N - 1));
+}
+
+/* Button group: one aria-pressed at a time */
+function segGroup(root, attr, onPick) {
+  const btns = $$('button', root);
+  btns.forEach(b => b.addEventListener('click', () => {
+    btns.forEach(o => o.setAttribute('aria-pressed', o === b ? 'true' : 'false'));
+    onPick(b.dataset[attr], b);
+  }));
+  return btns;
+}
+function toggle(btn, on) { btn.setAttribute('aria-pressed', on ? 'true' : 'false'); }
+const pressed = btn => btn.getAttribute('aria-pressed') === 'true';
+function chip(text, kind) { return `<span class="chip ${kind}">${text}</span>`; }
+function ro(lab, val) { return `<div class="ro"><span>${lab}</span><b>${val}</b></div>`; }
+
+/* Expose for the next script */
+window.BCI = { $, $$, TAU, clamp, nf, REDUCE, MONO, SANS, rng, gauss, rms, C, rgba, plot, raf, frame, poly, vline, niceMax, label,
+  fft, specNoise, peak, pinkShape, bandShape, welch, bq, filtfilt, butter, Phi, bitsPerSel, segGroup, toggle, pressed, chip, ro };
+
+/* ════════════ Masthead: live 4-channel EEG ════════════ */
+(function hero() {
+  const fs = 128, SEC = 6, NB = fs * SEC;
+  const r = rng(20261008);
+  const white = () => gauss(r);
+  class Res {
+    constructor(f, Q) {
+      this.c = bq('bp', f, fs, Q); this.s = [0, 0, 0, 0]; this.g = 1;
+      let ss = 0; for (let i = 0; i < 3000; i++) { const v = this.step(); if (i >= 500) ss += v * v; }
+      this.g = 1 / Math.sqrt(ss / 2500);
+    }
+    step() {
+      const c = this.c, s = this.s, x = white();
+      const y = c.b0 * x + c.b1 * s[0] + c.b2 * s[1] - c.a1 * s[2] - c.a2 * s[3];
+      s[1] = s[0]; s[0] = x; s[3] = s[2]; s[2] = y; return y * this.g;
+    }
+  }
+  class Pink {
+    constructor() {
+      this.b = [0, 0, 0]; this.g = 1;
+      let ss = 0; for (let i = 0; i < 3000; i++) { const v = this.step(); if (i >= 500) ss += v * v; }
+      this.g = 1 / Math.sqrt(ss / 2500);
+    }
+    step() {
+      const w = white(), b = this.b;
+      b[0] = 0.997 * b[0] + 0.099 * w; b[1] = 0.963 * b[1] + 0.2965 * w; b[2] = 0.57 * b[2] + 1.0527 * w;
+      return (b[0] + b[1] + b[2] + 0.1848 * w) * this.g;
+    }
+  }
+  const postAlpha = new Res(10, 4.5), fpAlpha = new Res(10, 4.5), mu = new Res(11, 5), beta = new Res(21, 3);
+  const bgs = [new Pink(), new Pink(), new Pink(), new Pink()];
+  const names = ['Fp1', 'C3', 'Pz', 'O1'];
+  const buf = names.map(() => new Float32Array(NB));
+  let wi = 0;
+  const st = { eyes: false, mi: false, paused: REDUCE, visible: true };
+  const target = () => ({ a: st.eyes ? 1 : 0.3, mu: st.mi ? 0.3 : 1 });
+  const g = { a: 0.3, mu: 1 };
+  let blinkT = -1, nextBlink = 1.2, t = 0;
+  function step() {
+    t += 1 / fs;
+    const k = 1 - Math.exp(-1 / (fs * 0.35)), tg = target();
+    g.a += (tg.a - g.a) * k; g.mu += (tg.mu - g.mu) * k;
+    const pa = postAlpha.step(), m = mu.step(), b = beta.step();
+    let blink = 0;
+    if (!st.eyes) {
+      if (t >= nextBlink) { blinkT = t; nextBlink = t + 2 + 3 * r(); }
+      const u = (t - blinkT) / 0.36;
+      if (blinkT >= 0 && u >= 0 && u <= 1) blink = 105 * Math.sin(Math.PI * u) ** 2;
+    }
+    const v = [
+      7 * bgs[0].step() + 3 * fpAlpha.step() * (0.4 + 0.6 * g.a) + blink,
+      7 * bgs[1].step() + 9 * m * g.mu + 3.2 * b * (0.5 + 0.5 * g.mu),
+      7 * bgs[2].step() + 18 * pa * g.a,
+      7 * bgs[3].step() + 26 * pa * g.a + 2 * fpAlpha.step()
+    ];
+    for (let c = 0; c < 4; c++) buf[c][wi] = v[c];
+    wi = (wi + 1) % NB;
+  }
+  function fill() { const tg = target(); g.a = tg.a; g.mu = tg.mu; for (let i = 0; i < NB; i++) step(); }
+  fill();
+  const P = plot('hero-cv', p => {
+    const { ctx, w, h } = p, L = 40, rowH = h / 4, W = w - L - 4;
+    ctx.fillStyle = C.panel; ctx.fillRect(0, 0, w, h);
+    ctx.strokeStyle = C.grid; ctx.lineWidth = 1;
+    for (let s = 0; s <= SEC; s++) { const x = Math.round(L + W * s / SEC) + 0.5; ctx.beginPath(); ctx.moveTo(x, 0); ctx.lineTo(x, h); ctx.stroke(); }
+    for (let c = 1; c < 4; c++) { const y = Math.round(rowH * c) + 0.5; ctx.beginPath(); ctx.moveTo(L, y); ctx.lineTo(w, y); ctx.stroke(); }
+    const sc = rowH * 0.42 / 50;
+    for (let c = 0; c < 4; c++) {
+      const y0 = rowH * (c + 0.5);
+      label(ctx, names[c], 6, y0, C.ink, 'left', 'middle', `500 12px ${MONO}`);
+      ctx.save(); ctx.beginPath(); ctx.rect(L, 0, W + 4, h); ctx.clip();
+      poly(ctx, NB, i => L + W * i / (NB - 1), i => y0 - buf[c][(wi + i) % NB] * sc, C.trace, 1.15);
+      ctx.restore();
+    }
+    const bx = w - 70, bh = 50 * sc;
+    ctx.fillStyle = rgba(C.panel, 0.88); ctx.fillRect(bx - 4, 4, 70, bh + 8);
+    ctx.strokeStyle = C.ink; ctx.lineWidth = 1.5;
+    ctx.beginPath(); ctx.moveTo(bx + 4, 8); ctx.lineTo(bx + 4, 8 + bh); ctx.stroke();
+    label(ctx, '50 µV', bx + 10, 8 + bh / 2, C.ink, 'left', 'middle', `11px ${MONO}`);
+  });
+  const mon = $('#hero');
+  let last = performance.now(), acc = 0, running = false;
+  function loop(now) {
+    const dt = Math.min(0.1, (now - last) / 1000); last = now;
+    if (st.paused || !st.visible || document.hidden) { running = false; return; }
+    acc += dt * fs; const k = Math.floor(acc); acc -= k;
+    for (let i = 0; i < k; i++) step();
+    P.render();
+    requestAnimationFrame(loop);
+  }
+  function kick() { if (!running && !st.paused && st.visible && !document.hidden) { running = true; last = performance.now(); requestAnimationFrame(loop); } }
+  function syncPause() { mon.classList.toggle('paused', st.paused); toggle($('#hero-pause'), st.paused); $('#hero-pause').textContent = st.paused ? 'Play' : 'Pause'; }
+  $('#hero-eyes').addEventListener('click', e => {
+    st.eyes = !st.eyes; toggle(e.currentTarget, st.eyes);
+    e.currentTarget.textContent = st.eyes ? 'Open eyes' : 'Close eyes';
+    if (st.paused) { fill(); P.render(); }
+  });
+  $('#hero-mi').addEventListener('click', e => {
+    st.mi = !st.mi; toggle(e.currentTarget, st.mi);
+    e.currentTarget.textContent = st.mi ? 'Stop imagining' : 'Imagine right-hand movement';
+    if (st.paused) { fill(); P.render(); }
+  });
+  $('#hero-pause').addEventListener('click', () => { st.paused = !st.paused; syncPause(); kick(); });
+  if ('IntersectionObserver' in window) new IntersectionObserver(es => { st.visible = es[0].isIntersecting; kick(); }).observe(mon);
+  document.addEventListener('visibilitychange', kick);
+  syncPause(); kick();
+})();
+
+/* ════════════ Chapter 1: BCI verdict cards ════════════ */
+(function cards() {
+  const D = [
+    { t: 'A person who lost speech to ALS types sentences with a P300 speller, and a speech synthesizer reads them aloud.', a: true, k: 'Replace', why: 'A brain signal (the P300) creates a new output that replaces lost speech.' },
+    { t: 'The motor imagery EEG of a person with spinal cord injury drives electrical stimulation of the hand muscles to grasp a cup.', a: true, k: 'Restore', why: 'The BCI output moves paralyzed muscles and restores a lost function.' },
+    { t: 'A camera tracks the eyes and moves an on-screen cursor.', a: false, why: 'It reads eye-muscle movement, a natural neuromuscular output. It uses no brain signal.' },
+    { t: 'EMG from the residual limb drives a powered prosthetic arm.', a: false, why: 'The electrical activity of muscles is neuromuscular output. An EMG prosthesis is not a BCI.' },
+    { t: 'EEG recorded overnight produces a sleep-stage report in the morning.', a: false, why: 'It only monitors brain activity and does not change the interaction between the CNS and its environment. By Wolpaw’s definition it is not a BCI.' },
+    { t: 'While a truck driver drives, EEG that precedes a lapse of attention triggers an alert tone.', a: true, k: 'Enhance', why: 'This is Wolpaw’s example in ch. 1. Preventing lapses of attention improves a natural output, the driving. It is also called a passive BCI.' },
+    { t: 'Looking at one of four flickering targets selects it through the SSVEP.', a: true, k: 'Replace · dependent', why: 'It is a BCI. It relies on eye-muscle control to aim the gaze at the target, so it leans strongly toward dependent.' },
+    { t: 'Deep brain stimulation (DBS) reduces tremor in a patient with Parkinson’s disease.', a: false, why: 'It sends input into the brain. Wolpaw defines a BCI as a new output from the brain, so stimulators fall outside the definition. Rao (ch. 10) covers such devices separately as stimulating BCIs. The textbooks draw the boundary differently.' }
+  ];
+  const root = $('#bci-cards'), score = $('#bci-score');
+  let ans = {};
+  function render() {
+    root.innerHTML = D.map((d, i) => {
+      const got = ans[i];
+      const done = got !== undefined, ok = done && got === d.a;
+      return `<div class="card ${done ? (ok ? 'right' : 'wrong') : ''}">
+        <p>${d.t}</p>
+        <div class="btnrow">
+          <button class="btn" data-i="${i}" data-v="1" ${done ? 'disabled' : ''} aria-pressed="${got === true}">BCI</button>
+          <button class="btn" data-i="${i}" data-v="0" ${done ? 'disabled' : ''} aria-pressed="${got === false}">Not a BCI</button>
+        </div>
+        ${done ? `<div class="verdict"><div class="tagrow">${chip(ok ? 'Correct' : 'Wrong', ok ? 'ok' : 'bad')}${chip(d.a ? 'BCI' : 'Not a BCI', 'neutral')}${d.k ? chip(d.k, 'info') : ''}</div>${d.why}</div>` : ''}
+      </div>`;
+    }).join('');
+    const n = Object.keys(ans).filter(i => ans[i] === D[i].a).length;
+    score.textContent = `${n} / ${D.length}`;
+  }
+  root.addEventListener('click', e => {
+    const b = e.target.closest('button[data-i]'); if (!b) return;
+    ans[b.dataset.i] = b.dataset.v === '1'; render();
+  });
+  $('#bci-reset').addEventListener('click', () => { ans = {}; render(); });
+  render();
+})();
+
+/* ════════════ Chapter 2: synchrony ════════════ */
+(function sync() {
+  const r = rng(77), M = 144, z = Array.from({ length: M }, () => gauss(r));
+  const sS = $('#sync-sigma'), sN = $('#sync-n');
+  const P = plot('sync-cv', p => {
+    const { ctx, w, h } = p;
+    const sig = +sS.value * Math.PI / 180;
+    const side = Math.min(h - 16, w * 0.42), ox = 8, oy = (h - side) / 2, cell = side / 12;
+    ctx.fillStyle = C.panel; ctx.fillRect(ox, oy, side, side);
+    ctx.strokeStyle = C.line; ctx.strokeRect(ox + 0.5, oy + 0.5, side - 1, side - 1);
+    let sx = 0, sy = 0;
+    ctx.strokeStyle = C.trace; ctx.lineWidth = 1.3;
+    for (let i = 0; i < M; i++) {
+      const ph = sig * z[i], cx = ox + cell * (i % 12 + 0.5), cy = oy + cell * (Math.floor(i / 12) + 0.5), L = cell * 0.4;
+      const dx = Math.cos(ph) * L, dy = -Math.sin(ph) * L;
+      sx += Math.cos(ph); sy += Math.sin(ph);
+      ctx.beginPath(); ctx.moveTo(cx - dx, cy - dy); ctx.lineTo(cx + dx, cy + dy); ctx.stroke();
+      ctx.beginPath(); ctx.arc(cx + dx, cy + dy, 1.6, 0, TAU); ctx.fillStyle = C.trace; ctx.fill();
+    }
+    const R = Math.hypot(sx, sy) / M, ang = Math.atan2(sy, sx);
+    const cx = ox + side / 2, cy = oy + side / 2;
+    ctx.strokeStyle = C.mark; ctx.lineWidth = 3;
+    ctx.beginPath(); ctx.moveTo(cx, cy); ctx.lineTo(cx + Math.cos(ang) * R * side * 0.45, cy - Math.sin(ang) * R * side * 0.45); ctx.stroke();
+    label(ctx, 'mean vector', ox + 6, oy + 6, C.mark, 'left', 'top', `11px ${SANS}`);
+    // summed signal
+    const f = frame(p, { l: side + 24 + 40, r: 10, t: 22, b: 34, x0: 0, x1: 300, y0: -1.1, y1: 1.1,
+      xt: [0, 100, 200, 300], yt: [-1, 0, 1], yf: v => v.toFixed(0), xl: 'time (ms)', yl: '' });
+    label(ctx, 'sum ÷ number of sources', side + 24 + 40, 6, C.muted, 'left', 'top', `11px ${MONO}`);
+    f.clip();
+    const n = 200;
+    poly(ctx, n, i => f.X(300 * i / (n - 1)), i => f.Y(Math.cos(TAU * 10 * 0.3 * i / (n - 1))), C.muted, 1, [4, 4]);
+    poly(ctx, n, i => f.X(300 * i / (n - 1)), i => {
+      const tt = 0.3 * i / (n - 1); let s = 0;
+      for (let k = 0; k < M; k++) s += Math.cos(TAU * 10 * tt + sig * z[k]);
+      return f.Y(s / M);
+    }, C.trace, 2);
+    f.unclip();
+  });
+  function update() {
+    const sig = +sS.value * Math.PI / 180, N = Math.round(Math.pow(10, +sN.value));
+    $('#sync-sigma-o').textContent = sS.value + '°';
+    $('#sync-n-o').textContent = N.toLocaleString('en-US');
+    const amp = Math.sqrt(N + N * (N - 1) * Math.exp(-sig * sig));
+    const fmtN = v => v >= 100 ? Math.round(v).toLocaleString('en-US') : nf(v, 1);
+    $('#sync-amp').textContent = fmtN(amp);
+    $('#sync-full').textContent = fmtN(N);
+    $('#sync-rand').textContent = fmtN(Math.sqrt(N));
+    const frac = amp / N;
+    $('#sync-chip').innerHTML = frac > 0.5 ? chip(`${Math.round(frac * 100)}% of full synchrony`, 'ok') :
+      frac > 0.05 ? chip(`${nf(frac * 100, 1)}% of full synchrony`, 'warn') : chip(`${nf(frac * 100, 2)}% of full synchrony`, 'bad');
+    P.render();
+  }
+  const u = raf(update);
+  sS.addEventListener('input', u); sN.addEventListener('input', u);
+  update();
+})();
+
+/* ════════════ Chapter 3: recording-method map ════════════ */
+(function modalities() {
+  const M = [
+    { id: 'spike', name: 'Single-neuron spikes', s: 'Spikes', inv: 2, el: true, sp: [0.02, 0.1], tm: [0.0005, 0.002], lab: [0.001, 0.045],
+      d: 'A microelectrode array inserted into the cortex records the action potentials of individual neurons. Spatial resolution matches the electrode size (tens of µm), and temporal resolution is under 1 ms. It reads motor intent most precisely, but it needs surgery, and tissue responses can degrade recording quality over time.', ref: 'Wolpaw ch. 5 · Rao §3.1.1' },
+    { id: 'lfp', name: 'Local field potential (LFP)', s: 'LFP', inv: 2, el: true, sp: [0.1, 1], tm: [0.001, 0.01], lab: [0.0032, 0.32],
+      d: 'The low-frequency part of the same microelectrode signal. It reflects synaptic activity within 0.1–1 mm of the electrode.', ref: 'Wolpaw ch. 3, table 3.3' },
+    { id: 'ecog', name: 'Electrocorticography (ECoG)', s: 'ECoG', inv: 1, el: true, sp: [2, 5], tm: [0.001, 0.01], lab: [0.0032, 3.2],
+      d: 'A grid of electrodes placed under the dura on the brain surface. Its spatial resolution of about 2–5 mm is far better than EEG, and with no skull in the way it also captures high frequencies (up to about 200 Hz). Much ECoG BCI research has been done with patients undergoing monitoring before epilepsy surgery.', ref: 'Wolpaw ch. 3, 13, 15 · Rao §8.1' },
+    { id: 'meg', name: 'Magnetoencephalography (MEG)', s: 'MEG', inv: 0, el: true, sp: [10, 50], tm: [0.001, 0.01], lab: [0.0032, 14],
+      d: 'Superconducting sensors outside the head measure the magnetic fields of brain currents. Rao writes that the skull distorts magnetic fields less, which gives MEG better spatial resolution than EEG. Nunez (Wolpaw ch. 3, table 3.3) estimates about 50 mm for both unprocessed MEG and EEG. The equipment is large and expensive, which rules it out for everyday BCIs.', ref: 'Rao ch. 3 · Wolpaw ch. 3' },
+    { id: 'eeg', name: 'Scalp electroencephalography (EEG)', s: 'EEG', inv: 0, el: true, sp: [20, 50], tm: [0.001, 0.01], lab: [0.0032, 33],
+      d: 'Scalp electrodes measure potential differences. Unprocessed EEG has a spatial resolution of about 50 mm, and high-resolution methods such as the Laplacian bring it to 20–30 mm. It is cheap, portable, and safe, so BCIs use it most.', ref: 'Wolpaw ch. 3, 6 · Rao §3.1.2' },
+    { id: 'fmri', name: 'Functional MRI (fMRI)', s: 'fMRI', inv: 0, el: false, sp: [1, 3], tm: [1, 10], lab: [3.2, 1.75],
+      d: 'Measures changes in blood oxygen level (BOLD). Its spatial resolution of 1–3 mm is the best among noninvasive methods, but the slow blood-flow response limits temporal resolution to seconds. Researchers have studied BCIs in which people learn to regulate their own brain activity with real-time fMRI.', ref: 'Rao ch. 3 · Wolpaw ch. 4, 18' },
+    { id: 'fnirs', name: 'Functional near-infrared spectroscopy (fNIRS)', s: 'fNIRS', inv: 0, el: false, sp: [10, 30], tm: [1, 10], lab: [3.2, 17],
+      d: 'Near-infrared light measures changes in oxygenated and deoxygenated hemoglobin. It is cheap and portable, but its spatial resolution is on the order of centimeters and its responses take several seconds.', ref: 'Wolpaw ch. 4, 18 · Rao ch. 3' }
+  ];
+  const invName = ['Noninvasive (scalp or outside the head)', 'Semi-invasive (cortical surface)', 'Invasive (inside the cortex)'];
+  const invCol = () => [C.trace, C.beta, C.mark];
+  let sel = 'eeg', boxes = [];
+  const P = plot('mod-cv', p => {
+    const { ctx } = p;
+    const f = frame(p, { l: 58, r: 14, t: 22, b: 36, x0: 0.0002, x1: 30, y0: 0.01, y1: 100, xlog: true, ylog: true,
+      xt: [0.001, 0.01, 0.1, 1, 10], xf: v => ({ 0.001: '1 ms', 0.01: '10 ms', 0.1: '100 ms', 1: '1 s', 10: '10 s' })[v],
+      yt: [0.01, 0.1, 1, 10, 100], yf: v => ({ 0.01: '10 µm', 0.1: '0.1 mm', 1: '1 mm', 10: '1 cm', 100: '10 cm' })[v],
+      xl: 'temporal resolution →', yl: 'spatial resolution (↑ coarser)' });
+    boxes = [];
+    f.clip();
+    const cols = invCol();
+    const order = M.slice().sort((a, b) => (a.id === sel) - (b.id === sel));
+    for (const m of order) {
+      const x0 = f.X(m.tm[0]), x1 = f.X(m.tm[1]), y0 = f.Y(m.sp[1]), y1 = f.Y(m.sp[0]);
+      const col = cols[m.inv], on = m.id === sel;
+      ctx.fillStyle = rgba(col, on ? 0.28 : 0.12); ctx.fillRect(x0, y0, x1 - x0, y1 - y0);
+      ctx.strokeStyle = col; ctx.lineWidth = on ? 2.4 : 1.2; ctx.setLineDash(m.el ? [] : [5, 4]);
+      ctx.strokeRect(x0 + 0.5, y0 + 0.5, x1 - x0 - 1, y1 - y0 - 1); ctx.setLineDash([]);
+      boxes.push({ id: m.id, x0, x1, y0, y1 });
+    }
+    for (const m of M) {
+      const on = m.id === sel;
+      label(ctx, m.s, f.X(m.lab[0]), f.Y(m.lab[1]), on ? C.ink : C.muted, 'center', 'middle', `${on ? 600 : 500} 12px ${SANS}`);
+    }
+    f.unclip();
+  });
+  function pick(id) {
+    sel = id;
+    const m = M.find(x => x.id === id);
+    $('#mod-detail').innerHTML = `<h4>${m.name}</h4><div class="tagrow">${chip(invName[m.inv], ['info', 'warn', 'bad'][m.inv])}${chip(m.el ? 'Electrical signal' : 'Blood-flow signal', 'neutral')}${chip('Spatial ' + fmtR(m.sp), 'neutral')}${chip('Temporal ' + fmtT(m.tm), 'neutral')}</div><p>${m.d}</p><p class="small">${m.ref}</p>`;
+    $$('#mod-chips button').forEach(b => toggle(b, b.dataset.id === id));
+    P.render();
+  }
+  const fmtR = r => r[1] >= 10 ? `${r[0] / 10}–${r[1] / 10} cm` : r[1] <= 0.1 ? `${r[0] * 1000}–${r[1] * 1000} µm` : `${r[0]}–${r[1]} mm`;
+  const fmtT = r => r[1] >= 1 ? `${r[0]}–${r[1]} s` : `${r[0] * 1000}–${r[1] * 1000} ms`;
+  $('#mod-chips').innerHTML = M.map(m => `<button class="btn" data-id="${m.id}" aria-pressed="false">${m.s}</button>`).join('');
+  $('#mod-chips').addEventListener('click', e => { const b = e.target.closest('button'); if (b) pick(b.dataset.id); });
+  P.cv.addEventListener('click', e => {
+    const rc = P.cv.getBoundingClientRect(), x = e.clientX - rc.left, y = e.clientY - rc.top;
+    for (let i = boxes.length - 1; i >= 0; i--) { const b = boxes[i]; if (x >= b.x0 && x <= b.x1 && y >= b.y0 && y <= b.y1) { pick(b.id); return; } }
+  });
+  pick('eeg');
+})();
+
+/* ════════════ Chapter 3: 10–20 electrode map ════════════ */
+(function tenTwenty() {
+  const E = [['Fp1', -18, .511], ['Fp2', 18, .511], ['F7', -54, .511], ['F3', -39, .333], ['Fz', 0, .256], ['F4', 39, .333], ['F8', 54, .511],
+    ['T3', -90, .511], ['C3', -90, .256], ['Cz', 0, 0], ['C4', 90, .256], ['T4', 90, .511],
+    ['T5', -126, .511], ['P3', -141, .333], ['Pz', 180, .256], ['P4', 141, .333], ['T6', 126, .511], ['O1', -162, .511], ['Oz', 180, .511], ['O2', 162, .511]];
+  const SETS = {
+    none: { e: [], t: 'Tap an electrode to see how to read its name. The nose is at the top, and the left side of the head is on the left.' },
+    smr: { e: ['C3', 'Cz', 'C4'], t: 'Motor imagery BCIs use C3 and C4 over the hand areas and Cz near the foot area. A Laplacian spatial filter needs more electrodes around these sites (Wolpaw ch. 13).' },
+    p300: { e: ['Fz', 'Cz', 'Pz', 'P3', 'P4'], t: 'The P300 is largest at Pz and shrinks toward the front (Cz, Fz). Wolpaw ch. 12, fig. 12.2 compares the classification accuracy of several electrode sets.' },
+    ssvep: { e: ['O1', 'Oz', 'O2'], t: 'SSVEPs are recorded over the occipital area, above the visual cortex. Cheng et al. (2002) used O1 and O2 (Rao §9.1.4).' },
+    errp: { e: ['Fz', 'Cz'], t: 'ErrPs are clearest over the frontocentral midline. Buttfield et al. (2006) used Fz and Cz (Rao §9.1.6).' },
+    eog: { e: ['Fp1', 'Fp2'], t: 'Blink artifacts are largest at Fp1 and Fp2, the sites closest to the eyes. The channel in experiment 5-1 is Fp1.' }
+  };
+  const PNAME = { smr: 'Motor imagery', p300: 'P300', ssvep: 'SSVEP', errp: 'ErrP', eog: 'Eye artifacts' };
+  const REG = { Fp: 'frontal pole (front of the forehead)', F: 'frontal lobe', C: 'central region (near the sensorimotor cortex)', T: 'temporal lobe', P: 'parietal lobe', O: 'occipital lobe (visual cortex)' };
+  const ALIAS = { T3: 'T7', T4: 'T8', T5: 'P7', T6: 'P8' };
+  const svg = $('#tt-svg'), NS = 'http://www.w3.org/2000/svg';
+  const mk = (tag, at, parent) => { const el = document.createElementNS(NS, tag); for (const k in at) el.setAttribute(k, at[k]); (parent || svg).appendChild(el); return el; };
+  const cx = 200, cy = 215, Rh = 168, scale = 150 / 0.511;
+  mk('polygon', { points: `186,${cy - Rh + 3} 200,${cy - Rh - 16} 214,${cy - Rh + 3}`, class: 'outline' });
+  mk('ellipse', { cx: cx - Rh - 5, cy, rx: 9, ry: 24, class: 'outline' });
+  mk('ellipse', { cx: cx + Rh + 5, cy, rx: 9, ry: 24, class: 'outline' });
+  mk('circle', { cx, cy, r: Rh, class: 'outline' });
+  mk('circle', { cx, cy, r: 150, class: 'guide', 'stroke-dasharray': '4 4' });
+  mk('circle', { cx, cy, r: 0.256 * scale, class: 'guide', 'stroke-dasharray': '4 4' });
+  mk('line', { x1: cx, y1: cy - 150, x2: cx, y2: cy + 150, class: 'guide' });
+  mk('line', { x1: cx - 150, y1: cy, x2: cx + 150, y2: cy, class: 'guide' });
+  const t1 = mk('text', { x: 200, y: 22, class: 'lm' }); t1.textContent = 'nose (nasion)';
+  const t2 = mk('text', { x: 200, y: 403, class: 'lm' }); t2.textContent = 'back of head (inion)';
+  const t3 = mk('text', { x: 22, y: 258, class: 'lm' }); t3.textContent = 'left';
+  const t4 = mk('text', { x: 378, y: 258, class: 'lm' }); t4.textContent = 'right';
+  const nodes = {};
+  E.forEach(([n, th, rr]) => {
+    const a = th * Math.PI / 180, x = cx + rr * scale * Math.sin(a), y = cy - rr * scale * Math.cos(a);
+    const g = mk('g', { class: 'el', tabindex: '0', role: 'button', 'aria-label': `${n} electrode`, 'data-n': n });
+    mk('circle', { cx: x.toFixed(1), cy: y.toFixed(1), r: 15 }, g);
+    const tx = mk('text', { x: x.toFixed(1), y: y.toFixed(1) }, g); tx.textContent = n;
+    nodes[n] = g;
+  });
+  let par = 'none', sel = null;
+  function uses(n) { return Object.keys(PNAME).filter(k => SETS[k].e.includes(n)); }
+  function render() {
+    E.forEach(([n]) => { nodes[n].classList.toggle('hl', SETS[par].e.includes(n)); nodes[n].classList.toggle('sel', n === sel); });
+    const det = $('#tt-detail');
+    if (!sel) { det.innerHTML = `<h4>${par === 'none' ? 'Reading electrode names' : PNAME[par]}</h4><p>${SETS[par].t}</p>`; return; }
+    const m = sel.match(/^(Fp|F|C|T|P|O)(z|\d+)$/);
+    const side = m[2] === 'z' ? 'midline (z for zero)' : (+m[2] % 2 ? `left hemisphere (odd ${m[2]})` : `right hemisphere (even ${m[2]})`);
+    const u = uses(sel);
+    det.innerHTML = `<h4>${sel}${ALIAS[sel] ? ` <span class="small">10–10 name ${ALIAS[sel]}</span>` : ''}</h4>
+      <p><b>${m[1]}</b> → ${REG[m[1]]}<br><b>${m[2]}</b> → ${side}</p>
+      <div class="tagrow">${u.length ? u.map(k => chip(PNAME[k], 'info')).join('') : chip('Not a main electrode for the paradigms here', 'neutral')}</div>
+      ${par !== 'none' ? `<p class="small">${SETS[par].t}</p>` : ''}`;
+  }
+  function choose(n) { sel = sel === n ? null : n; render(); }
+  svg.addEventListener('click', e => { const g = e.target.closest('.el'); if (g) choose(g.dataset.n); });
+  svg.addEventListener('keydown', e => { const g = e.target.closest('.el'); if (g && (e.key === 'Enter' || e.key === ' ')) { e.preventDefault(); choose(g.dataset.n); } });
+  segGroup($('#tt-par'), 'p', v => { par = v; render(); });
+  render();
+})();
+
+/* ════════════ Chapter 4: rhythm synthesizer ════════════ */
+(function synth() {
+  const fs = 256, n = 1024;
+  const BANDS = [
+    { k: 'delta', sym: 'δ', name: 'Delta', lo: 1, hi: 4, shape: f => (f < 0.5 ? 0 : peak(2, 0.9)(f)) },
+    { k: 'theta', sym: 'θ', name: 'Theta', lo: 4, hi: 8, shape: peak(6, 1) },
+    { k: 'alpha', sym: 'α', name: 'Alpha', lo: 8, hi: 13, shape: peak(10, 0.8) },
+    { k: 'beta', sym: 'β', name: 'Beta', lo: 13, hi: 30, shape: peak(20, 4) },
+    { k: 'gamma', sym: 'γ', name: 'Gamma', lo: 30, hi: 45, shape: peak(40, 4) }
+  ];
+  const PRE = { open: [3, 3, 5, 4, 1], closed: [3, 3, 18, 3, 1], drowsy: [5, 10, 4, 2, 1], sws: [30, 6, 2, 1, 0.5], focus: [3, 4, 3, 8, 2] };
+  let seed = 11, comps, bg, x, spec;
+  function gen() {
+    const r = rng(seed);
+    comps = BANDS.map(b => specNoise(n, fs, b.shape, r));
+    bg = specNoise(n, fs, pinkShape(1.6, 0.5), r);
+  }
+  const sl = BANDS.map(b => $('#syn-' + b.k));
+  function compute() {
+    x = new Float64Array(n);
+    const amps = sl.map(s => +s.value);
+    for (let i = 0; i < n; i++) { let v = 3 * bg[i]; for (let b = 0; b < 5; b++) v += amps[b] * comps[b][i]; x[i] = v; }
+    spec = welch(x, fs, 256);
+  }
+  const PT = plot('syn-time', p => {
+    let mx = 0; for (let i = 0; i < n; i++) mx = Math.max(mx, Math.abs(x[i]));
+    const Ym = niceMax(mx * 1.1, [20, 40, 60, 100, 150, 200]);
+    const f = frame(p, { x0: 0, x1: 4, y0: -Ym, y1: Ym, xt: [0, 1, 2, 3, 4], yt: [-Ym, 0, Ym], xf: v => v + ' s', yl: 'µV', b: 24 });
+    f.clip(); poly(p.ctx, n, i => f.X(i / fs), i => f.Y(x[i]), C.trace, 1.2); f.unclip();
+  });
+  const PS = plot('syn-spec', p => {
+    const { ctx } = p;
+    const f = frame(p, { x0: 0.5, x1: 46, y0: 0.05, y1: 50, ylog: true, xt: [1, 4, 8, 13, 20, 30, 40], yt: [0.1, 1, 10], yf: v => String(v), xl: 'frequency (Hz)', yl: 'amplitude (µV, log)' });
+    f.clip();
+    BANDS.forEach(b => {
+      ctx.fillStyle = rgba(C[b.k], 0.12); ctx.fillRect(f.X(b.lo), f.T, f.X(b.hi) - f.X(b.lo), f.H);
+      label(ctx, b.sym, (f.X(b.lo) + f.X(b.hi)) / 2, f.T + 4, C[b.k], 'center', 'top', `600 13px ${SANS}`);
+    });
+    const a = spec.a, df = spec.df, k1 = Math.floor(46 / df);
+    poly(ctx, k1, i => f.X((i + 1) * df), i => f.Y(Math.max(0.05, a[i + 1])), C.ink, 1.6);
+    f.unclip();
+  });
+  function readouts() {
+    const a = spec.a, df = spec.df;
+    const pw = BANDS.map(b => { let s = 0; for (let k = 0; k < a.length; k++) { const fq = k * df; if (fq >= b.lo && fq < b.hi) s += a[k] * a[k]; } return s; });
+    const tot = pw.reduce((s, v) => s + v, 0) || 1;
+    const top = pw.indexOf(Math.max(...pw));
+    $('#syn-ro').innerHTML = BANDS.map((b, i) => `<div class="ro"><span class="b-${b.k}">${b.name} ${b.sym} power</span><b>${Math.round(pw[i] / tot * 100)}<small>%</small></b></div>`).join('') +
+      `<div class="ro"><span>Dominant band</span><b>${chip(BANDS[top].name + ' ' + BANDS[top].sym, 'info')}</b></div>`;
+  }
+  function update() {
+    sl.forEach((s, i) => { $('#syn-' + BANDS[i].k + '-o').textContent = nf(+s.value, +s.value % 1 ? 1 : 0) + ' µV'; });
+    compute(); readouts(); PT.render(); PS.render();
+  }
+  const u = raf(update);
+  const presetBtns = $$('#syn-presets [data-pre]');
+  sl.forEach(s => s.addEventListener('input', () => { presetBtns.forEach(b => toggle(b, false)); u(); }));
+  presetBtns.forEach(b => b.addEventListener('click', () => {
+    PRE[b.dataset.pre].forEach((v, i) => { sl[i].value = v; });
+    presetBtns.forEach(o => toggle(o, o === b)); update();
+  }));
+  $('#syn-reseed').addEventListener('click', () => { seed++; gen(); update(); });
+  gen(); update();
+})();
+
+/* ════════════ Chapter 5: filter bench ════════════ */
+(function filters() {
+  const fs = 256, n = 2048, T = n / fs;
+  const r = rng(505);
+  const clean = new Float64Array(n);
+  { const bgn = specNoise(n, fs, pinkShape(1.6, 0.5), r), al = specNoise(n, fs, peak(10, 0.8), r), be = specNoise(n, fs, peak(20, 4), r);
+    for (let i = 0; i < n; i++) clean[i] = 6 * bgn[i] + 7 * al[i] + 2.5 * be[i]; }
+  const ART = {};
+  ART.blink = new Float64Array(n);
+  [1.3, 4.1, 6.5].forEach((t0, j) => { const A = [110, 95, 120][j]; for (let i = 0; i < n; i++) { const u = (i / fs - t0) / 0.4; if (u >= 0 && u <= 1) ART.blink[i] += A * Math.sin(Math.PI * u) ** 2; } });
+  ART.emg = new Float64Array(n);
+  { const e = specNoise(n, fs, bandShape(25, 110, 4), r);
+    const env = t => { const s = (a, b, t) => clamp((t - a) / 0.15, 0, 1) * clamp((b - t) / 0.15, 0, 1); return Math.max(s(2.2, 3.4, t), s(5.6, 6.2, t)); };
+    for (let i = 0; i < n; i++) ART.emg[i] = 30 * e[i] * env(i / fs); }
+  ART.line = new Float64Array(n);
+  for (let i = 0; i < n; i++) ART.line[i] = 18 * Math.sin(TAU * 60 * i / fs + 0.7);
+  ART.drift = new Float64Array(n);
+  { const d = specNoise(n, fs, f => (f < 0.05 ? 0 : peak(0.15, 0.12)(f)), r);
+    for (let i = 0; i < n; i++) ART.drift[i] = 30 * d[i] + 25 * (i / n - 0.5); }
+  const NAMES = { blink: 'Eye blinks', emg: 'Muscle', line: '60 Hz mains', drift: 'Baseline drift' };
+  const FILT = { hp: butter('hp', 1, fs), lp: butter('lp', 40, fs), notch: [bq('notch', 60, fs, 20)] };
+  const artBtns = $$('#flt-arts button'), fBtns = $$('#flt-filters button');
+  let raw, out, sRaw, sOut;
+  const chain = () => fBtns.filter(pressed).flatMap(b => FILT[b.dataset.f]);
+  const apply = x => { const c = chain(); return c.length ? filtfilt(x, c) : x.slice(); };
+  function compute() {
+    const on = artBtns.filter(pressed).map(b => b.dataset.a);
+    raw = clean.slice(); on.forEach(k => { for (let i = 0; i < n; i++) raw[i] += ART[k][i]; });
+    out = apply(raw);
+    sRaw = welch(raw, fs, 512); sOut = welch(out, fs, 512);
+    const res = on.map(k => { const y = apply(ART[k]); return { k, pct: rms(y) / rms(ART[k]) * 100 }; });
+    const errB = (() => { let s = 0; for (let i = 0; i < n; i++) s += (raw[i] - clean[i]) ** 2; return Math.sqrt(s / n); })();
+    const errA = (() => { let s = 0; for (let i = 0; i < n; i++) s += (out[i] - clean[i]) ** 2; return Math.sqrt(s / n); })();
+    $('#flt-res').innerHTML = (res.length ? res.map(o => chip(`${NAMES[o.k]}: ${o.pct < 1 ? 'under 1%' : Math.round(o.pct) + '%'} left`, o.pct < 15 ? 'ok' : o.pct < 60 ? 'warn' : 'bad')).join('') : chip('No artifacts mixed in', 'neutral')) +
+      chip(`Difference from clean EEG ${nf(errB, 1)} → ${nf(errA, 1)} µV`, 'info');
+    const fon = fBtns.filter(pressed).map(b => b.dataset.f), notes = [];
+    if (!fon.length) notes.push('Switch the filters on one at a time. Each artifact responds to a different filter.');
+    const pr = k => (res.find(o => o.k === k) || {}).pct;
+    if (on.includes('blink') && fon.includes('hp')) notes.push(`Even with the high-pass filter on, ${Math.round(pr('blink'))}% of the blink artifact remains. Blinks overlap the delta band, which is why regression or ICA is used.`);
+    if (on.includes('emg') && fon.includes('lp')) notes.push(`After the 40 Hz low-pass filter, ${Math.round(pr('emg'))}% of the muscle noise remains. What is left lies at 25–40 Hz, inside the beta and gamma bands, where it cannot be told apart from brain activity.`);
+    if (fon.includes('hp')) notes.push('The high-pass filter also removes slow brain activity below 1 Hz.');
+    $('#flt-note').textContent = notes.slice(0, 2).join(' ');
+  }
+  const PT = plot('flt-time', p => {
+    let mx = 0; for (let i = 0; i < n; i++) mx = Math.max(mx, Math.abs(raw[i]), Math.abs(out[i]));
+    const Ym = niceMax(mx * 1.05, [40, 60, 100, 150, 200, 250, 300]);
+    const f = frame(p, { x0: 0, x1: T, y0: -Ym, y1: Ym, xt: [0, 2, 4, 6, 8], yt: [-Ym, 0, Ym], xf: v => v + ' s', yl: 'Fp1 (µV)', b: 24 });
+    f.clip();
+    poly(p.ctx, n, i => f.X(i / fs), i => f.Y(raw[i]), rgba(C.muted, 0.55), 1);
+    poly(p.ctx, n, i => f.X(i / fs), i => f.Y(clean[i]), C.alpha, 1);
+    poly(p.ctx, n, i => f.X(i / fs), i => f.Y(out[i]), C.trace, 1.3);
+    f.unclip();
+  });
+  const PS = plot('flt-spec', p => {
+    const f = frame(p, { x0: 0, x1: 128, y0: 0.01, y1: 100, ylog: true, xt: [0, 20, 40, 60, 80, 100, 120], yt: [0.01, 0.1, 1, 10, 100], yf: v => String(v), xl: 'frequency (Hz)', yl: 'amplitude (µV, log)' });
+    f.clip();
+    [40, 60].forEach(v => vline(p.ctx, f.X(v), f.T, f.H, C.grid, [3, 3]));
+    const k = sRaw.a.length;
+    poly(p.ctx, k - 1, i => f.X((i + 1) * sRaw.df), i => f.Y(Math.max(0.01, sRaw.a[i + 1])), rgba(C.muted, 0.7), 1.1);
+    poly(p.ctx, k - 1, i => f.X((i + 1) * sOut.df), i => f.Y(Math.max(0.01, sOut.a[i + 1])), C.trace, 1.5);
+    f.unclip();
+  });
+  function update() { compute(); PT.render(); PS.render(); }
+  [...artBtns, ...fBtns].forEach(b => b.addEventListener('click', () => { toggle(b, !pressed(b)); update(); }));
+  update();
+})();
+
+})();
+
+</script>
+<script>
+(() => {
+'use strict';
+const { $, $$, TAU, clamp, nf, MONO, SANS, rng, gauss, C, rgba, plot, raf, frame, poly, vline, niceMax, label,
+  specNoise, peak, pinkShape, filtfilt, butter, Phi, bitsPerSel, segGroup, toggle, pressed, chip, ro } = window.BCI;
+
+/* ════════════ Chapter 6: ERD simulation ════════════ */
+(function erd() {
+  const fs = 128, n = 896, NT = 60, t0 = -2;
+  const CH = ['C3', 'Cz', 'C4'];
+  const EFF = { right: [-45, -5, -10], left: [-10, -5, -45], foot: [20, -35, 20] };
+  const bp = [...butter('hp', 8, fs), ...butter('lp', 13, fs)];
+  let task = 'right', seed = 3, pw = null, curves = null;
+  const env = t => {
+    const ss = u => { u = clamp(u, 0, 1); return u * u * (3 - 2 * u); };
+    return ss((t - 0.3) / 0.7) * (1 - ss((t - 4.0) / 0.8));
+  };
+  function gen() {
+    const r = rng(seed * 7919 + task.length * 31);
+    pw = CH.map(() => []);
+    for (let tr = 0; tr < NT; tr++) {
+      CH.forEach((c, ci) => {
+        const mu = specNoise(1024, fs, peak(10.5, 1.0), r), bg = specNoise(1024, fs, pinkShape(1.6, 0.5), r);
+        const pct = EFF[task][ci] * (0.6 + 0.8 * r());
+        const gT = Math.sqrt(Math.max(0.05, 1 + pct / 100));
+        const x = new Float64Array(n);
+        for (let i = 0; i < n; i++) { const t = t0 + i / fs; x[i] = 6 * mu[i] * (1 + (gT - 1) * env(t)) + 3 * bg[i]; }
+        const y = filtfilt(x, bp);
+        const p = new Float32Array(n); for (let i = 0; i < n; i++) p[i] = y[i] * y[i];
+        pw[ci].push(p);
+      });
+    }
+  }
+  function average() {
+    const N = +$('#erd-n').value, half = 32;
+    curves = CH.map((c, ci) => {
+      const m = new Float64Array(n);
+      for (let tr = 0; tr < N; tr++) { const p = pw[ci][tr]; for (let i = 0; i < n; i++) m[i] += p[i] / N; }
+      const sm = new Float64Array(n);
+      for (let i = 0; i < n; i++) { let s = 0, k = 0; for (let j = Math.max(0, i - half); j < Math.min(n, i + half); j++) { s += m[j]; k++; } sm[i] = s / k; }
+      let R = 0, k = 0; for (let i = 0; i < n; i++) { const t = t0 + i / fs; if (t >= -1.75 && t <= -0.5) { R += sm[i]; k++; } }
+      R /= k;
+      const e = new Float64Array(n); for (let i = 0; i < n; i++) e[i] = (sm[i] - R) / R * 100;
+      let a = 0, ka = 0; for (let i = 0; i < n; i++) { const t = t0 + i / fs; if (t >= 0.5 && t <= 4) { a += e[i]; ka++; } }
+      return { e, mean: a / ka };
+    });
+  }
+  const P = CH.map((c, ci) => plot('erd-' + c, p => {
+    if (!curves) return;
+    const f = frame(p, { l: 40, r: 8, t: 22, b: 24, x0: -2, x1: 5, y0: -80, y1: 60, xt: [-2, 0, 2, 4], yt: [-60, -30, 0, 30], xf: v => v + 's', yf: v => (v > 0 ? '+' : '') + v });
+    const { ctx } = p;
+    ctx.fillStyle = rgba(C.muted, 0.12); ctx.fillRect(f.X(-1.75), f.T, f.X(-0.5) - f.X(-1.75), f.H);
+    ctx.strokeStyle = C.line; ctx.beginPath(); ctx.moveTo(f.L, Math.round(f.Y(0)) + 0.5); ctx.lineTo(f.L + f.W, Math.round(f.Y(0)) + 0.5); ctx.stroke();
+    vline(ctx, f.X(0), f.T, f.H, C.mark, null, 1.5);
+    f.clip(); poly(ctx, n, i => f.X(t0 + i / fs), i => f.Y(clamp(curves[ci].e[i], -90, 70)), C.trace, 1.8); f.unclip();
+    label(ctx, c, 4, 4, C.ink, 'left', 'top', `600 12px ${MONO}`);
+    label(ctx, 'ERD/ERS %', p.w - 8, 5, C.muted, 'right', 'top', `11px ${MONO}`);
+  }));
+  function readouts() {
+    $('#erd-ro').innerHTML = CH.map((c, ci) => {
+      const m = curves[ci].mean, k = m <= -15 ? ['ERD', 'info'] : m >= 10 ? ['ERS', 'warn'] : ['Small change', 'neutral'];
+      return `<div class="ro"><span>${c} mean (0.5–4 s)</span><b>${m > 0 ? '+' : ''}${Math.round(m)}<small>%</small> ${chip(k[0], k[1])}</b></div>`;
+    }).join('');
+  }
+  function update() { $('#erd-n-o').textContent = $('#erd-n').value; average(); readouts(); P.forEach(p => p.render()); }
+  const u = raf(update);
+  $('#erd-n').addEventListener('input', u);
+  segGroup($('#erd-task'), 't', v => { task = v; gen(); update(); });
+  $('#erd-reseed').addEventListener('click', () => { seed++; gen(); update(); });
+  gen(); update();
+})();
+
+/* ════════════ Chapter 6: CSP ════════════ */
+(function csp() {
+  const NPT = 300;
+  let seed = 9, zA, zB, RA, RB, W, lam, A, B;
+  function draw() { const r = rng(seed); zA = Array.from({ length: NPT }, () => [gauss(r), gauss(r)]); zB = Array.from({ length: NPT }, () => [gauss(r), gauss(r)]); }
+  function eig2(a, b, c) {
+    const tr = a + c, det = a * c - b * b, disc = Math.sqrt(Math.max(0, tr * tr / 4 - det));
+    const l1 = tr / 2 + disc, l2 = tr / 2 - disc;
+    let v = Math.abs(b) > 1e-12 ? [l1 - c, b] : (a >= c ? [1, 0] : [0, 1]);
+    const nn = Math.hypot(v[0], v[1]); v = [v[0] / nn, v[1] / nn];
+    return { l: [l1, l2], v: [v, [-v[1], v[0]]] };
+  }
+  const cov = pts => { let a = 0, b = 0, c = 0, mx = 0, my = 0; pts.forEach(p => { mx += p[0]; my += p[1]; }); mx /= pts.length; my /= pts.length;
+    pts.forEach(p => { const x = p[0] - mx, y = p[1] - my; a += x * x; b += x * y; c += y * y; }); const k = pts.length - 1; return [a / k, b / k, c / k]; };
+  const quad = (R, w) => R[0] * w[0] * w[0] + 2 * R[1] * w[0] * w[1] + R[2] * w[1] * w[1];
+  function compute() {
+    const ang = +$('#csp-ang').value * Math.PI / 180, ani = +$('#csp-ani').value, thA = 20 * Math.PI / 180, thB = thA + ang;
+    const tf = (z, th) => { const x = ani * z[0], y = z[1]; return [Math.cos(th) * x - Math.sin(th) * y, Math.sin(th) * x + Math.cos(th) * y]; };
+    A = zA.map(z => tf(z, thA)); B = zB.map(z => tf(z, thB));
+    RA = cov(A); RB = cov(B);
+    const Rc = [RA[0] + RB[0], RA[1] + RB[1], RA[2] + RB[2]];
+    const e = eig2(Rc[0], Rc[1], Rc[2]);
+    const Pm = [[e.v[0][0] / Math.sqrt(e.l[0]), e.v[0][1] / Math.sqrt(e.l[0])], [e.v[1][0] / Math.sqrt(e.l[1]), e.v[1][1] / Math.sqrt(e.l[1])]];
+    const S = (() => { const m = [[0, 0], [0, 0]]; const R = [[RA[0], RA[1]], [RA[1], RA[2]]];
+      for (let i = 0; i < 2; i++) for (let j = 0; j < 2; j++) { let s = 0; for (let k = 0; k < 2; k++) for (let l = 0; l < 2; l++) s += Pm[i][k] * R[k][l] * Pm[j][l]; m[i][j] = s; } return m; })();
+    const es = eig2(S[0][0], S[0][1], S[1][1]);
+    lam = es.l;
+    W = es.v.map(v => { const w = [Pm[0][0] * v[0] + Pm[1][0] * v[1], Pm[0][1] * v[0] + Pm[1][1] * v[1]]; const nn = Math.hypot(w[0], w[1]); return [w[0] / nn, w[1] / nn]; });
+  }
+  const PS = plot('csp-scatter', p => {
+    const { ctx, w, h } = p, side = Math.min(w, h) - 30, ox = (w - side) / 2 + 8, oy = 6;
+    const lim = 3.4 * Math.max(1, +$('#csp-ani').value);
+    const X = v => ox + (v + lim) / (2 * lim) * side, Y = v => oy + (lim - v) / (2 * lim) * side;
+    ctx.fillStyle = C.panel; ctx.fillRect(ox, oy, side, side);
+    ctx.strokeStyle = C.grid; ctx.beginPath(); ctx.moveTo(X(0), oy); ctx.lineTo(X(0), oy + side); ctx.moveTo(ox, Y(0)); ctx.lineTo(ox + side, Y(0)); ctx.stroke();
+    ctx.strokeStyle = C.line; ctx.strokeRect(ox + 0.5, oy + 0.5, side - 1, side - 1);
+    ctx.save(); ctx.beginPath(); ctx.rect(ox, oy, side, side); ctx.clip();
+    [[A, C.trace], [B, C.mark]].forEach(([pts, col]) => { ctx.fillStyle = rgba(col, 0.42); pts.forEach(q => { ctx.beginPath(); ctx.arc(X(q[0]), Y(q[1]), 1.8, 0, TAU); ctx.fill(); }); });
+    W.forEach((wv, i) => {
+      ctx.strokeStyle = C.ink; ctx.lineWidth = 2; ctx.setLineDash(i ? [6, 5] : []);
+      ctx.beginPath(); ctx.moveTo(X(-wv[0] * lim * 1.5), Y(-wv[1] * lim * 1.5)); ctx.lineTo(X(wv[0] * lim * 1.5), Y(wv[1] * lim * 1.5)); ctx.stroke();
+      ctx.setLineDash([]);
+      label(ctx, i ? 'w₂' : 'w₁', X(wv[0] * lim * 0.86), Y(wv[1] * lim * 0.86) - 8, C.ink, 'center', 'bottom', `600 13px ${SANS}`);
+    });
+    ctx.restore();
+    label(ctx, 'C3 →', ox + side - 4, oy + side + 4, C.muted, 'right', 'top', `11px ${MONO}`);
+    label(ctx, '↑ C4', ox - 4, oy + 2, C.muted, 'right', 'top', `11px ${MONO}`);
+  });
+  const PB = plot('csp-bars', p => {
+    const { ctx } = p;
+    const items = [['C3', [1, 0]], ['C4', [0, 1]], ['CSP w₁', W[0]], ['CSP w₂', W[1]]];
+    const f = frame(p, { l: 40, r: 8, t: 24, b: 26, x0: 0, x1: 4, y0: 0, y1: 1, yt: [0, 0.5, 1], yf: v => Math.round(v * 100) + '%', yl: 'variance share (A + B = 100%)' });
+    const bw = f.W / 4;
+    items.forEach(([name, wv], i) => {
+      const a = quad(RA, wv), b = quad(RB, wv), s = a + b, fa = a / s, fb = b / s;
+      const x = f.L + bw * i + bw * 0.18, bwi = bw * 0.3;
+      ctx.fillStyle = C.trace; ctx.fillRect(x, f.Y(fa), bwi, f.Y(0) - f.Y(fa));
+      ctx.fillStyle = C.mark; ctx.fillRect(x + bwi + 2, f.Y(fb), bwi, f.Y(0) - f.Y(fb));
+      label(ctx, name, f.L + bw * (i + 0.5), f.T + f.H + 6, C.ink, 'center', 'top', `${i > 1 ? 600 : 400} 11.5px ${MONO}`);
+    });
+  });
+  function update() {
+    $('#csp-ang-o').textContent = $('#csp-ang').value + '°';
+    $('#csp-ani-o').textContent = nf(+$('#csp-ani').value, 1);
+    compute();
+    const ratio = wv => quad(RA, wv) / quad(RB, wv);
+    const best = Math.max(ratio([1, 0]), 1 / ratio([1, 0]), ratio([0, 1]), 1 / ratio([0, 1]));
+    const r1 = ratio(W[0]), r2 = 1 / ratio(W[1]);
+    $('#csp-note').textContent = +$('#csp-ang').value === 0 || +$('#csp-ani').value <= 1.05
+      ? 'When both classes spread the same way, every projection gives a variance ratio near 1. CSP has no information to use.'
+      : `Projected onto w₁, the variance ratio A÷B is ${nf(r1, 1)}, and on w₂ the ratio B÷A is ${nf(r2, 1)}. The best raw channel reaches only ${nf(best, 1)}. λ₁ = ${nf(lam[0], 2)}, λ₂ = ${nf(lam[1], 2)}.`;
+    PS.render(); PB.render();
+  }
+  const u = raf(update);
+  $('#csp-ang').addEventListener('input', u); $('#csp-ani').addEventListener('input', u);
+  $('#csp-reseed').addEventListener('click', () => { seed++; draw(); update(); });
+  draw(); update();
+})();
+
+/* ════════════ Chapter 7: LDA and session change ════════════ */
+(function lda() {
+  const RHO = 0.7, NTEST = 250, SHIFT = [0.9, 0.55];
+  let seed = 21, trZ, teZ, st = { shift: false, adapt: false };
+  function draw() { const r = rng(seed); const g = () => [gauss(r), gauss(r)]; trZ = [Array.from({ length: 120 }, g), Array.from({ length: 120 }, g)]; teZ = [Array.from({ length: NTEST }, g), Array.from({ length: NTEST }, g)]; }
+  const L = [[1, 0], [RHO, Math.sqrt(1 - RHO * RHO)]];
+  const mapZ = (z, mu, sh) => [mu[0] + L[0][0] * z[0] + (sh ? SHIFT[0] : 0), mu[1] + L[1][0] * z[0] + L[1][1] * z[1] + (sh ? SHIFT[1] : 0)];
+  let tr, te, w, k, kAd, accTr, accTe;
+  function compute() {
+    const s = +$('#lda-sep').value, nT = +$('#lda-n').value;
+    const mu = [[0.35 * s, -0.35 * s], [-0.35 * s, 0.35 * s]];
+    tr = [0, 1].map(c => trZ[c].slice(0, nT).map(z => mapZ(z, mu[c], false)));
+    te = [0, 1].map(c => teZ[c].map(z => mapZ(z, mu[c], st.shift)));
+    const m = tr.map(pts => [pts.reduce((a, p) => a + p[0], 0) / pts.length, pts.reduce((a, p) => a + p[1], 0) / pts.length]);
+    let a = 0, b = 0, d = 0, cnt = 0;
+    tr.forEach((pts, c) => pts.forEach(p => { const x = p[0] - m[c][0], y = p[1] - m[c][1]; a += x * x; b += x * y; d += y * y; cnt++; }));
+    a = a / Math.max(1, cnt - 2) + 1e-3; b /= Math.max(1, cnt - 2); d = d / Math.max(1, cnt - 2) + 1e-3;
+    const det = a * d - b * b, inv = [[d / det, -b / det], [-b / det, a / det]];
+    const dm = [m[0][0] - m[1][0], m[0][1] - m[1][1]];
+    w = [inv[0][0] * dm[0] + inv[0][1] * dm[1], inv[1][0] * dm[0] + inv[1][1] * dm[1]];
+    k = (w[0] * (m[0][0] + m[1][0]) + w[1] * (m[0][1] + m[1][1])) / 2;
+    const all = [...te[0], ...te[1]];
+    kAd = all.reduce((s2, p) => s2 + w[0] * p[0] + w[1] * p[1], 0) / all.length;
+    const acc = (sets, kk) => { let ok = 0, n = 0; sets.forEach((pts, c) => pts.forEach(p => { const y = w[0] * p[0] + w[1] * p[1] > kk ? 0 : 1; ok += y === c; n++; })); return ok / n * 100; };
+    accTr = acc(tr, k); accTe = acc(te, st.adapt ? kAd : k);
+  }
+  const P = plot('lda-cv', p => {
+    const { ctx, w: cw, h } = p, side = Math.min(cw - 50, h - 30), ox = Math.max(40, (cw - side) / 2), oy = 6;
+    const lo = -3.6, hi = 4.6, X = v => ox + (v - lo) / (hi - lo) * side, Y = v => oy + (hi - v) / (hi - lo) * side;
+    ctx.fillStyle = C.panel; ctx.fillRect(ox, oy, side, side);
+    ctx.strokeStyle = C.grid; ctx.lineWidth = 1;
+    for (let v = -3; v <= 4; v++) { ctx.beginPath(); ctx.moveTo(X(v), oy); ctx.lineTo(X(v), oy + side); ctx.moveTo(ox, Y(v)); ctx.lineTo(ox + side, Y(v)); ctx.stroke(); }
+    ctx.strokeStyle = C.line; ctx.strokeRect(ox + 0.5, oy + 0.5, side - 1, side - 1);
+    ctx.save(); ctx.beginPath(); ctx.rect(ox, oy, side, side); ctx.clip();
+    const cols = [C.trace, C.mark];
+    te.forEach((pts, c) => { ctx.strokeStyle = rgba(cols[c], 0.5); ctx.lineWidth = 1; pts.forEach(q => { ctx.beginPath(); ctx.arc(X(q[0]), Y(q[1]), 2.6, 0, TAU); ctx.stroke(); }); });
+    tr.forEach((pts, c) => { ctx.fillStyle = cols[c]; pts.forEach(q => { ctx.beginPath(); ctx.arc(X(q[0]), Y(q[1]), 3.4, 0, TAU); ctx.fill(); }); });
+    const line = (kk, col, dash) => {
+      const nn = w[0] * w[0] + w[1] * w[1], p0 = [w[0] * kk / nn, w[1] * kk / nn], d = [-w[1], w[0]], s = 20 / Math.sqrt(nn);
+      ctx.strokeStyle = col; ctx.lineWidth = 2; ctx.setLineDash(dash || []);
+      ctx.beginPath(); ctx.moveTo(X(p0[0] - d[0] * s), Y(p0[1] - d[1] * s)); ctx.lineTo(X(p0[0] + d[0] * s), Y(p0[1] + d[1] * s)); ctx.stroke(); ctx.setLineDash([]);
+    };
+    if (st.adapt) line(k, rgba(C.ink, 0.35), [5, 5]);
+    line(st.adapt ? kAd : k, C.ink);
+    ctx.restore();
+    label(ctx, 'C3 mu power (log) →', ox + side, oy + side + 6, C.muted, 'right', 'top', `11px ${MONO}`);
+    ctx.save(); ctx.translate(ox - 10, oy + side / 2); ctx.rotate(-Math.PI / 2); label(ctx, 'C4 mu power (log) →', 0, 0, C.muted, 'center', 'bottom', `11px ${MONO}`); ctx.restore();
+  });
+  function update() {
+    $('#lda-sep-o').textContent = nf(+$('#lda-sep').value, 1);
+    $('#lda-n-o').textContent = $('#lda-n').value;
+    compute();
+    const gap = accTr - accTe;
+    let state;
+    if (st.shift && !st.adapt && accTe < accTr - 8) state = chip('Session change hurts accuracy', 'bad');
+    else if (st.shift && st.adapt) state = chip('Mean adaptation moved the boundary', 'ok');
+    else if (gap > 8) state = chip('Possible overfitting', 'warn');
+    else state = chip('Generalizes well', 'ok');
+    $('#lda-ro').innerHTML = ro('Training accuracy', `${nf(accTr, 1)}<small>%</small>`) + ro('Test accuracy', `${nf(accTe, 1)}<small>%</small>`) + ro('State', state);
+    const notes = [];
+    if (+$('#lda-n').value <= 8) notes.push('With few training trials, the boundary fits the training points too closely and test accuracy jumps around. Draw new data a few times.');
+    if (st.shift && !st.adapt) notes.push('On the next day both classes moved up and to the right together. Yesterday’s boundary now pushes most trials into one class. Turn on mean adaptation.');
+    if (st.shift && st.adapt) notes.push('The threshold k moved to the mean of the new, unlabeled data (the dashed line is the original boundary). This is the mean adaptation that Wolpaw ch. 8 calls easy. It is not enough when the covariance changes.');
+    if (!notes.length) notes.push('Correlation between the channels (ρ = 0.7) tilts the boundary away from the perpendicular to the line joining the means. Σ⁻¹ corrects for this correlation.');
+    $('#lda-note').textContent = notes.join(' ');
+    P.render();
+  }
+  const u = raf(update);
+  $('#lda-sep').addEventListener('input', u); $('#lda-n').addEventListener('input', u);
+  $('#lda-shift').addEventListener('click', e => { st.shift = !st.shift; toggle(e.currentTarget, st.shift); update(); });
+  $('#lda-adapt').addEventListener('click', e => { st.adapt = !st.adapt; toggle(e.currentTarget, st.adapt); e.currentTarget.textContent = st.adapt ? 'Turn off mean adaptation' : 'Turn on mean adaptation'; update(); });
+  $('#lda-reseed').addEventListener('click', () => { seed++; draw(); update(); });
+  draw(); update();
+})();
+
+/* ════════════ Chapter 8: P300 averaging ════════════ */
+(function p300() {
+  const fs = 250, n = 226, t0 = -0.1;
+  const g = (t, m, s) => Math.exp(-0.5 * ((t - m) / s) ** 2);
+  const SC = { Fz: 0.45, Cz: 0.75, Pz: 1 };
+  let el = 'Pz', seed = 4, tgtN, nonN;
+  function draw() {
+    const r = rng(seed * 101);
+    const sh = f => pinkShape(1.5, 0.5)(f) + 0.6 * peak(10, 0.9)(f);
+    tgtN = Array.from({ length: 64 }, () => specNoise(256, fs, sh, r));
+    nonN = Array.from({ length: 256 }, () => specNoise(256, fs, sh, r));
+  }
+  const tmpl = (t, target) => -2.5 * g(t, 0.1, 0.025) + 2 * g(t, 0.18, 0.03) - (target ? 2 : 1) * g(t, 0.24, 0.03) + (target ? 8 * SC[el] : 0.6) * g(t, 0.35, 0.075);
+  let avT, avN, N;
+  function compute() {
+    N = 2 ** +$('#p3-n').value;
+    avT = new Float64Array(n); avN = new Float64Array(n);
+    for (let i = 0; i < n; i++) {
+      const t = t0 + i / fs;
+      let s = 0; for (let k = 0; k < N; k++) s += 10 * tgtN[k][i]; avT[i] = tmpl(t, true) + s / N;
+      let s2 = 0; for (let k = 0; k < 4 * N; k++) s2 += 10 * nonN[k][i]; avN[i] = tmpl(t, false) + s2 / (4 * N);
+    }
+  }
+  const P = plot('p3-cv', p => {
+    let mx = 0; for (let i = 0; i < n; i++) mx = Math.max(mx, Math.abs(avT[i]), Math.abs(avN[i]));
+    const Ym = niceMax(mx * 1.1, [10, 15, 20, 30, 40, 60]);
+    const f = frame(p, { x0: -100, x1: 800, y0: -Ym, y1: Ym, xt: [0, 200, 400, 600, 800], yt: [-Ym, -Ym / 2, 0, Ym / 2, Ym], xf: v => v + '', xl: 'time after stimulus (ms)', yl: el + ' (µV)' });
+    const { ctx } = p;
+    ctx.fillStyle = rgba(C.mark, 0.07); ctx.fillRect(f.X(250), f.T, f.X(500) - f.X(250), f.H);
+    vline(ctx, f.X(0), f.T, f.H, C.mark, [3, 3]);
+    f.clip();
+    poly(ctx, n, i => f.X((t0 + i / fs) * 1000), i => f.Y(avN[i]), C.muted, 1.4);
+    poly(ctx, n, i => f.X((t0 + i / fs) * 1000), i => f.Y(avT[i]), C.mark, 2);
+    f.unclip();
+    label(ctx, 'P300 window', f.X(375), f.T + 4, C.mark, 'center', 'top', `11px ${SANS}`);
+  });
+  function update() {
+    compute();
+    $('#p3-n-o').textContent = N;
+    const win = a => { let s = 0, k = 0; for (let i = 0; i < n; i++) { const t = (t0 + i / fs) * 1000; if (t >= 250 && t <= 500) { s += a[i]; k++; } } return s / k; };
+    const wt = win(avT), wn = win(avN), noise = 10 / Math.sqrt(N), snr = (wt - wn) / noise;
+    $('#p3-ro').innerHTML = ro('Target mean (250–500 ms)', `${nf(wt, 1)}<small> µV</small>`) + ro('Non-target mean', `${nf(wn, 1)}<small> µV</small>`) +
+      ro('Remaining noise 10/√N', `${nf(noise, 1)}<small> µV</small>`) + ro('Signal-to-noise', `${nf(snr, 1)} ${chip(snr > 3 ? 'Clear' : snr > 1.5 ? 'Emerging' : 'Buried in noise', snr > 3 ? 'ok' : snr > 1.5 ? 'warn' : 'bad')}`);
+    P.render();
+  }
+  $('#p3-n').addEventListener('input', raf(update));
+  segGroup($('#p3-el'), 'e', v => { el = v; update(); });
+  $('#p3-reseed').addEventListener('click', () => { seed++; draw(); update(); });
+  draw(); update();
+})();
+
+/* ════════════ Chapter 8: P300 speller ════════════ */
+(function speller() {
+  const CH = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ123456789_'.split('');
+  const SOA = 0.125, PAUSE = 2.5;
+  const grid = $('#sp-grid');
+  grid.innerHTML = CH.map((c, i) => `<button data-i="${i}" aria-label="${c === '_' ? 'space' : c}">${c === '_' ? '␣' : c}</button>`).join('');
+  const btns = $$('button', grid);
+  let target = 0, picked = null, last = 'Nothing selected yet';
+  const r = rng(2024);
+  function pRow(reps, d) {
+    const m = d * Math.sqrt(reps); let s = 0; const dz = 0.04;
+    for (let z = -7; z <= 7; z += dz) s += Math.exp(-z * z / 2) / Math.sqrt(TAU) * Math.pow(Phi(z + m), 5) * dz;
+    return clamp(s, 0, 1);
+  }
+  const acc = (reps, d) => pRow(reps, d) ** 2;
+  const tSel = reps => reps * 12 * SOA + PAUSE;
+  const itr = (reps, d) => bitsPerSel(36, acc(reps, d)) * 60 / tSel(reps);
+  function selectOnce(reps, d) {
+    const tr = Math.floor(target / 6), tc = target % 6;
+    const pick = t => { let best = -1, bv = -Infinity; for (let i = 0; i < 6; i++) { const v = (i === t ? d * reps : 0) + Math.sqrt(reps) * gauss(r); if (v > bv) { bv = v; best = i; } } return best; };
+    return pick(tr) * 6 + pick(tc);
+  }
+  const P = plot('sp-cv', p => {
+    const reps = +$('#sp-reps').value, d = +$('#sp-d').value;
+    const it = Array.from({ length: 15 }, (_, i) => itr(i + 1, d)), mx = niceMax(Math.max(...it) * 1.15, [5, 10, 15, 20, 25, 30, 40, 50, 60]);
+    const f = frame(p, { l: 40, r: 40, t: 22, b: 34, x0: 0.5, x1: 15.5, y0: 0, y1: 100, xt: [1, 3, 5, 7, 9, 11, 13, 15], yt: [0, 25, 50, 75, 100], yf: v => v + '%',
+      xl: 'sequence repetitions', yl: 'accuracy', y2: { ticks: [0, 50, 100], f: v => nf(v / 100 * mx, 0), label: 'ITR (bits/min)' } });
+    const { ctx } = p;
+    vline(ctx, f.X(reps), f.T, f.H, C.grid, null, 6);
+    poly(ctx, 15, i => f.X(i + 1), i => f.Y(acc(i + 1, d) * 100), C.ink, 2);
+    poly(ctx, 15, i => f.X(i + 1), i => f.Y(it[i] / mx * 100), C.trace, 2, [6, 4]);
+    for (let i = 0; i < 15; i++) {
+      ctx.fillStyle = C.ink; ctx.beginPath(); ctx.arc(f.X(i + 1), f.Y(acc(i + 1, d) * 100), 2.5, 0, TAU); ctx.fill();
+      ctx.fillStyle = C.trace; ctx.beginPath(); ctx.arc(f.X(i + 1), f.Y(it[i] / mx * 100), 2.5, 0, TAU); ctx.fill();
+    }
+    label(ctx, '— accuracy', f.L + 6, f.T + 4, C.ink, 'left', 'top', `11px ${SANS}`);
+    label(ctx, '- - ITR', f.L + 6, f.T + 18, C.trace, 'left', 'top', `11px ${SANS}`);
+  });
+  function paint() {
+    btns.forEach((b, i) => { b.classList.toggle('target', i === target); b.classList.remove('picked', 'ok', 'no'); });
+    if (picked !== null) btns[picked].classList.add('picked', picked === target ? 'ok' : 'no');
+  }
+  function update() {
+    const reps = +$('#sp-reps').value, d = +$('#sp-d').value;
+    $('#sp-reps-o').textContent = reps; $('#sp-d-o').textContent = nf(d, 2);
+    const a = acc(reps, d), ts = tSel(reps), it = itr(reps, d);
+    let best = 1; for (let k = 2; k <= 15; k++) if (itr(k, d) > itr(best, d)) best = k;
+    $('#sp-ro').innerHTML = ro('Expected accuracy', `${nf(a * 100, 1)}<small>%</small>`) + ro('Time per letter', `${nf(ts, 1)}<small> s</small>`) +
+      ro('Information transfer rate', `${nf(it, 1)}<small> bits/min</small>`) + ro('Repetitions with the highest ITR', `${best}`) + ro('Latest result', last);
+    P.render(); paint();
+  }
+  grid.addEventListener('click', e => { const b = e.target.closest('button'); if (!b) return; target = +b.dataset.i; picked = null; last = 'Nothing selected yet'; update(); });
+  $('#sp-run').addEventListener('click', () => {
+    const reps = +$('#sp-reps').value, d = +$('#sp-d').value;
+    picked = selectOnce(reps, d);
+    last = picked === target ? `${chip('Correct', 'ok')} ${CH[picked]}` : `${chip('Wrong', 'bad')} ${CH[picked]} selected`;
+    update();
+  });
+  $('#sp-run20').addEventListener('click', () => {
+    const reps = +$('#sp-reps').value, d = +$('#sp-d').value;
+    let ok = 0; for (let i = 0; i < 20; i++) { picked = selectOnce(reps, d); ok += picked === target; }
+    last = `${chip(`${ok} of 20 letters correct`, ok >= 14 ? 'ok' : ok >= 8 ? 'warn' : 'bad')}`;
+    update();
+  });
+  const u = raf(update);
+  $('#sp-reps').addEventListener('input', u); $('#sp-d').addEventListener('input', u);
+  update();
+})();
+
+/* ════════════ Chapter 8: SSVEP ════════════ */
+(function ssvep() {
+  const fs = 256, TOT = 12, n = fs * TOT, FREQS = [8, 10, 12, 15], WIN = [0.5, 1, 2, 4];
+  const box = $('#ss-targets');
+  box.innerHTML = FREQS.map(f => `<button data-f="${f}" aria-pressed="${f === 12}"><b>${nf(f, 1)} Hz</b><span>Target ${FREQS.indexOf(f) + 1}</span></button>`).join('') +
+    `<button data-f="0" aria-pressed="false"><b>None</b><span>Looking at nothing</span></button>`;
+  let att = 12, seed = 31, x, spec, thr, feats, decisions;
+  const alphaBtn = $('#ss-alpha');
+  function gen() {
+    const r = rng(seed * 13 + att);
+    const bg = specNoise(4096, fs, pinkShape(1.5, 0.5), r), al = specNoise(4096, fs, peak(10, 0.7), r);
+    const A = +$('#ss-amp').value, aA = pressed(alphaBtn) ? 10 : 3, ph = [r() * TAU, r() * TAU, r() * TAU];
+    x = new Float64Array(n);
+    for (let i = 0; i < n; i++) {
+      const t = i / fs, m = 1 + 0.2 * Math.sin(TAU * 0.3 * t);
+      let v = 5 * bg[i] + aA * al[i];
+      if (att) v += A * m * (Math.sin(TAU * att * t + ph[0]) + 0.5 * Math.sin(TAU * 2 * att * t + ph[1]) + 0.25 * Math.sin(TAU * 3 * att * t + ph[2]));
+      x[i] = v;
+    }
+  }
+  function analyze(end, T) {
+    const nw = Math.round(T * fs), re = new Float64Array(nw), im = new Float64Array(nw);
+    let ws = 0, m = 0; for (let i = 0; i < nw; i++) m += x[end - nw + i]; m /= nw;
+    for (let i = 0; i < nw; i++) { const w = 0.5 - 0.5 * Math.cos(TAU * i / (nw - 1)); re[i] = (x[end - nw + i] - m) * w; ws += w; }
+    window.BCI.fft(re, im);
+    const df = fs / nw, a = new Float64Array(nw / 2 + 1);
+    for (let k = 0; k <= nw / 2; k++) a[k] = 2 * Math.hypot(re[k], im[k]) / ws;
+    let s = 0, c = 0; for (let k = 0; k < a.length; k++) { const f = k * df; if (f >= 4 && f <= 35) { s += a[k]; c++; } }
+    const th = 2 * s / c;
+    const at = f => a[Math.round(f / df)] || 0;
+    const ft = FREQS.map(f => at(f) + at(2 * f));
+    const mx = Math.max(...ft), idx = ft.indexOf(mx);
+    return { a, df, th, ft, dec: mx > th ? FREQS[idx] : 0 };
+  }
+  function compute() {
+    const T = WIN[+$('#ss-win').value];
+    const res = analyze(n, T); spec = res; thr = res.th; feats = res.ft;
+    decisions = [];
+    for (let k = 0; k < 24; k++) { const end = Math.round((T + 0.3 * k + 0.6) * fs); decisions.push(analyze(Math.min(n, end), T).dec); }
+  }
+  const P = plot('ss-cv', p => {
+    const a = spec.a, df = spec.df;
+    let mx = thr; for (let k = 0; k < a.length; k++) { const f = k * df; if (f >= 4 && f <= 35) mx = Math.max(mx, a[k]); }
+    const Ym = niceMax(mx * 1.15, [1, 1.5, 2, 3, 4, 5, 6, 8, 10, 15, 20]);
+    const f = frame(p, { x0: 4, x1: 35, y0: 0, y1: Ym, xt: [5, 10, 15, 20, 25, 30, 35], yt: [0, Ym / 2, Ym], yf: v => nf(v, 1), xl: 'frequency (Hz)', yl: 'O1 amplitude (µV)' });
+    const { ctx } = p;
+    FREQS.forEach(fr => [fr, 2 * fr].forEach((h, j) => { if (h <= 35) vline(ctx, f.X(h), f.T, f.H, fr === att ? rgba(C.mark, j ? 0.45 : 0.8) : C.grid, j ? [2, 3] : [5, 3], fr === att ? 1.5 : 1); }));
+    f.clip();
+    const k0 = Math.ceil(4 / df), k1 = Math.floor(35 / df);
+    poly(ctx, k1 - k0 + 1, i => f.X((k0 + i) * df), i => f.Y(a[k0 + i]), C.ink, 1.6);
+    ctx.strokeStyle = C.trace; ctx.setLineDash([6, 4]); ctx.lineWidth = 1.5;
+    ctx.beginPath(); ctx.moveTo(f.L, f.Y(thr)); ctx.lineTo(f.L + f.W, f.Y(thr)); ctx.stroke(); ctx.setLineDash([]);
+    f.unclip();
+    label(ctx, 'threshold = 2 × mean of 4–35 Hz', f.L + f.W - 4, f.Y(thr) - 3, C.trace, 'right', 'bottom', `11px ${SANS}`);
+  });
+  function update() {
+    $('#ss-amp-o').textContent = nf(+$('#ss-amp').value, 1) + ' µV';
+    const T = WIN[+$('#ss-win').value];
+    $('#ss-win-o').textContent = (T < 1 ? nf(T, 1) : T) + ' s';
+    gen(); compute();
+    let run = 0, prev = -1; const conf = [];
+    const cells = decisions.map((d, i) => {
+      if (d && d === prev) run++; else run = d ? 1 : 0;
+      prev = d;
+      const confirm = d && run === 4; if (confirm) { conf.push(d); run = 0; prev = -1; }
+      const col = d === 0 ? 'var(--grid)' : d === att ? 'var(--ok)' : 'var(--bad)';
+      return `<i style="background:${col};${confirm ? 'outline:2px solid var(--ink);outline-offset:-2px;' : ''}${d === 0 ? 'color:var(--muted)' : ''}" title="decision ${i + 1}">${d ? d : '–'}</i>`;
+    });
+    $('#ss-tl').innerHTML = cells.join('');
+    const correct = decisions.filter(d => d === att).length;
+    const best = feats.indexOf(Math.max(...feats));
+    $('#ss-ro').innerHTML = ro('Decisions matching the target', `${correct}<small> of 24</small>`) +
+      ro('Confirmed selections', conf.length ? conf.map(c => chip(c + ' Hz', c === att ? 'ok' : 'bad')).join(' ') : chip('None', 'neutral')) +
+      ro('Frequency resolution 1/T', `${nf(1 / T, 2)}<small> Hz</small>`) +
+      ro('Largest feature in the last window', `${FREQS[best]} Hz ${chip(feats[best] > thr ? 'Above threshold' : 'Below threshold', feats[best] > thr ? 'info' : 'neutral')}`);
+    P.render();
+  }
+  box.addEventListener('click', e => { const b = e.target.closest('button'); if (!b) return; att = +b.dataset.f; $$('button', box).forEach(o => toggle(o, o === b)); update(); });
+  alphaBtn.addEventListener('click', () => { toggle(alphaBtn, !pressed(alphaBtn)); update(); });
+  const u = raf(update);
+  $('#ss-amp').addEventListener('input', u); $('#ss-win').addEventListener('input', u);
+  update();
+})();
+
+/* ════════════ Chapter 8: population vector ════════════ */
+(function popvec() {
+  const R0 = 20, RMAX = 50, TW = 0.5;
+  let seed = 5, pref, zz;
+  function draw() { const r = rng(seed * 17); pref = Array.from({ length: 200 }, () => r() * TAU); zz = Array.from({ length: 200 }, () => gauss(r)); }
+  function decode(th, N, noise, pd, z) {
+    let dx = 0, dy = 0; const contrib = [];
+    for (let i = 0; i < N; i++) {
+      const rate = R0 + (RMAX - R0) * Math.cos(th - pd[i]);
+      const obs = Math.max(0, rate + noise * Math.sqrt(Math.max(rate, 0) / TW) * z[i]);
+      const wgt = (obs - R0) / RMAX;
+      dx += Math.cos(pd[i]) * wgt; dy += Math.sin(pd[i]) * wgt; contrib.push([pd[i], wgt]);
+    }
+    return { ang: Math.atan2(dy, dx), contrib };
+  }
+  const angErr = (a, b) => { let d = Math.abs(a - b) % TAU; if (d > Math.PI) d = TAU - d; return d * 180 / Math.PI; };
+  let curve = null;
+  const NS = [3, 5, 8, 12, 20, 32, 50, 80, 128, 200];
+  function mkCurve() {
+    const noise = +$('#pv-noise').value, r = rng(99);
+    curve = NS.map(N => { let s = 0; const K = 160;
+      for (let k = 0; k < K; k++) { const pd = Array.from({ length: N }, () => r() * TAU), z = Array.from({ length: N }, () => gauss(r)), th = r() * TAU; s += angErr(decode(th, N, noise, pd, z).ang, th); }
+      return s / K; });
+  }
+  const dirS = $('#pv-dir'), nS = $('#pv-n'), noS = $('#pv-noise');
+  let res;
+  const P = plot('pv-cv', p => {
+    const { ctx, w, h } = p, cx = w / 2, cy = h / 2, R = Math.min(w, h) * 0.42, th = +dirS.value * Math.PI / 180;
+    ctx.strokeStyle = C.line; ctx.lineWidth = 1; ctx.beginPath(); ctx.arc(cx, cy, R, 0, TAU); ctx.stroke();
+    ctx.strokeStyle = C.grid; ctx.beginPath(); ctx.moveTo(cx - R, cy); ctx.lineTo(cx + R, cy); ctx.moveTo(cx, cy - R); ctx.lineTo(cx, cy + R); ctx.stroke();
+    [['0°', R + 14, 0], ['90°', 0, -R - 10], ['180°', -R - 16, 0], ['270°', 0, R + 10]].forEach(([t, dx, dy]) => label(ctx, t, cx + dx, cy + dy, C.muted, 'center', 'middle', `10.5px ${MONO}`));
+    const sc = R / 0.75;
+    res.contrib.forEach(([pd, wg]) => {
+      ctx.strokeStyle = rgba(wg >= 0 ? C.trace : C.muted, 0.55); ctx.lineWidth = 1.2;
+      ctx.beginPath(); ctx.moveTo(cx, cy); ctx.lineTo(cx + Math.cos(pd) * wg * sc, cy - Math.sin(pd) * wg * sc); ctx.stroke();
+    });
+    const arrow = (a, len, col, lw) => {
+      const x = cx + Math.cos(a) * len, y = cy - Math.sin(a) * len;
+      ctx.strokeStyle = col; ctx.fillStyle = col; ctx.lineWidth = lw;
+      ctx.beginPath(); ctx.moveTo(cx, cy); ctx.lineTo(x, y); ctx.stroke();
+      const hA = 0.45, hl = 11; ctx.beginPath(); ctx.moveTo(x, y);
+      ctx.lineTo(x - hl * Math.cos(a - hA), y + hl * Math.sin(a - hA)); ctx.lineTo(x - hl * Math.cos(a + hA), y + hl * Math.sin(a + hA)); ctx.closePath(); ctx.fill();
+    };
+    arrow(th, R, C.ink, 3);
+    arrow(res.ang, R * 0.82, C.mark, 3);
+  });
+  const PE = plot('pv-err', p => {
+    if (!curve) return;
+    const mx = niceMax(Math.max(...curve) * 1.1, [10, 20, 30, 45, 60, 90]);
+    const f = frame(p, { l: 40, r: 10, t: 22, b: 34, x0: 3, x1: 200, xlog: true, y0: 0, y1: mx, xt: [3, 10, 30, 100, 200], yt: [0, mx / 2, mx], yf: v => v + '°', xl: 'neurons (log scale)', yl: 'mean error' });
+    const { ctx } = p;
+    vline(ctx, f.X(+nS.value), f.T, f.H, C.mark, [4, 3]);
+    poly(ctx, NS.length, i => f.X(NS[i]), i => f.Y(curve[i]), C.trace, 2);
+    NS.forEach((N, i) => { ctx.fillStyle = C.trace; ctx.beginPath(); ctx.arc(f.X(N), f.Y(curve[i]), 2.8, 0, TAU); ctx.fill(); });
+  });
+  function update(newCurve) {
+    const th = +dirS.value * Math.PI / 180, N = +nS.value, noise = +noS.value;
+    $('#pv-dir-o').textContent = dirS.value + '°'; $('#pv-n-o').textContent = N; $('#pv-noise-o').textContent = nf(noise, 1);
+    res = decode(th, N, noise, pref, zz);
+    if (newCurve || !curve) mkCurve();
+    const e = angErr(res.ang, th);
+    let deg = Math.round(res.ang * 180 / Math.PI); if (deg < 0) deg += 360;
+    $('#pv-ro').innerHTML = ro('Decoded direction', `${deg}<small>°</small>`) + ro('Error', `${nf(e, 1)}<small>°</small> ${chip(e < 10 ? 'Accurate' : e < 30 ? 'Roughly right' : 'Off target', e < 10 ? 'ok' : e < 30 ? 'warn' : 'bad')}`) +
+      ro('Mean error at this size (simulation)', `${nf(curve[NS.reduce((bi, v, i) => Math.abs(Math.log(v / N)) < Math.abs(Math.log(NS[bi] / N)) ? i : bi, 0)], 1)}<small>°</small>`);
+    P.render(); PE.render();
+  }
+  const u = raf(() => update(false)), uc = raf(() => update(true));
+  dirS.addEventListener('input', u); nS.addEventListener('input', u); noS.addEventListener('input', uc);
+  $('#pv-reseed').addEventListener('click', () => { seed++; draw(); update(false); });
+  let drag = false;
+  const setFrom = e => { const rc = P.cv.getBoundingClientRect(); const x = e.clientX - rc.left - rc.width / 2, y = e.clientY - rc.top - rc.height / 2; let d = Math.round(Math.atan2(-y, x) * 180 / Math.PI); if (d < 0) d += 360; dirS.value = d % 360; u(); };
+  P.cv.addEventListener('pointerdown', e => { drag = true; P.cv.setPointerCapture(e.pointerId); setFrom(e); });
+  P.cv.addEventListener('pointermove', e => { if (drag) setFrom(e); });
+  P.cv.addEventListener('pointerup', () => { drag = false; });
+  P.cv.addEventListener('pointercancel', () => { drag = false; });
+  draw(); update(true);
+})();
+
+/* ════════════ Chapter 9: ITR ════════════ */
+(function itr() {
+  const nS = $('#itr-n'), pS = $('#itr-p'), sS = $('#itr-s');
+  const SET = [2, 4, 8, 16, 32];
+  const P = plot('itr-cv', p => {
+    const N = +nS.value, Pp = +pS.value / 100, spm = +sS.value;
+    const f = frame(p, { l: 40, r: 46, t: 22, b: 34, x0: 0, x1: 100, y0: 0, y1: 6, xt: [0, 20, 40, 60, 80, 100], yt: [0, 1, 2, 3, 4, 5, 6], xf: v => v + '%',
+      xl: 'accuracy', yl: 'bits/selection', y2: { ticks: [0, 2, 4, 6], f: v => nf(v * spm, 0), label: `bits/min (${spm} per min)` } });
+    const { ctx } = p;
+    const curve = (NN, col, lw) => {
+      const pts = []; for (let a = 100 / NN; a <= 100.001; a += 0.5) pts.push([a, bitsPerSel(NN, a / 100)]);
+      poly(ctx, pts.length, i => f.X(pts[i][0]), i => f.Y(pts[i][1]), col, lw);
+      return pts;
+    };
+    SET.forEach(NN => {
+      const pts = curve(NN, NN === N ? C.mark : rgba(C.ink, 0.45), NN === N ? 2.4 : 1.3);
+      label(ctx, 'N=' + NN, f.X(100) - 4, f.Y(pts[pts.length - 1][1]) - 2, NN === N ? C.mark : C.muted, 'right', 'bottom', `11px ${MONO}`);
+    });
+    if (!SET.includes(N)) { const pts = curve(N, C.mark, 2.4); label(ctx, 'N=' + N, f.X(100) - 4, f.Y(pts[pts.length - 1][1]) - 2, C.mark, 'right', 'bottom', `600 11px ${MONO}`); }
+    const b = bitsPerSel(N, Pp);
+    ctx.fillStyle = C.mark; ctx.strokeStyle = C.panel; ctx.lineWidth = 2;
+    ctx.beginPath(); ctx.arc(f.X(Pp * 100), f.Y(b), 6, 0, TAU); ctx.fill(); ctx.stroke();
+  });
+  function equivN2(b) { if (b <= 0) return 50; if (b >= 1) return null; let lo = 0.5, hi = 1; for (let i = 0; i < 50; i++) { const m = (lo + hi) / 2; if (bitsPerSel(2, m) < b) lo = m; else hi = m; } return (lo + hi) / 2 * 100; }
+  function update() {
+    const N = +nS.value, Pp = +pS.value / 100, spm = +sS.value;
+    $('#itr-n-o').textContent = N; $('#itr-p-o').textContent = nf(+pS.value, +pS.value % 1 ? 1 : 0) + '%'; $('#itr-s-o').textContent = spm;
+    const b = bitsPerSel(N, Pp), chance = 100 / N, kappa = (Pp - 1 / N) / (1 - 1 / N);
+    $('#itr-ro').innerHTML = ro('bits/selection', nf(b, 3)) + ro('bits/min', nf(b * spm, 1)) + ro('Chance level 1/N', `${nf(chance, 1)}<small>%</small>`) + ro('Kappa κ', nf(kappa, 2)) + ro('Maximum (P = 100%)', `${nf(Math.log2(N), 2)}<small> bits</small>`);
+    let note;
+    if (Pp <= 1 / N) note = 'Accuracy is at or below chance, so this BCI transmits no information. Wolpaw fig. 8.12 leaves this region out.';
+    else {
+      const e2 = equivN2(b);
+      note = e2 === null ? 'This performance carries more information than any 2-option BCI can (2 options give at most 1 bit).' : `This performance (${nf(b, 2)} bits per selection) carries as much information as a 2-option BCI at ${nf(e2, 1)}% accuracy.`;
+      if (N === 36) note += ' Sellers et al. (2006) found that a 6×6 P300 speller is practical only with an error rate of 30% or less, because correcting errors costs time.';
+      if (N === 2 && Math.abs(Pp - 0.9) < 0.001) note += ' As Wolpaw ch. 8 puts it, 90% with two options is about twice as good as 80% and about half as good as 100%.';
+    }
+    $('#itr-note').textContent = note;
+    P.render();
+  }
+  const u = raf(update);
+  [nS, pS, sS].forEach(s => s.addEventListener('input', u));
+  $('#itr-ex').addEventListener('click', e => { const b = e.target.closest('button'); if (!b) return; nS.value = b.dataset.n; pS.value = b.dataset.p; sS.value = b.dataset.s; update(); });
+  update();
+})();
+
+/* ════════════ Chapter 10: task load ════════════ */
+(function load() {
+  const LV = [
+    { task: 35, fear: 1.0, neu: 0.55, note: 'In an easy task, spare capacity flows to processing the face. The amygdala responds more to fearful faces than to neutral ones.' },
+    { task: 65, fear: 0.6, neu: 0.57, note: 'In Pessoa et al. (2005), the difference between fearful and neutral faces no longer appeared from medium difficulty upward.' },
+    { task: 95, fear: 0.5, neu: 0.5, note: 'In a very demanding task the difference disappears (Pessoa et al. 2002). Fenker et al. (2010) observed an N2pc even under high load and argued that some processing survives.' }
+  ];
+  let lv = 0;
+  const P = plot('ld-cv', p => {
+    const { ctx } = p, d = LV[lv];
+    const f = frame(p, { l: 30, r: 10, t: 24, b: 30, x0: 0, x1: 2, y0: 0, y1: 1.15, yt: [], yl: 'amygdala response (schematic, arbitrary units)' });
+    const bw = f.W / 2;
+    [['Fearful face', d.fear, C.mark], ['Neutral face', d.neu, C.muted]].forEach(([nm, v, col], i) => {
+      const x = f.L + bw * i + bw * 0.25, wd = bw * 0.5;
+      ctx.fillStyle = col; ctx.fillRect(x, f.Y(v), wd, f.Y(0) - f.Y(v));
+      label(ctx, nm, x + wd / 2, f.T + f.H + 7, C.ink, 'center', 'top', `12px ${SANS}`);
+    });
+    const diff = d.fear - d.neu;
+    label(ctx, diff > 0.1 ? 'Clear difference' : 'Almost no difference', f.L + f.W - 6, f.T + 4, diff > 0.1 ? C.mark : C.muted, 'right', 'top', `600 12px ${SANS}`);
+  });
+  function update() {
+    const d = LV[lv];
+    $('#ld-task').style.flexBasis = d.task + '%'; $('#ld-spare').style.flexBasis = (100 - d.task) + '%';
+    $('#ld-task').textContent = `Task ${d.task}%`; $('#ld-spare').textContent = d.task < 90 ? `Spare ${100 - d.task}%` : '';
+    $('#ld-note').textContent = d.note;
+    P.render();
+  }
+  segGroup($('#ld-level'), 'l', v => { lv = +v; update(); });
+  update();
+})();
+
+/* ════════════ Chapter 10: Gross process model ════════════ */
+(function gross() {
+  const S = [
+    { t: 'Situation selection', f: 'Antecedent-focused', ex: 'Choosing actions that make an unwanted emotion less likely, such as skipping a gathering you expect to be uncomfortable.', brain: 'As a behavioral strategy, it has few imaging studies.', eeg: 'Hard to observe directly with EEG. Records of behavior and environment suit it better.' },
+    { t: 'Situation modification', f: 'Antecedent-focused', ex: 'Changing a situation you are already in to reduce its emotional impact, such as switching the topic of a conversation.', brain: 'Like situation selection, it is observed mainly through behavior.', eeg: 'Hard to observe directly with EEG.' },
+    { t: 'Attentional deployment', f: 'Antecedent-focused', ex: 'Distraction, turning attention away from the emotional stimulus, is the typical strategy.', brain: 'Attentional control networks modulate sensory processing. It works on the same principle as the load effect in experiment 10-1 (ch. 15).', eeg: 'Turning attention away shrinks visual responses to emotional stimuli, such as the EPN and the SSVEP (ch. 15). This is the basis for passive BCIs that read attentional state.' },
+    { t: 'Cognitive change', f: 'Antecedent-focused', ex: 'Reappraisal and distancing, which reinterpret what a situation means.', brain: 'During reappraisal, lateral prefrontal activity increases and amygdala–frontal connectivity changes with the task (Phan et al. 2005; ch. 16, fig. 16.4).', eeg: 'ERPs such as the P300 and the LPP at 300–1500 ms can show the time course of regulation in milliseconds (Hajcak et al. 2010). fMRI, with a temporal resolution of seconds, misses this process (ch. 16).' },
+    { t: 'Response modulation', f: 'Response-focused', ex: 'Changing the response after it has appeared, such as suppressing a facial expression or a behavior. It also covers changes in internal responses such as heart rate.', brain: 'The emotional experience itself may shrink less. Chapter 16 reviews studies that compare reappraisal with suppression.', eeg: 'Suppressing facial expressions changes facial EMG as well. This is why emotion BCI data needs a separate check for EMG artifacts.' }
+  ];
+  const root = $('#gr-steps');
+  root.innerHTML = S.map((s, i) => `<button data-i="${i}" aria-pressed="${i === 3}"><span class="k">Step ${i + 1}</span><span class="t">${s.t}</span><span class="f">${s.f}</span></button>`).join('');
+  function show(i) {
+    const s = S[i];
+    $$('button', root).forEach((b, j) => toggle(b, j === i));
+    $('#gr-detail').innerHTML = `<h4>${i + 1}. ${s.t}</h4><div class="tagrow">${chip(s.f, s.f === 'Antecedent-focused' ? 'info' : 'warn')}</div><p><b>What it does.</b> ${s.ex}</p><p><b>In the brain.</b> ${s.brain}</p><p><b>Link to EEG and BCI.</b> ${s.eeg}</p>`;
+  }
+  root.addEventListener('click', e => { const b = e.target.closest('button'); if (b) show(+b.dataset.i); });
+  show(3);
+})();
+
+/* ════════════ Chapter 10: ErrP filter ════════════ */
+(function errp() {
+  const a = $('#ep-acc'), s = $('#ep-sens'), q = $('#ep-spec');
+  function update() {
+    const p = +a.value / 100, se = +s.value / 100, sp = +q.value / 100;
+    $('#ep-acc-o').textContent = a.value + '%'; $('#ep-sens-o').textContent = nf(+s.value, 1) + '%'; $('#ep-spec-o').textContent = nf(+q.value, 1) + '%';
+    const fr = [p * sp, p * (1 - sp), (1 - p) * se, (1 - p) * (1 - se)];
+    const raw = fr.map(v => v * 100), cnt = raw.map(Math.floor);
+    let left = 100 - cnt.reduce((x, y) => x + y, 0);
+    raw.map((v, i) => [v - Math.floor(v), i]).sort((x, y) => y[0] - x[0]).forEach(([, i]) => { if (left > 0) { cnt[i]++; left--; } });
+    const cls = ['w-keep', 'w-lost', 'w-caught', 'w-miss'];
+    $('#ep-waffle').innerHTML = cnt.map((c, i) => `<i class="${cls[i]}"></i>`.repeat(c)).join('');
+    const keptAcc = fr[0] / (fr[0] + fr[3]) * 100, cancel = (fr[1] + fr[2]) * 100;
+    $('#ep-ro').innerHTML = ro('Original accuracy', `${a.value}<small>%</small>`) + ro('Accuracy of kept outputs', `${nf(keptAcc, 1)}<small>%</small> ${chip(keptAcc > +a.value ? `+${nf(keptAcc - a.value, 1)} pts` : 'No gain', keptAcc > +a.value ? 'ok' : 'neutral')}`) +
+      ro('Selections canceled and redone', `${nf(cancel, 1)}<small>%</small>`) + ro('Correct outputs lost (wrongly canceled)', `${nf(fr[1] * 100, 1)}<small>%</small>`);
+  }
+  [a, s, q].forEach(el => el.addEventListener('input', raf(update)));
+  update();
+})();
+
+/* ════════════ Check questions and progress ════════════ */
+const QUIZ = {
+  1: [
+    { q: 'Which is NOT a condition of a BCI under Wolpaw’s definition?', o: ['It measures CNS activity', 'It converts the measurements into artificial output', 'It creates commands by way of neuromuscular output', 'It changes the interaction between the CNS and its environment'], a: 2, e: 'BCI output is a new output that is neither neuromuscular nor hormonal. A system that goes through the muscles is not a BCI.' },
+    { q: 'A system detects the EEG that precedes a lapse of attention while driving and sounds an alert. Which of the five uses is it?', o: ['Replace', 'Restore', 'Enhance', 'Improve'], a: 2, e: 'This is Wolpaw’s example in ch. 1. It prevents lapses of attention and makes a natural output better, so it enhances.' },
+    { q: 'Why does an SSVEP BCI lean toward being dependent?', o: ['It works without any muscle activity', 'It relies on gaze control, and so on the eye muscles, to look at the target', 'It needs invasive electrodes', 'It needs no user training'], a: 1, e: 'Aiming the gaze at a target uses the eye muscles. That makes it closer to a dependent BCI.' }
+  ],
+  2: [
+    { q: 'What mainly produces scalp EEG?', o: ['Action potentials of individual neurons', 'Synchronized synaptic currents in populations of cortical pyramidal cells', 'Conduction along white-matter axons', 'The flow of cerebrospinal fluid'], a: 1, e: 'When the synaptic currents of side-by-side pyramidal cells synchronize into a dipole layer, they become visible on the scalp.' },
+    { q: 'If you add N sources of equal size with random phases, how does the summed amplitude grow?', o: ['In proportion to N', 'In proportion to √N', 'In proportion to log N', 'It does not change'], a: 1, e: 'Random phases sum in proportion to √N, and perfectly synchronous sources in proportion to N. Raise σ to 180° in experiment 2-1 to check.' },
+    { q: 'According to Nunez (Wolpaw ch. 3), roughly how much cortex must be synchronous to record on the scalp without averaging?', o: ['0.1 mm²', '1 mm²', '6 cm²', '1000 cm²'], a: 2, e: 'About 6 cm² or more. Typical EEG (20–100 µV) needs tens of square centimeters.' }
+  ],
+  3: [
+    { q: 'What mainly limits the temporal resolution of fMRI?', o: ['The magnet moves slowly', 'The blood-flow response itself is slow', 'The skull smears the signal', 'There are too few electrodes'], a: 1, e: 'Vessels take about 2 s to respond and about 12 s more to recover. The limit has nothing to do with imaging speed (Wolpaw ch. 4).' },
+    { q: 'Where is electrode C4?', o: ['Left central region', 'Right central region', 'Midline parietal region', 'Right occipital region'], a: 1, e: 'C is the central region, and even numbers are on the right.' },
+    { q: 'What spatial resolution does Wolpaw ch. 3, table 3.3 estimate for ECoG?', o: ['0.1–1 mm', '2–5 mm', 'About 50 mm', 'About 10 cm'], a: 1, e: 'ECoG is 2–5 mm. The 0.1–1 mm range belongs to the LFP, and about 50 mm to unprocessed EEG.' }
+  ],
+  4: [
+    { q: 'Which rhythm grows over the occipital area when you close your eyes and relax?', o: ['Delta', 'Theta', 'Alpha', 'Gamma'], a: 2, e: 'The 8–13 Hz alpha rhythm. You can see it in the eyes-closed state of experiment 4-1 and in the EEG at the top of the page.' },
+    { q: 'Which 8–13 Hz rhythm, recorded over sensorimotor areas, shrinks with imagined movement?', o: ['The delta rhythm', 'The mu rhythm', 'The gamma rhythm', 'The theta rhythm'], a: 1, e: 'The mu (μ) rhythm. The ERD in chapter 6 is a decrease in this rhythm.' },
+    { q: 'Recording at a sampling rate of 256 Hz, what is the highest frequency you can analyze in theory?', o: ['64 Hz', '128 Hz', '256 Hz', '512 Hz'], a: 1, e: 'Half the sampling rate, called the Nyquist frequency. Components above it cause aliasing.' }
+  ],
+  5: [
+    { q: 'An EEG spectrum recorded in Korea shows one sharp peak. Which frequency should you suspect first?', o: ['50 Hz', '60 Hz', '10 Hz', '1 Hz'], a: 1, e: 'Korea’s power grid runs at 60 Hz. For a recording made in Europe, suspect 50 Hz.' },
+    { q: 'Why is a high-pass filter alone not enough to remove blink artifacts?', o: ['They are small', 'Their frequencies overlap EEG bands such as delta', 'They concentrate at 60 Hz', 'They appear only over the occipital area'], a: 1, e: 'Blinks are slow and overlap the delta band. That is why EOG regression or ICA is used.' },
+    { q: 'What does a Laplacian spatial filter do?', o: ['It suppresses widely spread common signals and emphasizes local ones', 'It improves frequency resolution', 'It makes all channels the same', 'It removes the filter’s time delay'], a: 0, e: 'Subtracting the mean of the surrounding electrodes cancels widespread components and leaves local ones.' }
+  ],
+  6: [
+    { q: 'When a user imagines right-hand movement, where is mu ERD clearest?', o: ['C3', 'C4', 'Oz', 'Fp2'], a: 0, e: 'Over the hand area of the opposite hemisphere, which is C3 on the left.' },
+    { q: 'Reference power is 10 and imagery power is 6. What is ERD%?', o: ['+40%', '−40%', '−60%', '+67%'], a: 1, e: '(6 − 10) / 10 × 100 = −40%. It is negative, so it is ERD.' },
+    { q: 'Which spatial filter does CSP find?', o: ['One that maximizes the difference between class means', 'One that maximizes variance for one class while minimizing it for the other', 'One that equalizes the variance of all channels', 'One that extracts only artifact components'], a: 1, e: 'CSP maximizes a variance ratio. The variance of a band-passed signal is band power, so CSP fits ERD features well.' }
+  ],
+  7: [
+    { q: 'In LDA’s w = Σ⁻¹(μ₁ − μ₂), what does Σ⁻¹ do?', o: ['It corrects the direction for correlation and variance between channels', 'It increases the amount of training data', 'It sets the class means to zero', 'It makes the boundary curved'], a: 0, e: 'Without the covariance, the boundary would be perpendicular to the line joining the means. Σ⁻¹ corrects for correlation and tilts the boundary.' },
+    { q: 'A classifier trained yesterday loses accuracy today. If the feature means of both classes simply shifted together, what is the simplest fix?', o: ['Move the threshold (bias) to the mean of the new data', 'Add more electrodes', 'Discard all the training data', 'Raise the sampling rate'], a: 0, e: 'As Wolpaw ch. 8 notes, adapting to changes in the mean is easy. Turn on mean adaptation in experiment 7-1.' },
+    { q: 'Training accuracy is 100% and test accuracy is 62%. What is the most likely explanation?', o: ['Overfitting', 'Performance below chance', 'Perfect generalization', 'Nonstationarity cannot occur'], a: 0, e: 'The model fits the training data too closely. Add training data or simplify the model.' }
+  ],
+  8: [
+    { q: 'Which is NOT a requirement of the oddball paradigm?', o: ['Stimuli fall into two classes', 'One class is rarer', 'The user performs a task that sorts stimuli into the classes', 'The rare stimulus must be visual'], a: 3, e: 'Any stimulus that meets the three requirements evokes a P300. Auditory oddball BCIs exist too.' },
+    { q: 'What happens when a P300 speller uses more sequence repetitions?', o: ['Accuracy rises and each letter takes longer', 'Accuracy and speed both rise', 'Accuracy falls', 'The information transfer rate keeps rising'], a: 0, e: 'Accuracy trades off against speed, so the information transfer rate peaks at an intermediate number of repetitions. See the chart in experiment 8-2.' },
+    { q: 'Looking at a target that flickers at 7 Hz, where do SSVEP spectral peaks appear?', o: ['Only at 7 Hz', 'At 7, 14, and 21 Hz', 'At 3.5 Hz', 'At 10 Hz'], a: 1, e: 'Peaks appear at the stimulus frequency and its harmonics (Rao fig. 9.18).' },
+    { q: 'In population vector decoding, what is neuron i’s contribution?', o: ['Its preferred-direction unit vector times (r − r₀)/r_max', 'The square of its firing rate', 'The direction of the single most active neuron', 'A plain average of all neurons’ directions'], a: 0, e: 'This is Rao’s equation 7.1. A neuron firing below its baseline contributes in the direction opposite its preferred direction.' }
+  ],
+  9: [
+    { q: 'With N = 2 and 100% accuracy, how many bits does one selection carry?', o: ['0.5 bit', '1 bit', '2 bits', 'It cannot be computed'], a: 1, e: 'log₂2 = 1 bit.' },
+    { q: 'According to Wolpaw ch. 8, a 2-option BCI with a 10% error rate carries the same information as a 4-option BCI with what error rate?', o: ['10%', '25%', '35%', '50%'], a: 2, e: 'About 35%. Compare the two with the textbook example buttons in experiment 9-1.' },
+    { q: 'What belongs in the denominator (time) of an ITR calculation?', o: ['The full time from the start of one selection to the start of the next', 'The time the stimulus was on', 'The classifier’s computation time', 'The time of the fastest trial'], a: 0, e: 'Measure as close to real use as possible. Counting only part of the process inflates the ITR (Wolpaw ch. 8).' }
+  ],
+  10: [
+    { q: 'In Pessoa et al. (2005), when did the amygdala respond differently to fearful and neutral faces?', o: ['When the load of the peripheral task was low', 'At medium load', 'At high load', 'In every condition'], a: 0, e: 'The difference appeared only under low load. The interpretation is that emotional stimuli get processed only when spare resources exist.' },
+    { q: 'In Gross’s process model, which step does reappraisal belong to?', o: ['Situation selection', 'Attentional deployment', 'Cognitive change', 'Response modulation'], a: 2, e: 'It is a cognitive-change strategy that reinterprets a situation, and an antecedent-focused strategy that acts before the response appears.' },
+    { q: 'What is the main purpose of using ErrPs in a BCI?', o: ['To detect and correct BCI errors from the user’s brain response', 'To measure electrode impedance', 'To boost the alpha rhythm', 'To set stimulus frequencies'], a: 0, e: 'ErrPs are used to cancel wrong outputs or as reward signals for robot learning. Calculate the effect in experiment 10-3.' }
+  ],
+  11: [
+    { q: 'Which BCI did Wolpaw (2012) name as essentially the only one that severely disabled people use every day outside the lab?', o: ['The P300 BCI', 'The fMRI BCI', 'Deep brain stimulation', 'The EMG prosthesis'], a: 0, e: 'It is noninvasive, uses cheap and portable equipment, and performs reliably (Wolpaw ch. 12).' },
+    { q: 'Which ethical problem is especially hard when someone who can barely communicate joins BCI research?', o: ['Informed consent', 'Equipment weight', 'Line noise', 'Sampling rate'], a: 0, e: 'The person’s very means of expressing consent are limited (Rao §13.1.2).' }
+  ]
+};
+const KEY = 'bci-guide-progress-en-v1';
+let prog = { solved: {}, tried: {} };
+try { const s = localStorage.getItem(KEY); if (s) prog = Object.assign({ solved: {}, tried: {} }, JSON.parse(s)); } catch (e) { /* storage unavailable: remember for this visit only */ }
+const save = () => { try { localStorage.setItem(KEY, JSON.stringify(prog)); } catch (e) { /* ignore */ } };
+function chState(ch) {
+  const qs = QUIZ[ch], solved = qs.filter((_, i) => prog.solved[ch + '-' + i]).length, tried = qs.some((_, i) => prog.tried[ch + '-' + i]);
+  return { solved, total: qs.length, done: solved === qs.length, started: solved > 0 || tried };
+}
+function paintProgress() {
+  let done = 0;
+  Object.keys(QUIZ).forEach(ch => {
+    const s = chState(ch); if (s.done) done++;
+    $$(`.dot[data-ch="${ch}"]`).forEach(d => { d.classList.toggle('done', s.done); d.classList.toggle('half', !s.done && s.started); d.title = `Check questions ${s.solved}/${s.total}`; });
+    const hd = $(`.quiz[data-ch="${ch}"] .quiz-state`); if (hd) hd.textContent = `${s.solved}/${s.total} correct`;
+  });
+  $('#prog-count').textContent = done;
+}
+function renderQuiz(box) {
+  const ch = box.dataset.ch, qs = QUIZ[ch];
+  box.innerHTML = `<div class="quiz-head"><span>Check questions · Chapter ${ch}</span><span class="quiz-state"></span></div>` + qs.map((q, i) => {
+    const id = ch + '-' + i, ok = prog.solved[id];
+    return `<div class="q" data-id="${id}"><p class="qt"><span class="qn">${i + 1}.</span>${q.q}</p><div class="opts">${q.o.map((o, j) =>
+      `<button class="opt ${ok && j === q.a ? 'right' : ''}" data-j="${j}" ${ok ? 'disabled' : ''}>${o}</button>`).join('')}</div>
+      <p class="why" ${ok ? '' : 'hidden'} aria-live="polite">${ok ? `<b>Correct.</b> ${q.e}` : ''}</p></div>`;
+  }).join('');
+  box.addEventListener('click', e => {
+    const b = e.target.closest('.opt'); if (!b || b.disabled) return;
+    const qd = b.closest('.q'), id = qd.dataset.id, i = +id.split('-')[1], q = qs[i], j = +b.dataset.j, why = $('.why', qd);
+    prog.tried[id] = true;
+    if (j === q.a) {
+      prog.solved[id] = true;
+      $$('.opt', qd).forEach(o => { o.disabled = true; o.classList.remove('wrong'); });
+      b.classList.add('right'); why.hidden = false; why.innerHTML = `<b>Correct.</b> ${q.e}`;
+    } else {
+      b.classList.add('wrong'); why.hidden = false; why.innerHTML = '<b>Not quite.</b> Try another option.';
+    }
+    save(); paintProgress();
+  });
+}
+$$('.quiz[data-ch]').forEach(renderQuiz);
+paintProgress();
+
+/* Clear progress: confirm once more inside the page */
+(function resetUI() {
+  const wrap = $('#reset-wrap');
+  function idle() { wrap.innerHTML = '<button class="btn quiet" id="prog-reset">Clear progress</button>'; $('#prog-reset').addEventListener('click', ask); }
+  function ask() {
+    wrap.innerHTML = '<span>Clear all correct answers?</span> <button class="btn danger" id="prog-yes">Clear</button> <button class="btn quiet" id="prog-no">Cancel</button>';
+    $('#prog-yes').addEventListener('click', () => { prog = { solved: {}, tried: {} }; save(); $$('.quiz[data-ch]').forEach(b => { const c = b.cloneNode(false); b.replaceWith(c); renderQuiz(c); }); paintProgress(); idle(); });
+    $('#prog-no').addEventListener('click', idle);
+  }
+  idle();
+})();
+
+/* Mark the chapter being read */
+(function railSpy() {
+  if (!('IntersectionObserver' in window)) return;
+  const ol = $('#rail-list'), links = $$('a', ol), map = {}; links.forEach(a => { map[a.getAttribute('href').slice(1)] = a; });
+  const io = new IntersectionObserver(es => {
+    es.forEach(e => {
+      if (!e.isIntersecting) return;
+      links.forEach(a => a.classList.remove('cur'));
+      const a = map[e.target.id]; if (!a) return;
+      a.classList.add('cur');
+      if (ol.scrollWidth > ol.clientWidth) ol.scrollLeft = a.offsetLeft - ol.offsetLeft - (ol.clientWidth - a.offsetWidth) / 2;
+    });
+  }, { rootMargin: '-30% 0px -60% 0px' });
+  $$('main > section').forEach(s => io.observe(s));
+})();
+
+/* ════════════ Glossary ════════════ */
+(function glossary() {
+  const G = [
+    ['BCI (brain–computer interface)', 'A system that measures CNS activity and converts it into artificial output that replaces, restores, enhances, supplements, or improves natural output. Used interchangeably with BMI.', 1],
+    ['CNS (central nervous system)', 'The brain and spinal cord, which a BCI measures.', 1],
+    ['Dependent and independent BCI', 'A distinction based on whether the brain signals depend on muscle activity. SSVEP BCIs lean dependent and motor imagery BCIs lean independent.', 1],
+    ['Passive BCI', 'A BCI that uses signals tied to the user’s state, such as attention level.', 1],
+    ['Hybrid BCI', 'A system that combines two kinds of brain signals, or BCI output with muscle output.', 1],
+    ['Action potential (spike)', 'An electrical signal of about 1 ms that travels along the axon.', 2],
+    ['Dipole layer', 'A current source formed by synchronized synaptic currents in side-by-side pyramidal cells. It is the main generator of scalp EEG.', 2],
+    ['Inverse problem', 'Locating sources from a scalp potential map. It has no unique solution.', 2],
+    ['LFP (local field potential)', 'The low-frequency part of an intracortical electrode signal, reflecting synaptic activity within 0.1–1 mm of the electrode.', 3],
+    ['EEG (electroencephalography)', 'Brain potentials measured with scalp electrodes. Spatial resolution of a few centimeters, temporal resolution in milliseconds.', 3],
+    ['ECoG (electrocorticography)', 'Potentials measured with electrodes on the cortical surface. Spatial resolution of about 2–5 mm.', 3],
+    ['MEG (magnetoencephalography)', 'Measures the magnetic fields of brain currents with superconducting sensors outside the head.', 3],
+    ['fMRI (functional magnetic resonance imaging)', 'Measures changes in blood oxygen level (BOLD). Spatial resolution of 1–3 mm, temporal resolution of seconds.', 3],
+    ['fNIRS (functional near-infrared spectroscopy)', 'Measures changes in hemoglobin concentration with near-infrared light. Portable, with spatial resolution on the order of centimeters.', 3],
+    ['10–20 system', 'The standard layout for scalp electrodes, with sites at 10% and 20% steps of the distances between landmarks.', 3],
+    ['Montage', 'The way electrodes are combined into channels, either referential (monopolar) or bipolar.', 3],
+    ['Mu rhythm', 'An 8–13 Hz rhythm over sensorimotor areas that shrinks with movement and motor imagery.', 4],
+    ['Power spectrum', 'Signal strength as a function of frequency, computed with the Fourier transform.', 4],
+    ['Aliasing', 'Frequencies above half the sampling rate masquerading as lower frequencies.', 4],
+    ['Artifact', 'A signal from outside the brain, caused by the eyes, muscles, power lines, electrodes, or the heart.', 5],
+    ['Notch filter', 'A filter that removes one narrow frequency, such as 60 Hz.', 5],
+    ['ICA (independent component analysis)', 'Splits multichannel signals into statistically independent components so that artifact components can be removed.', 5],
+    ['CAR (common average reference)', 'A spatial filter that subtracts the mean of all channels from each channel.', 5],
+    ['Surface Laplacian', 'A spatial filter that subtracts the mean of the surrounding electrodes from the center electrode to emphasize local signals.', 5],
+    ['Feature', 'A measurement of the signal that reflects user intent, such as band power, the voltage at a set time, or a firing rate.', 6],
+    ['ERD and ERS', 'The event-related decrease and increase of power in a frequency band. ERD% = (A − R)/R × 100.', 6],
+    ['Beta rebound', 'A brief rise in beta power (ERS) right after a movement ends.', 6],
+    ['CSP (common spatial patterns)', 'A supervised method that finds spatial filters maximizing variance for one class while minimizing it for the other.', 6],
+    ['LDA (linear discriminant analysis)', 'A linear classifier that separates two normal distributions with equal covariance. w = Σ⁻¹(μ₁ − μ₂).', 7],
+    ['Overfitting', 'Fitting the training data so closely that performance on new data drops.', 7],
+    ['Cross-validation', 'Estimating generalization by splitting the data and alternating between training and testing.', 7],
+    ['Nonstationarity', 'Signal statistics that change over time, which calls for adaptive algorithms.', 7],
+    ['Co-adaptation', 'The user and the algorithm adapting to each other.', 7],
+    ['ERP (event-related potential)', 'A potential time-locked to an event, obtained by averaging many trials.', 8],
+    ['P300', 'A positive potential 250–750 ms after a rare target stimulus, largest at Pz.', 8],
+    ['Oddball paradigm', 'A design that mixes rare and frequent stimuli with a sorting task to evoke the P300.', 8],
+    ['SSVEP (steady-state visual evoked potential)', 'A visual cortex response that oscillates at the frequency of a repeated visual stimulus and its harmonics.', 8],
+    ['SCP (slow cortical potential)', 'A slow potential shift over several seconds that users can learn to regulate.', 8],
+    ['Preferred direction', 'The movement direction in which a motor cortex neuron fires most.', 8],
+    ['Population vector', 'The sum of neurons’ preferred directions weighted by their firing rates. It points in the movement direction.', 8],
+    ['ITR (information transfer rate)', 'Information delivered per unit time (bits/min), reflecting both speed and accuracy.', 9],
+    ['Cohen’s kappa', 'Agreement corrected for chance. κ = (p_o − p_e)/(1 − p_e).', 9],
+    ['LPP (late positive potential)', 'A sustained positive potential from about 300 ms after an emotional stimulus, reflecting emotional evaluation and regulation.', 10],
+    ['EPN (early posterior negativity)', 'An early negative potential over posterior sites in response to emotional stimuli. It shrinks under high attentional load.', 10],
+    ['Perceptual load', 'The processing resources a task uses. Spare capacity spills over to task-irrelevant stimuli (Lavie).', 10],
+    ['Reappraisal', 'A regulation strategy that changes an emotion by reinterpreting what a situation means.', 10],
+    ['Prediction error', 'The difference between the expected and the actual outcome, which drives value learning.', 10],
+    ['ErrP (error-related potential)', 'A frontocentral potential that appears after the user sees a system error.', 10]
+  ];
+  const list = $('#gl-list'), q = $('#gl-q'), empty = $('#gl-empty');
+  function render() {
+    const s = q.value.trim().toLowerCase();
+    const items = G.filter(g => !s || (g[0] + ' ' + g[1]).toLowerCase().includes(s));
+    list.innerHTML = items.map(g => `<dt>${g[0]}<small><a href="#ch${g[2]}">Chapter ${g[2]}</a></small></dt><dd>${g[1]}</dd>`).join('');
+    empty.hidden = items.length > 0;
+  }
+  q.addEventListener('input', render);
+  render();
+})();
+
+})();
+
+</script>
+</body>
+</html>
