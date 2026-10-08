@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>BCI Concept Workbook</title>
+<title>Brain–Computer Interfaces: An Interactive Introduction</title>
 <meta name="description" content="Learn how brain signals become machine commands through hands-on experiments and check questions in 11 chapters.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -55,6 +55,9 @@ sub,sup{line-height:0}
 .masthead{max-width:1200px;margin:0 auto;padding-block:44px 32px;display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.3fr);gap:36px;align-items:start}
 .eyebrow{font-family:var(--f-mono);font-size:12.5px;letter-spacing:.08em;color:var(--muted);margin:0}
 h1{font-family:var(--f-display);font-weight:800;font-size:clamp(42px,6.2vw,68px);line-height:1.04;margin:.18em 0 .32em;letter-spacing:-.015em;text-wrap:balance}
+.h1-long{font-size:clamp(34px,4.2vw,54px);line-height:1.08}
+.h1-sub{display:block;font-size:.56em;font-weight:500;letter-spacing:0;margin-top:.28em;color:var(--muted)}
+.vh{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
 .lead{font-size:17px;max-width:44ch;margin-bottom:1.1em}
 .srcline{font-size:13.5px;color:var(--muted);max-width:52ch}
 .monitor{background:var(--panel);border:1px solid var(--line);border-radius:6px;padding:14px;display:grid;gap:10px;min-width:0}
@@ -260,7 +263,7 @@ footer.colophon{max-width:1200px;margin:56px auto 0;padding-top:20px;border-top:
 .homelink a:hover{text-decoration:underline}
 </style>
 <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🧠</text></svg>">
-<meta property="og:title" content="BCI Concept Workbook">
+<meta property="og:title" content="Brain–Computer Interfaces: An Interactive Introduction">
 <meta property="og:description" content="Learn how brain signals become machine commands through hands-on experiments and check questions in 11 chapters.">
 <meta property="og:url" content="https://kihyeonjoo.github.io/bci/en/">
 <meta property="og:locale" content="en_US">
@@ -272,10 +275,10 @@ footer.colophon{max-width:1200px;margin:56px auto 0;padding-top:20px;border-top:
 
 <header class="masthead">
   <div>
-    <p class="eyebrow">Brain–computer interfaces · A university-level concept workbook</p>
-    <h1>BCI Concept Workbook</h1>
+    <p class="eyebrow">Interactive study guide · University level</p>
+    <h1 class="h1-long">Brain–Computer Interfaces<span class="vh">:</span> <span class="h1-sub">An Interactive Introduction</span></h1>
     <p class="lead">Follow brain signals all the way to machine commands in 11 chapters. Every chapter has hands-on experiments and check questions.</p>
-    <p class="srcline">The workbook draws on four textbooks. They are Wolpaw &amp; Wolpaw, <i>Brain–Computer Interfaces: Principles and Practice</i> (2012); Rao, <i>Brain–Computer Interfacing: An Introduction</i> (2013); Siuly, Li &amp; Zhang, <i>EEG Signal Analysis and Classification</i> (2016); and chapters 14–17 of Armony &amp; Vuilleumier (eds.), <i>The Cambridge Handbook of Human Affective Neuroscience</i> (2013). Each chapter header names the matching textbook chapters. Every signal in the experiments is a simulation built from values in these books.</p>
+    <p class="srcline">This guide draws on four textbooks. They are Wolpaw &amp; Wolpaw, <i>Brain–Computer Interfaces: Principles and Practice</i> (2012); Rao, <i>Brain–Computer Interfacing: An Introduction</i> (2013); Siuly, Li &amp; Zhang, <i>EEG Signal Analysis and Classification</i> (2016); and chapters 14–17 of Armony &amp; Vuilleumier (eds.), <i>The Cambridge Handbook of Human Affective Neuroscience</i> (2013). Each chapter header names the matching textbook chapters. Every signal in the experiments is a simulation built from values in these books.</p>
   </div>
   <figure class="monitor" id="hero" style="margin:0">
     <div class="monitor-top">
@@ -836,7 +839,7 @@ footer.colophon{max-width:1200px;margin:56px auto 0;padding-top:20px;border-top:
 <section class="chapter" id="sources">
   <p class="ch-no">Appendix B</p>
   <h2>Textbook Map</h2>
-  <div class="prose"><p>This table matches the chapters of this workbook to the chapters of the source textbooks. Start here when you want to study a concept in more depth.</p></div>
+  <div class="prose"><p>This table matches the chapters of this guide to the chapters of the source textbooks. Start here when you want to study a concept in more depth.</p></div>
   <div class="tbl-wrap">
     <table>
       <thead><tr><th>Chapter</th><th>Wolpaw &amp; Wolpaw 2012</th><th>Rao 2013</th><th>Siuly et al. 2016</th><th>Cambridge Handbook</th></tr></thead>
@@ -870,7 +873,7 @@ footer.colophon{max-width:1200px;margin:56px auto 0;padding-top:20px;border-top:
 </div>
 
 <footer class="colophon">
-  <p>The signals and charts in this workbook are simulations built from the descriptions and values in the textbooks. They are not real recordings. Check-question progress is saved only in this browser.</p>
+  <p>The signals and charts in this guide are simulations built from the descriptions and values in the textbooks. They are not real recordings. Check-question progress is saved only in this browser.</p>
   <p><a href="/">Back to Kihyeon Joo’s homepage</a> · <a href="../" lang="ko">한국어판</a></p>
 </footer>
 <script>
