@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>머신러닝·딥러닝 개념 학습서</title>
-<meta name="description" content="학부 입문 수준의 머신러닝과 딥러닝 개념을 12개 장의 실험과 확인 문제로 배우는 학습서">
+<meta name="description" content="학부 입문 수준의 머신러닝과 딥러닝 개념을 14개 장의 실험과 확인 문제로 배우는 학습서">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Hahmlet:wght@500;700;800&family=IBM+Plex+Sans+KR:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap">
@@ -247,7 +247,7 @@ footer.colophon{max-width:1200px;margin:56px auto 0;padding-top:20px;border-top:
 </style>
 <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>📉</text></svg>">
 <meta property="og:title" content="머신러닝·딥러닝 개념 학습서">
-<meta property="og:description" content="학부 입문 수준의 머신러닝과 딥러닝 개념을 12개 장의 실험과 확인 문제로 배우는 학습서">
+<meta property="og:description" content="학부 입문 수준의 머신러닝과 딥러닝 개념을 14개 장의 실험과 확인 문제로 배우는 학습서">
 <meta property="og:url" content="https://kihyeonjoo.github.io/ml/">
 <meta property="og:locale" content="ko_KR">
 </head>
@@ -258,8 +258,8 @@ footer.colophon{max-width:1200px;margin:56px auto 0;padding-top:20px;border-top:
   <div>
     <p class="eyebrow">머신러닝 · 딥러닝 · 학부 입문 개념 학습서</p>
     <h1 class="h1-ml"><span class="nowrap">머신러닝·딥러닝</span> 개념 학습서</h1>
-    <p class="lead">데이터에서 규칙을 배우는 방법을 선형회귀부터 합성곱 신경망까지 12개 장으로 따라갑니다. 장마다 직접 조작하는 실험과 확인 문제가 있습니다.</p>
-    <p class="srcline">근거 교재는 두 권입니다. Goodfellow·Bengio·Courville 『Deep Learning』(MIT Press, 2016)과 Murphy 『Machine Learning: A Probabilistic Perspective』(MIT Press, 2012). 각 장 머리에 해당 교재 장을 적었습니다. 실험은 모두 이 페이지 안에서 직접 계산하며, 데이터는 교재의 예를 바탕으로 만든 합성 데이터입니다.</p>
+    <p class="lead">데이터에서 규칙을 배우는 방법을 선형회귀부터 트랜스포머까지 14개 장으로 따라갑니다. 장마다 직접 조작하는 실험과 확인 문제가 있습니다.</p>
+    <p class="srcline">근거 교재는 두 권입니다. Goodfellow·Bengio·Courville 『Deep Learning』(MIT Press, 2016)과 Murphy 『Machine Learning: A Probabilistic Perspective』(MIT Press, 2012). 13–14장은 원 논문인 Bahdanau 외(2015)와 Vaswani 외(2017)를 근거로 썼습니다. 각 장 머리에 해당 교재 장과 논문을 적었습니다. 실험은 모두 이 페이지 안에서 직접 계산하며, 데이터는 교재의 예를 바탕으로 만든 합성 데이터입니다.</p>
   </div>
   <figure class="monitor" id="hero" style="margin:0">
     <div class="monitor-top">
@@ -276,7 +276,7 @@ footer.colophon{max-width:1200px;margin:56px auto 0;padding-top:20px;border-top:
 
 <ol class="pipeline" aria-label="머신러닝 알고리즘의 네 요소">
   <li><span class="k">요소 1</span><a class="n" href="#ch1">데이터셋</a><span class="d">무엇에서 배우는가 · 1–2장</span></li>
-  <li><span class="k">요소 2</span><a class="n" href="#ch3">모델</a><span class="d">어떤 함수로 설명하는가 · 3, 6, 9, 12장</span></li>
+  <li><span class="k">요소 2</span><a class="n" href="#ch3">모델</a><span class="d">어떤 함수로 설명하는가 · 3, 6, 9, 12–14장</span></li>
   <li><span class="k">요소 3</span><a class="n" href="#ch3">비용 함수</a><span class="d">얼마나 틀렸는지 재는 기준 · 3, 6장</span></li>
   <li><span class="k">요소 4</span><a class="n" href="#ch4">최적화 절차</a><span class="d">비용을 줄이는 방법 · 4, 10–11장</span></li>
   <li><span class="k">확인</span><a class="n" href="#ch5">일반화 평가</a><span class="d">처음 보는 데이터에서도 맞는가 · 5, 7장</span></li>
@@ -285,7 +285,7 @@ footer.colophon{max-width:1200px;margin:56px auto 0;padding-top:20px;border-top:
 
 <div class="shell">
 <nav class="rail" aria-label="장 목록">
-  <p class="rail-head"><span>장 목록</span><span>완료 <b id="prog-count" class="num">0</b>/12</span></p>
+  <p class="rail-head"><span>장 목록</span><span>완료 <b id="prog-count" class="num">0</b>/14</span></p>
   <ol id="rail-list">
     <li><a href="#ch1"><span class="no">1</span><span class="t">머신러닝이란 무엇인가</span><span class="ts">정의</span><span class="dot" data-ch="1"></span></a></li>
     <li><a href="#ch2"><span class="no">2</span><span class="t">확률과 베이즈 규칙</span><span class="ts">확률</span><span class="dot" data-ch="2"></span></a></li>
@@ -299,6 +299,8 @@ footer.colophon{max-width:1200px;margin:56px auto 0;padding-top:20px;border-top:
     <li><a href="#ch10"><span class="no">10</span><span class="t">역전파</span><span class="ts">역전파</span><span class="dot" data-ch="10"></span></a></li>
     <li><a href="#ch11"><span class="no">11</span><span class="t">심층 신경망 학습하기</span><span class="ts">최적화·정규화</span><span class="dot" data-ch="11"></span></a></li>
     <li><a href="#ch12"><span class="no">12</span><span class="t">합성곱 신경망</span><span class="ts">CNN</span><span class="dot" data-ch="12"></span></a></li>
+    <li><a href="#ch13"><span class="no">13</span><span class="t">순환 신경망과 어텐션의 등장</span><span class="ts">RNN·어텐션</span><span class="dot" data-ch="13"></span></a></li>
+    <li><a href="#ch14"><span class="no">14</span><span class="t">트랜스포머</span><span class="ts">트랜스포머</span><span class="dot" data-ch="14"></span></a></li>
     <li><a href="#glossary"><span class="no">··</span><span class="t">용어집</span><span class="ts">용어집</span><span></span></a></li>
     <li><a href="#sources"><span class="no">··</span><span class="t">교재 대응표</span><span class="ts">교재</span><span></span></a></li>
   </ol>
@@ -720,16 +722,131 @@ footer.colophon{max-width:1200px;margin:56px auto 0;padding-top:20px;border-top:
     <p class="formula" id="cv-calc">특징 맵의 칸을 누르면 계산이 여기에 나옵니다.</p>
   </figure>
   <div class="prose">
-    <h3>다음에 공부할 것</h3>
-    <p>이 학습서는 두 교재의 입문 부분까지만 다룹니다. 이어서 공부할 주제와 교재 위치는 다음과 같습니다.</p>
-    <ul>
-      <li><b>순환 신경망과 LSTM:</b> 문장이나 시계열처럼 순서가 있는 데이터를 다룹니다 (Goodfellow 10장).</li>
-      <li><b>오토인코더와 표현 학습:</b> 데이터를 압축했다가 되살리며 유용한 표현을 배웁니다 (Goodfellow 14–15장).</li>
-      <li><b>심층 생성 모델:</b> VAE와 GAN처럼 새 데이터를 만들어 내는 모델입니다 (Goodfellow 20장).</li>
-      <li><b>확률 모델의 관점:</b> 베이즈 통계, 그래프 모델, 가우스 과정, 혼합 모델과 EM은 Murphy가 깊이 다룹니다 (Murphy 5, 10, 11, 15장).</li>
-    </ul>
   </div>
   <div class="quiz" data-ch="12"></div>
+</section>
+
+
+<!-- ───────────── 13장 ───────────── -->
+<section class="chapter" id="ch13">
+  <p class="ch-no">13장</p>
+  <h2>순환 신경망과 어텐션의 등장</h2>
+  <p class="refs">교재·논문: <b>Goodfellow</b> 10.1–10.2절, 10.7절, 10.10절, 12.4.5.1절 · <b>Bahdanau 외</b> (2015)</p>
+  <div class="prose">
+    <p>문장, 음성, 시계열처럼 순서가 있는 데이터는 길이가 제각각입니다. <b>순환 신경망(RNN)</b>은 같은 가중치를 시점마다 다시 쓰면서, 지금까지 본 내용을 <b>은닉 상태</b> h에 요약해 다음 시점으로 넘깁니다. 시간 축으로 펼쳐 그리면 층이 시점 수만큼 쌓인 깊은 신경망과 같습니다 (Goodfellow 10.1절).</p>
+  </div>
+  <p class="formula">a<sup>(t)</sup> = b + W h<sup>(t−1)</sup> + U x<sup>(t)</sup>,   h<sup>(t)</sup> = tanh(a<sup>(t)</sup>)<small>x<sup>(t)</sup>는 시점 t의 입력, W는 시점과 시점을 잇는 가중치, U는 입력 가중치입니다. 모든 시점이 같은 W와 U를 씁니다 (Goodfellow 식 10.8–10.9).</small></p>
+  <div class="prose">
+    <h3>장기 의존성 문제</h3>
+    <p>RNN은 같은 함수를 시점마다 거듭 합성합니다. 그래서 먼 과거에서 오는 기울기는 10장에서 본 것처럼 대개 사라지고, 드물게는 폭주합니다 (Goodfellow 10.7절). 비선형성을 빼고 h<sup>(t)</sup> = Wᵀh<sup>(t−1)</sup>로 단순화하면, t시점 뒤의 영향은 W의 고유값을 t제곱한 크기로 줄거나 늘어납니다. <b>LSTM</b>은 입력·망각·출력 게이트로 정보를 얼마나 남길지 학습해, 이 문제를 크게 덜었습니다 (10.10절).</p>
+    <h3>고정 길이 벡터라는 병목</h3>
+    <p>번역용 <b>인코더–디코더</b> RNN은 원문 전체를 고정 길이 벡터 하나로 압축한 뒤, 그 벡터에서 번역문을 만듭니다. Bahdanau 등(2015)은 이 고정 길이 벡터가 성능의 병목이라고 보았습니다. 그래서 디코더가 단어를 하나 낼 때마다 원문에서 관련 있는 부분을 부드럽게 찾아 가중 평균하게 했습니다. 이것이 <b>어텐션</b>입니다. Goodfellow(12.4.5.1절)의 말로는, 문장 전체를 읽어 요지를 잡은 뒤 번역 단어를 하나씩 내면서 매번 원문의 다른 부분에 집중하는 방식입니다.</p>
+    <p>Vaswani 등(2017)은 여기서 한 걸음 더 나아가, 순환 없이 어텐션만으로 문장을 처리하는 <b>트랜스포머</b>를 내놓았습니다. 순환 층은 시점 순서대로 계산해야 하지만, 셀프 어텐션은 모든 위치를 한꺼번에 계산합니다. 또 멀리 떨어진 두 단어 사이의 경로 길이가 RNN에서는 O(n)이지만 셀프 어텐션에서는 O(1)입니다 (Vaswani 외 표 1).</p>
+  </div>
+  <figure class="bench" id="b13-1">
+    <figcaption class="bench-head"><span class="bench-no">실험 13-1</span><h3>순환 층과 셀프 어텐션 비교</h3><p>왼쪽은 첫 단어의 기울기가 n번째 단어까지 몇 배로 남는지, 오른쪽은 층 하나의 계산량입니다(Vaswani 외 표 1의 차수). 셀프 어텐션은 어느 두 위치든 한 걸음에 연결되므로, 왼쪽 그래프에서 RNN만 줄어듭니다.</p></figcaption>
+    <div class="controls">
+      <div class="ctl"><label for="rn-n"><span>문장 길이 n (토큰 수)</span> <output id="rn-n-o">50</output></label><input type="range" id="rn-n" min="2" max="200" step="1" value="50"></div>
+      <div class="ctl"><label for="rn-l"><span>RNN이 한 시점마다 곱하는 크기 |λ|</span> <output id="rn-l-o">0.90</output></label><input type="range" id="rn-l" min="0.5" max="1.1" step="0.01" value="0.9"></div>
+      <div class="ctl"><label for="rn-d"><span>표현 차원 d</span> <output id="rn-d-o">512</output></label><input type="range" id="rn-d" min="6" max="11" step="1" value="9"></div>
+    </div>
+    <div class="split">
+      <canvas class="cv" id="rn-grad" style="height:260px" role="img" aria-label="거리에 따라 남는 기울기 크기"></canvas>
+      <canvas class="cv" id="rn-cost" style="height:260px" role="img" aria-label="문장 길이에 따른 층당 계산량"></canvas>
+    </div>
+    <div class="legend"><span><i class="sw" style="background:var(--c0)"></i>순환 층 (RNN)</span><span><i class="sw" style="background:var(--c1)"></i>셀프 어텐션</span></div>
+    <div class="readouts" id="rn-ro"></div>
+    <p class="note" id="rn-note"></p>
+  </figure>
+  <div class="quiz" data-ch="13"></div>
+</section>
+
+<!-- ───────────── 14장 ───────────── -->
+<section class="chapter" id="ch14">
+  <p class="ch-no">14장</p>
+  <h2>트랜스포머</h2>
+  <p class="refs">논문: <b>Vaswani 외</b>, 「Attention Is All You Need」 (NeurIPS 2017) · <b>Goodfellow</b> 12.4.5.1절</p>
+  <div class="prose">
+    <p>트랜스포머는 순환도 합성곱도 쓰지 않고 어텐션만으로 만든 인코더–디코더 모델입니다. <b>인코더</b>는 같은 층 6개(N = 6)를 쌓았고, 각 층은 멀티헤드 셀프 어텐션과 위치별 피드포워드 신경망 두 부분으로 되어 있습니다. <b>디코더</b>도 층 6개이며, 인코더 출력을 보는 어텐션이 하나 더 있습니다. 각 부분은 <b>잔차 연결</b>과 <b>층 정규화</b>로 감쌉니다. 곧 출력이 LayerNorm(x + Sublayer(x))이고, 모든 층의 출력 차원은 d<sub>model</sub> = 512입니다 (Vaswani 외 3.1절).</p>
+    <h3>질의, 키, 값</h3>
+    <p>어텐션은 <b>질의(query)</b> 하나와 <b>키(key)–값(value)</b> 쌍 여러 개를 받아, 값들의 가중합을 냅니다. 가중치는 질의와 각 키가 얼마나 잘 맞는지로 정합니다. 도서관에 비유하면 질의는 찾는 주제, 키는 책등의 제목, 값은 책의 내용입니다. 트랜스포머는 질의와 키의 내적을 √d<sub>k</sub>로 나눈 뒤 소프트맥스를 씁니다. 이것이 <b>스케일드 닷-프로덕트 어텐션</b>입니다.</p>
+  </div>
+  <p class="formula">Attention(Q, K, V) = softmax(QKᵀ / √d<sub>k</sub>) V<small>Q, K, V는 질의·키·값을 행으로 쌓은 행렬, d<sub>k</sub>는 키의 차원입니다 (Vaswani 외 식 1). 셀프 어텐션에서는 세 행렬이 모두 같은 문장에서 나옵니다.</small></p>
+  <figure class="bench" id="b14-1">
+    <figcaption class="bench-head"><span class="bench-no">실험 14-1</span><h3>어텐션 가중치 직접 계산하기</h3><p>질의 단어를 고르세요. 그 단어가 문장의 각 단어에 주는 가중치가 계산됩니다. 두 헤드는 원리를 보이려고 손으로 만든 예입니다. 실제 모델의 헤드는 학습으로 정해집니다. 마스크를 켜면 디코더처럼 뒤쪽 단어를 볼 수 없습니다.</p></figcaption>
+    <div class="controls">
+      <div class="ctl"><span class="lab">헤드</span><div class="seg" id="at-head" role="group" aria-label="헤드"><button data-h="sem" aria-pressed="true">헤드 1: 문장 성분 관계</button><button data-h="prev" aria-pressed="false">헤드 2: 바로 앞 단어</button></div></div>
+      <div class="ctl" style="flex:0 0 auto"><span class="lab">설정</span><div class="btnrow"><button class="btn" id="at-scale" aria-pressed="true">√d<sub>k</sub>로 나누기</button><button class="btn" id="at-mask" aria-pressed="false">마스크 (디코더)</button></div></div>
+    </div>
+    <div class="btnrow" id="at-q" role="group" aria-label="질의 단어"></div>
+    <div class="split">
+      <canvas class="cv" id="at-mat" style="height:300px" role="img" aria-label="어텐션 가중치 행렬"></canvas>
+      <canvas class="cv" id="at-bar" style="height:300px" role="img" aria-label="고른 질의의 어텐션 가중치"></canvas>
+    </div>
+    <p class="formula" id="at-calc"></p>
+  </figure>
+  <div class="prose">
+    <h3>왜 √d<sub>k</sub>로 나눌까</h3>
+    <p>질의와 키의 성분이 서로 독립이고 평균 0, 분산 1이라면, 둘의 내적은 평균 0, 분산 d<sub>k</sub>가 됩니다. d<sub>k</sub>가 크면 내적 값이 크게 벌어지고, 소프트맥스는 가장 큰 값 하나에 거의 모든 가중치를 몰아줍니다. 이 영역에서는 소프트맥스의 기울기가 극히 작아 학습이 어렵습니다. 그래서 √d<sub>k</sub>로 나눠 분산을 1로 되돌립니다 (Vaswani 외 3.2.1절, 각주 4).</p>
+  </div>
+  <figure class="bench" id="b14-2">
+    <figcaption class="bench-head"><span class="bench-no">실험 14-2</span><h3>나누지 않으면 소프트맥스가 한쪽으로 쏠린다</h3><p>성분이 평균 0, 분산 1인 무작위 질의 하나와 키 8개를 뽑았습니다. 차원 d<sub>k</sub>를 키우면서 나누기 전과 후의 가중치를 비교해 보세요.</p></figcaption>
+    <div class="controls">
+      <div class="ctl"><label for="sc-d"><span>키 차원 d<sub>k</sub></span> <output id="sc-d-o">128</output></label><input type="range" id="sc-d" min="0" max="9" step="1" value="7"></div>
+      <div class="ctl" style="flex:0 0 auto"><button class="btn quiet" id="sc-new">새로 뽑기</button></div>
+    </div>
+    <canvas class="cv" id="sc-cv" style="height:240px" role="img" aria-label="스케일링 전후의 소프트맥스 가중치"></canvas>
+    <div class="legend"><span><i class="sw" style="background:var(--c3)"></i>√d<sub>k</sub>로 나누지 않음</span><span><i class="sw" style="background:var(--c0)"></i>√d<sub>k</sub>로 나눔</span></div>
+    <div class="readouts" id="sc-ro"></div>
+  </figure>
+  <div class="prose">
+    <h3>멀티헤드 어텐션과 마스크</h3>
+    <p>어텐션을 한 번만 하면 여러 관계가 하나의 평균으로 뭉개집니다. 트랜스포머는 질의·키·값을 서로 다른 학습된 행렬로 h번 투영해 어텐션을 따로 계산하고, 결과를 이어 붙여 다시 투영합니다. 이것이 <b>멀티헤드 어텐션</b>입니다. 원 논문은 h = 8개의 헤드를 쓰고, 헤드마다 d<sub>k</sub> = d<sub>v</sub> = 512/8 = 64입니다. 헤드마다 차원이 줄어든 덕분에 전체 계산량은 차원을 다 쓴 헤드 하나와 비슷합니다 (3.2.2절). 실험 14-1의 두 헤드처럼, 헤드마다 서로 다른 관계에 주목할 수 있습니다.</p>
+    <p>디코더는 번역문을 한 단어씩 만들기 때문에, i번째 위치가 그 뒤의 단어를 미리 보면 안 됩니다. 그래서 디코더의 셀프 어텐션은 뒤쪽 위치의 점수를 소프트맥스 전에 −∞로 바꿔 가중치를 0으로 만듭니다. 이 <b>마스크</b>와 출력을 한 칸 밀어 넣는 방식 덕분에, i번째 예측은 i보다 앞선 단어에만 기댑니다 (3.1절, 3.2.3절).</p>
+    <h3>위치 인코딩</h3>
+    <p>어텐션은 단어들을 집합처럼 다루므로, 그대로는 단어 순서를 알 수 없습니다. 그래서 단어 임베딩에 같은 차원의 <b>위치 인코딩</b>을 더합니다. 원 논문은 차원마다 주파수가 다른 사인·코사인을 썼습니다. 파장은 2π에서 10000·2π까지 기하급수로 늘어납니다. 저자들은 이 방식이 상대 위치를 배우기 쉽게 하고, 학습 때보다 긴 문장에도 쓸 수 있을 것이라고 보았습니다. 학습된 위치 임베딩과 성능은 거의 같았습니다 (3.5절).</p>
+  </div>
+  <p class="formula">PE(pos, 2i) = sin(pos / 10000<sup>2i/d<sub>model</sub></sup>),   PE(pos, 2i+1) = cos(pos / 10000<sup>2i/d<sub>model</sub></sup>)<small>pos는 위치, i는 차원 번호입니다 (Vaswani 외 3.5절).</small></p>
+  <figure class="bench" id="b14-3">
+    <figcaption class="bench-head"><span class="bench-no">실험 14-3</span><h3>위치 인코딩의 무늬</h3><p>왼쪽은 위치(세로)마다 위치 인코딩 벡터(가로)를 색으로 그린 것입니다. 앞쪽 차원은 빠르게, 뒤쪽 차원은 느리게 진동합니다. 오른쪽은 고른 위치의 벡터와 다른 위치 벡터들의 내적입니다. 가까운 위치일수록 값이 큽니다.</p></figcaption>
+    <div class="controls">
+      <div class="ctl"><label for="pe-d"><span>d<sub>model</sub></span> <output id="pe-d-o">64</output></label><input type="range" id="pe-d" min="4" max="7" step="1" value="6"></div>
+      <div class="ctl"><label for="pe-p"><span>기준 위치</span> <output id="pe-p-o">20</output></label><input type="range" id="pe-p" min="0" max="63" step="1" value="20"></div>
+    </div>
+    <div class="split">
+      <canvas class="cv" id="pe-map" style="height:280px" role="img" aria-label="위치 인코딩 행렬"></canvas>
+      <canvas class="cv" id="pe-sim" style="height:280px" role="img" aria-label="기준 위치와 다른 위치의 내적"></canvas>
+    </div>
+  </figure>
+  <div class="prose">
+    <h3>피드포워드 층과 모델 크기</h3>
+    <p>어텐션 뒤에는 위치마다 따로, 같은 방식으로 적용하는 2층 신경망 FFN(x) = max(0, xW₁ + b₁)W₂ + b₂가 옵니다. 안쪽 차원은 d<sub>ff</sub> = 2048입니다 (3.3절). 단어는 학습된 임베딩으로 벡터가 되고, 입력 임베딩 두 개와 출력 직전의 선형 변환이 같은 가중치 행렬을 함께 씁니다 (3.4절).</p>
+    <p>원 논문의 기본(base) 모델은 매개변수 6,500만 개이고, P100 GPU 8개로 10만 걸음, 12시간 학습했습니다. 큰(big) 모델은 2억 1,300만 개이고 3.5일 학습했습니다. 큰 모델은 WMT 2014 영어→독일어 번역에서 BLEU 28.4로, 앙상블을 포함한 이전 최고 기록을 2.0 넘게 앞섰습니다 (5.2절, 6.1절, 표 2–3).</p>
+  </div>
+  <figure class="bench" id="b14-4">
+    <figcaption class="bench-head"><span class="bench-no">실험 14-4</span><h3>트랜스포머 매개변수 계산기</h3><p>논문의 base와 big 설정을 고르거나 값을 바꿔 보세요. 막대는 매개변수가 어느 부분에 있는지 보여 줍니다. 층마다 FFN이 어텐션보다 매개변수를 두 배 가까이 가집니다.</p></figcaption>
+    <div class="btnrow" id="pc-pre"><span class="small">논문 설정</span><button class="btn" data-p="base" aria-pressed="true">base</button><button class="btn" data-p="big" aria-pressed="false">big</button></div>
+    <div class="controls">
+      <div class="ctl"><label for="pc-d"><span>d<sub>model</sub></span> <output id="pc-d-o">512</output></label><input type="range" id="pc-d" min="128" max="2048" step="128" value="512"></div>
+      <div class="ctl"><label for="pc-ff"><span>d<sub>ff</sub></span> <output id="pc-ff-o">2048</output></label><input type="range" id="pc-ff" min="256" max="8192" step="256" value="2048"></div>
+      <div class="ctl"><label for="pc-n"><span>층 수 N (인코더·디코더 각각)</span> <output id="pc-n-o">6</output></label><input type="range" id="pc-n" min="1" max="24" step="1" value="6"></div>
+      <div class="ctl"><label for="pc-v"><span>어휘 크기</span> <output id="pc-v-o">37,000</output></label><input type="range" id="pc-v" min="1000" max="100000" step="1000" value="37000"></div>
+    </div>
+    <canvas class="cv" id="pc-cv" style="height:150px" role="img" aria-label="부분별 매개변수 수"></canvas>
+    <div class="legend"><span><i class="sw" style="background:var(--c0)"></i>어텐션</span><span><i class="sw" style="background:var(--c1)"></i>피드포워드 (FFN)</span><span><i class="sw" style="background:var(--c2)"></i>공유 임베딩</span><span><i class="sw" style="background:var(--c4)"></i>층 정규화</span></div>
+    <div class="readouts" id="pc-ro"></div>
+    <p class="note">어텐션 하나는 W<sup>Q</sup>, W<sup>K</sup>, W<sup>V</sup>, W<sup>O</sup>와 편향으로 4d² + 4d개, FFN은 2·d·d<sub>ff</sub> + d<sub>ff</sub> + d개입니다. 인코더 층은 어텐션 1개, 디코더 층은 2개를 씁니다. 헤드 수 h는 계산을 나눌 뿐 매개변수 수를 바꾸지 않습니다. 논문 표 3의 값(base 65M, big 213M)과는 어휘 크기를 "약 37,000"으로 넣은 데다 편향과 정규화 항을 세는 방식에 따라 조금 차이가 납니다.</p>
+  </figure>
+  <div class="prose">
+    <h3>트랜스포머 이후</h3>
+    <ul>
+      <li><b>BERT</b> (Devlin 외 2019): 트랜스포머 인코더를 양방향 문맥으로 사전학습한 뒤, 과제마다 미세 조정합니다.</li>
+      <li><b>GPT</b> (Radford 외 2018): 마스크를 쓴 트랜스포머 디코더 12층을 레이블 없는 텍스트로 생성적 사전학습한 뒤 미세 조정합니다. 오늘날 대형 언어 모델의 출발점입니다.</li>
+      <li><b>비전 트랜스포머</b> (Dosovitskiy 외 2021): 이미지를 16×16 패치로 잘라 단어처럼 넣어, 순수 트랜스포머로도 이미지 분류를 잘할 수 있음을 보였습니다.</li>
+      <li>오토인코더와 표현 학습(Goodfellow 14–15장), 심층 생성 모델(20장), 확률 모델의 관점(Murphy 5, 10, 11, 15장)도 이어서 공부할 주제입니다.</li>
+    </ul>
+  </div>
+  <div class="quiz" data-ch="14"></div>
 </section>
 
 <!-- ───────────── 부록 ───────────── -->
@@ -744,7 +861,7 @@ footer.colophon{max-width:1200px;margin:56px auto 0;padding-top:20px;border-top:
 <section class="chapter" id="sources">
   <p class="ch-no">부록 B</p>
   <h2>교재 대응표</h2>
-  <div class="prose"><p>이 학습서의 장과 두 교재의 장·절을 맞춰 두었습니다. 개념을 더 깊이 공부할 때 이 표에서 출발하세요.</p></div>
+  <div class="prose"><p>이 학습서의 장과 두 교재의 장·절을 맞춰 두었습니다. 두 교재는 트랜스포머(2017)보다 먼저 나와서, 13–14장은 아래 논문을 함께 근거로 썼습니다.</p></div>
   <div class="tbl-wrap">
     <table>
       <thead><tr><th>장</th><th>Goodfellow 외 2016</th><th>Murphy 2012</th></tr></thead>
@@ -761,6 +878,8 @@ footer.colophon{max-width:1200px;margin:56px auto 0;padding-top:20px;border-top:
         <tr><th>10 역전파</th><td>6.3.2, 6.5, 8.2.5, 11.5</td><td>16.5.4</td></tr>
         <tr><th>11 최적화와 정규화</th><td>7.8, 7.12, 8.1–8.5</td><td>8.5, 16.5.6</td></tr>
         <tr><th>12 합성곱 신경망</th><td>9.1–9.3</td><td>16.5.1</td></tr>
+        <tr><th>13 RNN과 어텐션</th><td>10.1–10.2, 10.7, 10.10, 12.4.5.1</td><td>– (Bahdanau 외 2015)</td></tr>
+        <tr><th>14 트랜스포머</th><td>12.4.5.1</td><td>– (Vaswani 외 2017)</td></tr>
       </tbody>
     </table>
   </div>
@@ -769,6 +888,14 @@ footer.colophon{max-width:1200px;margin:56px auto 0;padding-top:20px;border-top:
     <ul>
       <li>Goodfellow, I., Bengio, Y., &amp; Courville, A. (2016). <i>Deep Learning</i>. MIT Press.</li>
       <li>Murphy, K. P. (2012). <i>Machine Learning: A Probabilistic Perspective</i>. MIT Press.</li>
+    </ul>
+    <h3>논문</h3>
+    <ul>
+      <li>Bahdanau, D., Cho, K., &amp; Bengio, Y. (2015). Neural machine translation by jointly learning to align and translate. <i>ICLR</i>. <a href="https://arxiv.org/abs/1409.0473">arXiv:1409.0473</a></li>
+      <li>Vaswani, A., Shazeer, N., Parmar, N., Uszkoreit, J., Jones, L., Gomez, A. N., Kaiser, Ł., &amp; Polosukhin, I. (2017). Attention is all you need. <i>NeurIPS</i>. <a href="https://arxiv.org/abs/1706.03762">arXiv:1706.03762</a></li>
+      <li>Radford, A., Narasimhan, K., Salimans, T., &amp; Sutskever, I. (2018). Improving language understanding by generative pre-training. OpenAI. <a href="https://cdn.openai.com/research-covers/language-unsupervised/language_understanding_paper.pdf">PDF</a></li>
+      <li>Devlin, J., Chang, M.-W., Lee, K., &amp; Toutanova, K. (2019). BERT: Pre-training of deep bidirectional transformers for language understanding. <i>NAACL</i>. <a href="https://arxiv.org/abs/1810.04805">arXiv:1810.04805</a></li>
+      <li>Dosovitskiy, A., et al. (2021). An image is worth 16×16 words: Transformers for image recognition at scale. <i>ICLR</i>. <a href="https://arxiv.org/abs/2010.11929">arXiv:2010.11929</a></li>
     </ul>
   </div>
 </section>
@@ -2110,6 +2237,17 @@ const QUIZ = {
     { q: '대부분의 머신러닝 라이브러리가 "합성곱"이라고 부르며 구현하는 연산은?', o: ['커널을 뒤집지 않는 교차상관', '커널을 뒤집는 수학적 합성곱', '행렬 전치', '푸리에 변환'], a: 0, e: 'Goodfellow 9.1절의 설명입니다. 학습되는 커널이라 뒤집든 안 뒤집든 결과의 표현력은 같습니다.' },
     { q: 'Goodfellow가 꼽은 합성곱의 세 가지 아이디어가 아닌 것은?', o: ['희소 상호작용', '매개변수 공유', '이동 등변성', '완전 연결'], a: 3, e: '완전 연결은 합성곱이 대신하는 방식입니다. 실험 12-1의 매개변수 수를 비교해 보세요.' },
     { q: '최대 풀링의 효과는?', o: ['입력이 조금 이동해도 출력이 거의 바뀌지 않게 한다', '출력 크기를 키운다', '커널을 뒤집는다', '모든 값을 0으로 만든다'], a: 0, e: '실험 12-1에서 입력을 한 칸 옮겨, 풀링 전후로 달라진 칸의 비율을 비교해 보세요.' }
+  ],
+  13: [
+    { q: 'RNN이 시점마다 쓰는 가중치 W와 U는?', o: ['모든 시점이 같은 값을 함께 쓴다', '시점마다 다르다', '첫 시점에만 쓴다', '학습하지 않는다'], a: 0, e: '같은 가중치를 다시 쓰므로 길이가 다른 문장도 처리할 수 있습니다 (Goodfellow 식 10.8–10.9).' },
+    { q: 'Bahdanau 등(2015)이 인코더–디코더 번역의 병목이라고 본 것은?', o: ['원문 전체를 담는 고정 길이 벡터', '학습률', '어휘 크기', '은닉층의 수'], a: 0, e: '그래서 디코더가 단어마다 원문의 관련 부분을 찾아보는 어텐션을 제안했습니다.' },
+    { q: '셀프 어텐션 층에서 멀리 떨어진 두 단어 사이의 최대 경로 길이는? (Vaswani 외 표 1)', o: ['O(1)', 'O(n)', 'O(log n)', 'O(n²)'], a: 0, e: '모든 위치가 한 걸음에 연결됩니다. 순환 층은 O(n)입니다.' }
+  ],
+  14: [
+    { q: '트랜스포머의 스케일드 닷-프로덕트 어텐션은?', o: ['softmax(QKᵀ/√d_k)V', 'softmax(QK)V', 'QKᵀV', 'tanh(QKᵀ)V'], a: 0, e: 'Vaswani 외 식 1입니다.' },
+    { q: '내적을 √d_k로 나누는 이유는?', o: ['내적의 분산이 d_k로 커져 소프트맥스가 기울기가 극히 작은 영역으로 가는 것을 막으려고', '계산을 빠르게 하려고', '메모리를 아끼려고', '위치 정보를 넣으려고'], a: 0, e: '성분이 평균 0, 분산 1이면 내적의 분산은 d_k입니다 (각주 4). 실험 14-2에서 확인해 보세요.' },
+    { q: '디코더 셀프 어텐션의 마스크가 하는 일은?', o: ['각 위치가 자기보다 뒤의 위치를 보지 못하게 한다', '단어 일부를 무작위로 끈다', '패딩만 지운다', '헤드 수를 줄인다'], a: 0, e: '뒤쪽 점수를 −∞로 바꿔 가중치를 0으로 만듭니다. 그래서 i번째 예측은 앞선 단어에만 기댑니다.' },
+    { q: '위치 인코딩이 필요한 이유는?', o: ['어텐션만으로는 단어의 순서를 알 수 없어서', '어휘가 너무 커서', '기울기 소실을 막으려고', '모델을 작게 하려고'], a: 0, e: '순환도 합성곱도 없으므로 위치 정보를 임베딩에 더해 줍니다 (3.5절).' }
   ]
 };
 const KEY = 'ml-guide-progress-v1';
@@ -2234,7 +2372,22 @@ paintProgress();
     ['드롭아웃', 'dropout', '학습 중 뉴런 일부를 무작위로 끄는 정규화.', 11],
     ['합성곱', 'convolution', '커널을 입력 위로 밀며 겹치는 값끼리 곱해 더하는 연산.', 12],
     ['커널 · 특징 맵', 'kernel / feature map', '합성곱에 쓰는 작은 가중치 격자와, 그 결과로 나온 출력.', 12],
-    ['풀링', 'pooling', '주변 출력을 최댓값 등으로 요약해, 작은 이동에 덜 민감하게 만드는 연산.', 12]
+    ['풀링', 'pooling', '주변 출력을 최댓값 등으로 요약해, 작은 이동에 덜 민감하게 만드는 연산.', 12],
+    ['순환 신경망 (RNN)', 'recurrent neural network', '같은 가중치로 시점마다 은닉 상태를 갱신하며 순서 데이터를 처리하는 신경망.', 13],
+    ['은닉 상태', 'hidden state', 'RNN이 지금까지 본 입력을 요약해 다음 시점으로 넘기는 벡터.', 13],
+    ['LSTM', 'long short-term memory', '입력·망각·출력 게이트로 정보를 얼마나 남길지 학습하는 순환 신경망.', 13],
+    ['인코더–디코더', 'encoder–decoder', '입력 순서열을 표현으로 바꾸는 인코더와, 그 표현에서 출력 순서열을 만드는 디코더의 구조.', 13],
+    ['어텐션', 'attention', '질의와 키의 유사도로 가중치를 매겨 값들의 가중 평균을 내는 연산.', 13],
+    ['셀프 어텐션', 'self-attention', '질의·키·값이 모두 같은 순서열에서 나오는 어텐션.', 14],
+    ['질의 · 키 · 값', 'query / key / value', '찾는 것, 찾아지는 것의 이름표, 실제로 가져오는 내용에 해당하는 벡터.', 14],
+    ['스케일드 닷-프로덕트 어텐션', 'scaled dot-product attention', 'softmax(QKᵀ/√d_k)V. 트랜스포머의 기본 어텐션.', 14],
+    ['멀티헤드 어텐션', 'multi-head attention', '서로 다른 투영으로 어텐션을 여러 번 계산해 이어 붙이는 방식.', 14],
+    ['마스크', 'mask', '디코더가 뒤쪽 위치를 보지 못하게 점수를 −∞로 바꾸는 장치.', 14],
+    ['위치 인코딩', 'positional encoding', '단어 순서 정보를 주려고 임베딩에 더하는 벡터. 원 논문은 사인·코사인을 썼다.', 14],
+    ['잔차 연결', 'residual connection', '층의 입력을 출력에 더해 주는 연결. x + Sublayer(x).', 14],
+    ['층 정규화', 'layer normalization', '각 위치의 벡터를 평균 0, 분산 1로 맞추는 정규화.', 14],
+    ['트랜스포머', 'Transformer', '순환과 합성곱 없이 어텐션만으로 만든 인코더–디코더 모델 (Vaswani 외 2017).', 14],
+    ['사전학습 · 미세 조정', 'pre-training / fine-tuning', '큰 데이터로 먼저 일반 표현을 배운 뒤, 과제 데이터로 조금 더 학습하는 방식.', 14]
   ];
   const list = $('#gl-list'), q = $('#gl-q'), empty = $('#gl-empty');
   function render() {
@@ -2245,6 +2398,227 @@ paintProgress();
   }
   q.addEventListener('input', render);
   render();
+})();
+
+})();
+
+</script>
+<script>
+(() => {
+'use strict';
+const { $, $$, clamp, nf, MONO, SANS, rng, gauss, C, rgba, hexRgb, plot, raf, frame, poly, vline, label, heat, segGroup, toggle, pressed, chip, ro } = window.ML;
+const ink = hex => { const [r, g, b] = hexRgb(hex); return 0.299 * r + 0.587 * g + 0.114 * b > 150 ? '#111111' : '#ffffff'; };
+const softmax = s => { const m = Math.max(...s.filter(isFinite)); const e = s.map(v => (isFinite(v) ? Math.exp(v - m) : 0)); const z = e.reduce((a, b) => a + b, 0); return e.map(v => v / z); };
+const sup = n => String(n).replace(/-/g, '⁻').replace(/\d/g, d => '⁰¹²³⁴⁵⁶⁷⁸⁹'[d]);
+const pow10 = v => (v === 0 ? '1' : '10' + sup(v));
+/* 값 v를 −1…1 범위에서 파랑(음수)–바탕–주황(양수)으로 */
+function divColor(v) { const pan = hexRgb(C.panel), c = hexRgb(v >= 0 ? C.c1 : C.c0), t = Math.min(1, Math.abs(v)); return [pan[0] + (c[0] - pan[0]) * t, pan[1] + (c[1] - pan[1]) * t, pan[2] + (c[2] - pan[2]) * t, 255]; }
+
+/* ════════════ 13장: 순환 층과 셀프 어텐션 ════════════ */
+(function rnnVsAttn() {
+  const sN = $('#rn-n'), sL = $('#rn-l'), sD = $('#rn-d');
+  sN.min = 0.3; sN.max = 3.3; sN.step = 0.01; sN.value = Math.log10(50);
+  const N = () => Math.max(2, Math.round(Math.pow(10, +sN.value))), D = () => Math.pow(2, +sD.value);
+  const PG = plot('rn-grad', p => {
+    const n = N(), lam = +sL.value, xmax = Math.max(10, n);
+    const f = frame(p, { l: 48, r: 10, t: 22, b: 34, x0: 1, x1: xmax, xlog: true, y0: 1e-10, y1: 1e4, ylog: true,
+      xt: [1, 10, 100, 1000].filter(v => v <= xmax), yt: [1e-8, 1e-4, 1, 1e4], yf: v => pow10(Math.round(Math.log10(v))), xl: '두 단어 사이 거리 (토큰)', yl: '남는 기울기 크기' });
+    const { ctx } = p, m = 120, xs = i => Math.pow(10, Math.log10(xmax) * i / (m - 1));
+    f.clip();
+    poly(ctx, m, i => f.X(xs(i)), i => f.Y(clamp(Math.pow(lam, xs(i) - 1), 1e-11, 1e5)), C.c0, 2.2);
+    poly(ctx, m, i => f.X(xs(i)), () => f.Y(1), C.c1, 2.2);
+    f.unclip();
+    vline(ctx, f.X(n), f.T, f.H, C.ink, [4, 3]);
+  });
+  const PC = plot('rn-cost', p => {
+    const n = N(), d = D();
+    const f = frame(p, { l: 48, r: 10, t: 22, b: 34, x0: 2, x1: 4096, xlog: true, y0: 1e2, y1: 1e11, ylog: true,
+      xt: [10, 100, 1000], yt: [1e3, 1e5, 1e7, 1e9, 1e11], yf: v => pow10(Math.round(Math.log10(v))), xl: '문장 길이 n', yl: '층당 계산량 (차수)' });
+    const { ctx } = p, m = 120, xs = i => Math.pow(10, Math.log10(2) + (Math.log10(4096) - Math.log10(2)) * i / (m - 1));
+    f.clip();
+    poly(ctx, m, i => f.X(xs(i)), i => f.Y(xs(i) * d * d), C.c0, 2.2);
+    poly(ctx, m, i => f.X(xs(i)), i => f.Y(xs(i) * xs(i) * d), C.c1, 2.2);
+    f.unclip();
+    vline(ctx, f.X(d), f.T, f.H, C.grid, null, 6);
+    label(ctx, `n = d = ${d}`, f.X(d) + 4, f.T + 4, C.muted, 'left', 'top', `11px ${MONO}`);
+    vline(ctx, f.X(n), f.T, f.H, C.ink, [4, 3]);
+  });
+  function update() {
+    const n = N(), d = D(), lam = +sL.value, g = Math.pow(lam, n - 1);
+    $('#rn-n-o').textContent = n.toLocaleString('ko-KR'); $('#rn-l-o').textContent = nf(lam, 2); $('#rn-d-o').textContent = d;
+    const fmt = v => (v < 1e-3 || v > 1e4 ? v.toExponential(1) : nf(v, 3));
+    $('#rn-ro').innerHTML = ro('RNN: 첫 단어→n번째 단어 기울기', `${fmt(g)} ${chip(g < 0.01 ? '소실' : g > 100 ? '폭주' : '유지', g < 0.01 || g > 100 ? 'bad' : 'ok')}`) +
+      ro('셀프 어텐션: 경로 길이', '1<small>걸음</small>') + ro('순서대로 해야 하는 계산', `RNN ${n.toLocaleString('ko-KR')}번 · 어텐션 1번`) +
+      ro('층당 계산량 비 (어텐션 ÷ RNN) = n/d', nf(n / d, 2));
+    $('#rn-note').textContent = n < d
+      ? `n(${n}) < d(${d})이므로 셀프 어텐션 층의 계산이 순환 층보다 적습니다. Vaswani 등은 번역에 쓰는 문장 표현이 대개 이 경우라고 적었습니다 (4절).`
+      : `n(${n}) ≥ d(${d})라서 셀프 어텐션의 n² 비용이 더 큽니다. 원 논문은 아주 긴 입력에서는 각 위치가 이웃 r개만 보도록 제한하는 방법을 제안했습니다 (4절).`;
+    PG.render(); PC.render();
+  }
+  [sN, sL, sD].forEach(s => s.addEventListener('input', raf(update)));
+  update();
+})();
+
+/* ════════════ 14장: 어텐션 계산기 ════════════ */
+(function attention() {
+  const T = ['나는', '어제', '산', '책을', '오늘', '다', '읽었다'], n = T.length;
+  /* 헤드 1: 성분 [주어, 시간, 대상, 서술어]. 키는 "나는 무엇인가", 질의는 "나는 무엇을 찾는가" */
+  const K1 = [[1, 0, 0, 0], [0, 1, 0, 0], [0, 0, 0, 1], [0, 0, 1, 0], [0, 1, 0, 0], [0, 0, 0, 0.6], [0, 0, 0, 1]];
+  const Q1 = [[0, 0, 0, 1], [0, 0, 0, 1], [0, 1, 1, 0], [0, 0, 0, 1], [0, 0, 0, 1], [0, 0, 0, 1], [1, 0.8, 1, 0]].map(q => q.map(v => v * 3));
+  /* 헤드 2: 위치를 원-핫으로 두고, 질의는 바로 앞 위치를 찾는다 */
+  const K2 = T.map((_, j) => T.map((__, k) => (k === j ? 1 : 0)));
+  const Q2 = T.map((_, i) => T.map((__, k) => (i > 0 && k === i - 1 ? 3 : 0)));
+  let head = 'sem', qi = 6, scale = true, mask = false;
+  const dot = (a, b) => a.reduce((s, v, i) => s + v * b[i], 0);
+  function weights(i) {
+    const Q = head === 'sem' ? Q1 : Q2, K = head === 'sem' ? K1 : K2, dk = K[0].length;
+    const raw = T.map((_, j) => dot(Q[i], K[j])), sc = raw.map(v => (scale ? v / Math.sqrt(dk) : v));
+    const masked = sc.map((v, j) => (mask && j > i ? -Infinity : v));
+    return { raw, sc, w: softmax(masked), dk };
+  }
+  const qb = $('#at-q');
+  qb.innerHTML = '<span class="small">질의 단어</span>' + T.map((t, i) => `<button class="btn" data-i="${i}" aria-pressed="${i === qi}">${t}</button>`).join('');
+  const PM = plot('at-mat', p => {
+    const { ctx, w: W, h: H } = p, L = 58, Tp = 30, side = Math.min(W - L - 8, H - Tp - 8), cs = side / n;
+    for (let i = 0; i < n; i++) {
+      const { w } = weights(i);
+      for (let j = 0; j < n; j++) {
+        const hidden = mask && j > i, v = w[j], pan = hexRgb(C.panel), c = hexRgb(C.c4);
+        ctx.fillStyle = hidden ? rgba(C.muted, 0.18) : `rgb(${pan.map((b, k) => Math.round(b + (c[k] - b) * Math.min(1, v * 1.6))).join(',')})`;
+        ctx.fillRect(L + j * cs, Tp + i * cs, cs - 1, cs - 1);
+      }
+      label(ctx, T[i], L - 6, Tp + (i + 0.5) * cs, i === qi ? C.ink : C.muted, 'right', 'middle', `${i === qi ? 600 : 400} 11px ${SANS}`);
+    }
+    T.forEach((t, j) => label(ctx, t, L + (j + 0.5) * cs, Tp - 6, C.muted, 'center', 'bottom', `11px ${SANS}`));
+    ctx.strokeStyle = C.mark; ctx.lineWidth = 2.5; ctx.strokeRect(L + 1, Tp + qi * cs + 1, side - 2, cs - 2);
+    label(ctx, '행: 질의 · 열: 키', 4, 4, C.muted, 'left', 'top', `11px ${SANS}`);
+  });
+  const PB = plot('at-bar', p => {
+    const { w } = weights(qi);
+    const f = frame(p, { l: 40, r: 8, t: 22, b: 30, x0: 0, x1: n, y0: 0, y1: 1, yt: [0, 0.5, 1], yf: v => Math.round(v * 100) + '%', yl: `"${T[qi]}"의 어텐션 가중치` });
+    const { ctx } = p, bw = f.W / n;
+    w.forEach((v, j) => {
+      const hidden = mask && j > qi, x = f.L + bw * j + bw * 0.16, wd = bw * 0.68;
+      if (hidden) { label(ctx, '가림', x + wd / 2, f.Y(0) - 4, C.muted, 'center', 'bottom', `11px ${SANS}`); }
+      else { ctx.fillStyle = C.c4; ctx.fillRect(x, f.Y(v), wd, f.Y(0) - f.Y(v)); label(ctx, Math.round(v * 100) + '%', x + wd / 2, f.Y(v) - 2, C.ink, 'center', 'bottom', `11px ${MONO}`); }
+      label(ctx, T[j], x + wd / 2, f.T + f.H + 6, j === qi ? C.ink : C.muted, 'center', 'top', `${j === qi ? 600 : 400} 11px ${SANS}`);
+    });
+  });
+  function update() {
+    const { raw, sc, w, dk } = weights(qi), f2 = v => (isFinite(v) ? nf(v, 2) : '−∞');
+    $$('button', qb).forEach(b => toggle(b, +b.dataset.i === qi));
+    const visible = j => !(mask && j > qi);
+    $('#at-calc').innerHTML = `점수 q·k = [${raw.map((v, j) => (visible(j) ? f2(v) : '−∞')).join(', ')}]` +
+      (scale ? `  →  ÷√d<sub>k</sub> (√${dk} = ${nf(Math.sqrt(dk), 2)})  →  [${sc.map((v, j) => (visible(j) ? f2(v) : '−∞')).join(', ')}]` : '') +
+      `  →  softmax  →  <b>[${w.map(v => nf(v, 2)).join(', ')}]</b><small>출력은 이 가중치로 값 벡터들을 가중 평균한 것입니다. 마스크가 가린 칸은 점수가 −∞라서 가중치가 0이 됩니다.</small>`;
+    PM.render(); PB.render();
+  }
+  qb.addEventListener('click', e => { const b = e.target.closest('button[data-i]'); if (b) { qi = +b.dataset.i; update(); } });
+  segGroup($('#at-head'), 'h', v => { head = v; update(); });
+  $('#at-scale').addEventListener('click', e => { scale = !scale; toggle(e.currentTarget, scale); update(); });
+  $('#at-mask').addEventListener('click', e => { mask = !mask; toggle(e.currentTarget, mask); update(); });
+  PM.cv.addEventListener('click', e => {
+    const rc = PM.cv.getBoundingClientRect(), y = e.clientY - rc.top, side = Math.min(PM.w - 66, PM.h - 38), cs = side / n, i = Math.floor((y - 30) / cs);
+    if (i >= 0 && i < n) { qi = i; update(); }
+  });
+  update();
+})();
+
+/* ════════════ 14장: √d_k 스케일링 ════════════ */
+(function scaling() {
+  const DMAX = 512, NK = 8;
+  let seed = 3, q, ks;
+  function draw() { const r = rng(seed * 31); q = Array.from({ length: DMAX }, () => gauss(r)); ks = Array.from({ length: NK }, () => Array.from({ length: DMAX }, () => gauss(r))); }
+  draw();
+  const sD = $('#sc-d'), dk = () => Math.pow(2, +sD.value);
+  function calc() {
+    const d = dk(), raw = ks.map(k => { let s = 0; for (let i = 0; i < d; i++) s += q[i] * k[i]; return s; });
+    const sc = raw.map(v => v / Math.sqrt(d)), wr = softmax(raw), ws = softmax(sc);
+    const sd = Math.sqrt(raw.reduce((s, v) => s + v * v, 0) / NK);
+    return { raw, wr, ws, sd };
+  }
+  const P = plot('sc-cv', p => {
+    const { wr, ws } = calc();
+    const f = frame(p, { l: 40, r: 8, t: 22, b: 30, x0: 0, x1: NK, y0: 0, y1: 1, yt: [0, 0.5, 1], yf: v => Math.round(v * 100) + '%', yl: '키 8개에 준 가중치' });
+    const { ctx } = p, bw = f.W / NK;
+    for (let j = 0; j < NK; j++) {
+      const x = f.L + bw * j + bw * 0.14, wd = bw * 0.34;
+      ctx.fillStyle = C.c3; ctx.fillRect(x, f.Y(wr[j]), wd, f.Y(0) - f.Y(wr[j]));
+      ctx.fillStyle = C.c0; ctx.fillRect(x + wd + 2, f.Y(ws[j]), wd, f.Y(0) - f.Y(ws[j]));
+      label(ctx, `키 ${j + 1}`, f.L + bw * (j + 0.5), f.T + f.H + 6, C.muted, 'center', 'top', `11px ${SANS}`);
+    }
+  });
+  function update() {
+    const d = dk(), { wr, ws, sd } = calc(), mr = Math.max(...wr), ms = Math.max(...ws);
+    $('#sc-d-o').textContent = d;
+    $('#sc-ro').innerHTML = ro('내적 점수의 표준편차', `${nf(sd, 1)} <small>(이론값 √d<sub>k</sub> = ${nf(Math.sqrt(d), 1)})</small>`) +
+      ro('가장 큰 가중치: 나누지 않음', `${nf(mr * 100, 1)}<small>%</small>`) + ro('가장 큰 가중치: 나눔', `${nf(ms * 100, 1)}<small>%</small>`) +
+      ro('그 가중치의 기울기 p(1 − p): 나누지 않음', `${mr * (1 - mr) < 1e-3 ? (mr * (1 - mr)).toExponential(1) : nf(mr * (1 - mr), 3)} ${chip(mr * (1 - mr) < 0.01 ? '거의 0' : '살아 있음', mr * (1 - mr) < 0.01 ? 'bad' : 'ok')}`) +
+      ro('나눔', nf(ms * (1 - ms), 3));
+    P.render();
+  }
+  sD.addEventListener('input', raf(update));
+  $('#sc-new').addEventListener('click', () => { seed++; draw(); update(); });
+  update();
+})();
+
+/* ════════════ 14장: 위치 인코딩 ════════════ */
+(function posenc() {
+  const NP = 64, sD = $('#pe-d'), sP = $('#pe-p');
+  const dm = () => Math.pow(2, +sD.value);
+  const pe = (pos, d) => Array.from({ length: d }, (_, k) => { const i = Math.floor(k / 2), a = pos / Math.pow(10000, (2 * i) / d); return k % 2 ? Math.cos(a) : Math.sin(a); });
+  const PM = plot('pe-map', p => {
+    const d = dm(), pp = +sP.value, M = Array.from({ length: NP }, (_, pos) => pe(pos, d));
+    const f = frame(p, { l: 34, r: 8, t: 22, b: 30, x0: 0, x1: d, y0: NP, y1: 0, xt: [0, d / 2, d], yt: [0, 16, 32, 48, 63], xl: '차원 →', yl: '↓ 위치' });
+    heat(p.ctx, f.L, f.T, f.W, f.H, d, NP, (i, j) => divColor(M[j][i]));
+    p.ctx.strokeStyle = C.mark; p.ctx.lineWidth = 2; p.ctx.strokeRect(f.L + 0.5, f.Y(pp), f.W - 1, Math.max(2, f.H / NP));
+  });
+  const PS = plot('pe-sim', p => {
+    const d = dm(), pp = +sP.value, base = pe(pp, d), sims = Array.from({ length: NP }, (_, q) => pe(q, d).reduce((s, v, k) => s + v * base[k], 0) / (d / 2));
+    const f = frame(p, { l: 40, r: 10, t: 22, b: 34, x0: 0, x1: NP - 1, y0: -0.4, y1: 1.05, xt: [0, 16, 32, 48, 63], yt: [0, 0.5, 1], xl: '다른 위치', yl: '내적 ÷ 최댓값' });
+    const { ctx } = p;
+    ctx.strokeStyle = C.line; ctx.beginPath(); ctx.moveTo(f.L, f.Y(0)); ctx.lineTo(f.L + f.W, f.Y(0)); ctx.stroke();
+    vline(ctx, f.X(pp), f.T, f.H, C.mark, [4, 3]);
+    poly(ctx, NP, i => f.X(i), i => f.Y(sims[i]), C.c4, 2.2);
+  });
+  function update() { $('#pe-d-o').textContent = dm(); $('#pe-p-o').textContent = sP.value; PM.render(); PS.render(); }
+  [sD, sP].forEach(s => s.addEventListener('input', raf(update)));
+  update();
+})();
+
+/* ════════════ 14장: 매개변수 계산기 ════════════ */
+(function params() {
+  const PRE = { base: { d: 512, ff: 2048, n: 6, v: 37000, paper: '65M' }, big: { d: 1024, ff: 4096, n: 6, v: 37000, paper: '213M' } };
+  const sD = $('#pc-d'), sF = $('#pc-ff'), sN = $('#pc-n'), sV = $('#pc-v'), pre = $$('#pc-pre button');
+  let cur = 'base';
+  function parts() {
+    const d = +sD.value, ff = +sF.value, n = +sN.value, v = +sV.value;
+    const attn = 3 * n * (4 * d * d + 4 * d), ffn = 2 * n * (2 * d * ff + ff + d), ln = n * (2 * 2 * d + 3 * 2 * d), emb = v * d;
+    return { attn, ffn, ln, emb, total: attn + ffn + ln + emb, perLayerRatio: (2 * d * ff + ff + d) / (4 * d * d + 4 * d) };
+  }
+  const M = x => nf(x / 1e6, 1) + 'M';
+  const P = plot('pc-cv', p => {
+    const s = parts(), { ctx, w } = p, segs = [['attn', C.c0, '어텐션'], ['ffn', C.c1, 'FFN'], ['emb', C.c2, '임베딩'], ['ln', C.c4, '정규화']];
+    const L = 8, W = w - 16, y = 34, h = 44; let x = L;
+    segs.forEach(([k, col, nm]) => {
+      const ww = W * s[k] / s.total; ctx.fillStyle = col; ctx.fillRect(x, y, Math.max(0, ww - 1), h);
+      if (ww > 70) label(ctx, `${nm} ${M(s[k])}`, x + 6, y + h / 2, ink(col), 'left', 'middle', `600 12px ${SANS}`);
+      x += ww;
+    });
+    label(ctx, `전체 ${M(s.total)}`, L, 8, C.ink, 'left', 'top', `600 13px ${MONO}`);
+    label(ctx, '어텐션 = 인코더 N개 + 디코더 2N개', L, y + h + 10, C.muted, 'left', 'top', `11px ${SANS}`);
+  });
+  function update() {
+    const s = parts();
+    $('#pc-d-o').textContent = sD.value; $('#pc-ff-o').textContent = sF.value; $('#pc-n-o').textContent = sN.value; $('#pc-v-o').textContent = (+sV.value).toLocaleString('ko-KR');
+    pre.forEach(b => toggle(b, b.dataset.p === cur));
+    $('#pc-ro').innerHTML = ro('전체 매개변수', `${M(s.total)}${cur ? ` <small>(논문 표 3: ${PRE[cur].paper})</small>` : ''}`) +
+      ro('어텐션', M(s.attn)) + ro('FFN', M(s.ffn)) + ro('공유 임베딩', M(s.emb)) + ro('층 하나에서 FFN ÷ 어텐션', `${nf(s.perLayerRatio, 2)}<small>배</small>`);
+    P.render();
+  }
+  pre.forEach(b => b.addEventListener('click', () => { cur = b.dataset.p; const c = PRE[cur]; sD.value = c.d; sF.value = c.ff; sN.value = c.n; sV.value = c.v; update(); }));
+  [sD, sF, sN, sV].forEach(s => s.addEventListener('input', raf(() => { cur = null; update(); })));
+  update();
 })();
 
 })();
