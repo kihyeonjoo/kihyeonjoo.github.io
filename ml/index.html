@@ -8,6 +8,9 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Hahmlet:wght@500;700;800&family=IBM+Plex+Sans+KR:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.11/katex.min.css" integrity="sha384-nB0miv6/jRmo5UMMR1wu3Gz6NLsoTkbqJghGIsx//Rlm+ZU03BU6SQNC66uf4l5+" crossorigin="anonymous">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.11/katex.min.js" integrity="sha384-7zkQWkzuo3B5mTepMUcHkMB5jZaolc2xDwL6VFqjFALcbeS9Ggm/Yr2r3Dy4lfFg" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.11/contrib/auto-render.min.js" integrity="sha384-43gviWU0YVjaDtb/GhzOouOXtZMP/7XUzwPTstBeZFe/+rCMvRwr4yROQP43s0Xk" crossorigin="anonymous"></script>
 <style>
 /* Layout: 노트형 교재. 왼쪽에 머신러닝 시스템을 만드는 순서대로 놓인 장 목록(고정), 오른쪽에 68ch 본문과 그보다 넓은 실험대 패널. 실험대 그래프는 matplotlib 기본 색 순서(C0 파랑, C1 주황)를 따른다. */
 :root{
@@ -104,7 +107,13 @@ h3{text-wrap:balance}
 .defn{max-width:68ch;margin:0 0 1.2em;padding:14px 16px;border:1px solid var(--line);border-radius:6px;background:color-mix(in srgb,var(--trace) 6%,var(--panel))}
 .defn .lbl{font-family:var(--f-mono);font-size:12px;color:var(--muted);display:block;margin-bottom:4px}
 .defn p{margin:0;font-family:var(--f-display);font-weight:500;font-size:18px;line-height:1.6}
-.formula{font-family:var(--f-mono);font-size:14.5px;background:var(--panel);border:1px solid var(--line);border-radius:4px;padding:10px 14px;overflow-x:auto;white-space:nowrap;margin:0 0 1em;max-width:68ch}
+.formula{font-family:var(--f-body);font-size:15px;background:var(--panel);border:1px solid var(--line);border-radius:4px;padding:10px 14px;overflow-x:auto;margin:0 0 1em;max-width:68ch}
+/* 수식: KaTeX 글꼴로 조판. 넓은 식은 블록 안에서 가로로 스크롤 */
+.katex{font-size:1.06em}
+.formula .katex-display{margin:2px 0 6px;text-align:left;overflow-x:auto;overflow-y:hidden;padding-block:3px}
+.formula .katex-display>.katex{text-align:left;font-size:1.14em;white-space:nowrap}
+#cv-calc{font-family:var(--f-mono);font-size:14px}
+@media (max-width:640px){.formula .katex-display>.katex{font-size:1em}.formula{padding:10px}}
 .formula small{font-family:var(--f-body);color:var(--muted);font-size:12.5px;white-space:normal;display:block;margin-top:4px}
 .tbl-wrap{overflow-x:auto;margin:0 0 1.2em;max-width:100%}
 table{border-collapse:collapse;width:100%;font-size:14.5px;line-height:1.55}
@@ -348,7 +357,7 @@ footer.colophon{max-width:1200px;margin:56px auto 0;padding-top:20px;border-top:
     <p>머신러닝은 불확실성을 다룹니다. 데이터에는 잡음이 있고, 같은 입력에도 정답이 하나로 정해지지 않을 때가 많습니다. 그래서 모델의 출력은 흔히 "이 메일이 스팸일 확률 0.93"처럼 확률로 나옵니다.</p>
     <p><b>조건부 확률</b> p(A | B)는 B가 일어났을 때 A가 일어날 확률입니다. <b>베이즈 규칙</b>은 원인에서 결과로 가는 확률 p(결과 | 원인)을, 결과에서 원인으로 거슬러 가는 확률 p(원인 | 결과)로 바꿔 줍니다.</p>
   </div>
-  <p class="formula">p(y | x) = p(x | y) · p(y) / p(x),   p(x) = Σ<sub>y′</sub> p(x | y′) · p(y′)<small>p(y)는 데이터를 보기 전의 믿음인 사전 확률, p(x | y)는 가능도, p(y | x)는 데이터를 본 뒤의 사후 확률입니다 (Murphy 식 2.7).</small></p>
+  <p class="formula">\[\begin{aligned}p(y\mid x)&=\frac{p(x\mid y)\,p(y)}{p(x)}\\ p(x)&=\sum_{y'} p(x\mid y')\,p(y')\end{aligned}\]<small>\(p(y)\)는 데이터를 보기 전의 믿음인 사전 확률, \(p(x\mid y)\)는 가능도, \(p(y\mid x)\)는 데이터를 본 뒤의 사후 확률입니다 (Murphy 식 2.7).</small></p>
   <div class="prose">
     <p>Murphy(2.2.3.1절)의 예를 봅시다. 40대 여성이 유방암 검사(유방 촬영술)를 받아 양성이 나왔습니다. 검사의 민감도는 80%, 즉 암이 있으면 80% 확률로 양성이 나옵니다. 그렇다면 암일 확률은 80%일까요? 많은 사람이 그렇게 답하지만 틀렸습니다. 이 연령대에서 암이 있을 사전 확률은 0.4%로 매우 낮고, 암이 없어도 10%는 양성이 나옵니다. 베이즈 규칙으로 계산하면 실제 확률은 약 3%입니다. 사전 확률을 무시하는 이 실수를 <b>기저율 오류</b>라고 합니다.</p>
   </div>
@@ -366,7 +375,7 @@ footer.colophon{max-width:1200px;margin:56px auto 0;padding-top:20px;border-top:
   </figure>
   <div class="prose">
     <h3>정규분포</h3>
-    <p>연속값을 다룰 때 가장 많이 쓰는 분포는 <b>정규(가우스) 분포</b> N(x; μ, σ²)입니다. 평균 μ를 중심으로 종 모양이고, 표준편차 σ가 퍼짐을 정합니다. 3장의 선형회귀는 "정답 = 직선 + 정규분포 잡음"이라는 가정으로 볼 수 있습니다 (Goodfellow 3.9.3, 5.5.1절).</p>
+    <p>연속값을 다룰 때 가장 많이 쓰는 분포는 <b>정규(가우스) 분포</b> \(\mathcal{N}(x;\mu,\sigma^2)\)입니다. 평균 μ를 중심으로 종 모양이고, 표준편차 σ가 퍼짐을 정합니다. 3장의 선형회귀는 "정답 = 직선 + 정규분포 잡음"이라는 가정으로 볼 수 있습니다 (Goodfellow 3.9.3, 5.5.1절).</p>
   </div>
   <div class="quiz" data-ch="2"></div>
 </section>
@@ -380,7 +389,7 @@ footer.colophon{max-width:1200px;margin:56px auto 0;padding-top:20px;border-top:
     <p>선형회귀는 입력 x에서 실수 y를 예측하는 가장 단순한 모델입니다. 입력이 하나라면 예측은 직선 ŷ = wx + b이고, 기울기 w와 절편 b가 모델의 <b>매개변수</b>입니다. 학습이란 데이터를 가장 잘 설명하는 w와 b를 찾는 일입니다.</p>
     <p>"가장 잘"을 재는 기준이 <b>비용 함수</b>입니다. 선형회귀는 보통 <b>평균제곱오차(MSE)</b>를 씁니다. 예측과 정답의 차이(잔차)를 제곱해 평균한 값입니다. 제곱을 하므로 크게 틀린 점일수록 벌점이 훨씬 커집니다.</p>
   </div>
-  <p class="formula">MSE(w, b) = (1/m) Σ<sub>i</sub> (wx<sub>i</sub> + b − y<sub>i</sub>)²,   최적해: w = (XᵀX)⁻¹Xᵀy<small>m은 학습 예의 수입니다. 기울기가 0이 되는 조건을 풀면 정규 방정식이 나옵니다 (Goodfellow 식 5.12, Murphy 7.3.1절). X는 각 행이 [x<sub>i</sub>, 1]인 행렬입니다.</small></p>
+  <p class="formula">\[\begin{aligned}\mathrm{MSE}(w,b)&=\frac{1}{m}\sum_{i}\left(wx_i+b-y_i\right)^2\\ \mathbf{w}^{*}&=\left(X^{\top}X\right)^{-1}X^{\top}\mathbf{y}\end{aligned}\]<small>\(m\)은 학습 예의 수입니다. 기울기가 0이 되는 조건을 풀면 정규 방정식이 나옵니다 (Goodfellow 식 5.12, Murphy 7.3.1절). \(X\)는 각 행이 \([x_i,\ 1]\)인 행렬입니다.</small></p>
   <figure class="bench" id="b3-1">
     <figcaption class="bench-head"><span class="bench-no">실험 3-1</span><h3>제곱 오차를 눈으로 보기</h3><p>슬라이더로 직선을 움직이거나 점을 끌어 보세요. 각 점의 잔차를 한 변으로 하는 정사각형이 그려집니다. MSE는 이 정사각형 넓이의 평균입니다.</p></figcaption>
     <div class="controls">
@@ -401,9 +410,9 @@ footer.colophon{max-width:1200px;margin:56px auto 0;padding-top:20px;border-top:
   <h2>경사하강법</h2>
   <p class="refs">교재: <b>Goodfellow</b> 4.3절, 5.9절 · <b>Murphy</b> 8.3.2절, 8.5.2절</p>
   <div class="prose">
-    <p>선형회귀는 정규 방정식으로 한 번에 풀리지만, 대부분의 모델은 그런 공식이 없습니다. 그래서 비용을 조금씩 줄여 가는 반복 방법을 씁니다. <b>기울기(gradient)</b> ∇f는 함수가 가장 가파르게 오르는 방향을 가리킵니다. 그 반대 방향으로 조금 움직이면 비용이 줄어듭니다. 이것이 <b>경사하강법</b>입니다.</p>
+    <p>선형회귀는 정규 방정식으로 한 번에 풀리지만, 대부분의 모델은 그런 공식이 없습니다. 그래서 비용을 조금씩 줄여 가는 반복 방법을 씁니다. <b>기울기(gradient)</b> \(\nabla f\)는 함수가 가장 가파르게 오르는 방향을 가리킵니다. 그 반대 방향으로 조금 움직이면 비용이 줄어듭니다. 이것이 <b>경사하강법</b>입니다.</p>
   </div>
-  <p class="formula">x′ = x − ε ∇<sub>x</sub> f(x)<small>ε는 한 번에 움직이는 크기인 학습률입니다 (Goodfellow 식 4.5). 학습률은 사람이 미리 정하는 값이라 하이퍼파라미터라고 부릅니다.</small></p>
+  <p class="formula">\[\mathbf{x}'=\mathbf{x}-\epsilon\,\nabla_{\mathbf{x}}f(\mathbf{x})\]<small>\(\epsilon\)은 한 번에 움직이는 크기인 학습률입니다 (Goodfellow 식 4.5). 학습률은 사람이 미리 정하는 값이라 하이퍼파라미터라고 부릅니다.</small></p>
   <div class="prose">
     <p>학습률이 너무 작으면 수렴이 느리고, 너무 크면 골짜기를 건너뛰어 오히려 비용이 커질 수 있습니다 (Goodfellow 4.3.1절). 비용 곡면이 한 방향으로만 길쭉하면, 곧 헤세 행렬의 조건수가 크면 경사하강법은 골짜기 벽 사이를 지그재그로 오가며 느려집니다.</p>
     <p>데이터가 많으면 기울기를 매번 전체 데이터로 계산하기 어렵습니다. <b>확률적 경사하강법(SGD)</b>은 데이터에서 무작위로 뽑은 작은 묶음(미니배치)으로 기울기를 추정합니다. 경로가 흔들리지만 한 걸음이 훨씬 싸서, 딥러닝 학습의 기본 방법이 되었습니다 (Goodfellow 5.9절).</p>
@@ -434,7 +443,7 @@ footer.colophon{max-width:1200px;margin:56px auto 0;padding-top:20px;border-top:
     <p>모델이 표현할 수 있는 함수의 다양성을 <b>용량(capacity)</b>이라고 합니다. 용량이 너무 작으면 학습 데이터조차 설명하지 못하는 <b>과소적합</b>이 생기고, 너무 크면 학습 데이터의 잡음까지 외워 새 데이터에서 틀리는 <b>과적합</b>이 생깁니다. Goodfellow 그림 5.2는 이차 함수에서 만든 데이터에 1차, 2차, 9차 다항식을 맞춘 예입니다. 1차는 곡률을 못 잡고, 9차는 모든 점을 지나지만 점 사이에서 엉뚱하게 출렁입니다.</p>
     <p>용량을 줄이는 다른 방법이 <b>정규화</b>입니다. <b>가중치 감쇠</b>는 비용에 가중치 크기의 제곱합을 더해, 꼭 필요하지 않은 큰 계수를 억누릅니다. 같은 9차 다항식이라도 λ를 적당히 주면 이차 함수에 가까운 모양을 되찾습니다 (Goodfellow 그림 5.5, Murphy 7.5절의 능형 회귀).</p>
   </div>
-  <p class="formula">J(w) = MSE<sub>train</sub> + λ wᵀw<small>λ가 클수록 단순한 함수를 선호합니다. λ = 0이면 정규화가 없습니다 (Goodfellow 식 5.18).</small></p>
+  <p class="formula">\[J(\mathbf{w})=\mathrm{MSE}_{\text{train}}+\lambda\,\mathbf{w}^{\top}\mathbf{w}\]<small>\(\lambda\)가 클수록 단순한 함수를 선호합니다. \(\lambda=0\)이면 정규화가 없습니다 (Goodfellow 식 5.18).</small></p>
   <figure class="bench" id="b5-1">
     <figcaption class="bench-head"><span class="bench-no">실험 5-1</span><h3>다항식 차수와 일반화</h3><p>참 함수(점선)는 이차 함수이고, 학습 점(채운 점)은 여기에 잡음을 더한 것입니다. 차수를 올려 과적합을 만들어 보고, 학습 점 수나 λ를 바꿔 다시 잡아 보세요. 오른쪽 그래프는 차수별 학습 오차와 테스트 오차입니다.</p></figcaption>
     <div class="controls">
@@ -467,7 +476,7 @@ footer.colophon{max-width:1200px;margin:56px auto 0;padding-top:20px;border-top:
     <h3>k-최근접 이웃 (k-NN)</h3>
     <p>가장 단순한 분류기는 새 점과 가장 가까운 학습 점 K개를 보고, 그중 많은 쪽 클래스로 판정합니다 (Murphy 1.4.2절). 따로 학습할 매개변수가 없고 학습 데이터 자체가 모델입니다. 이런 모델을 <b>비모수 모델</b>이라고 합니다. K가 작으면 경계가 학습 점 하나하나에 휘둘리고, K가 크면 경계가 매끄러워집니다.</p>
   </div>
-  <p class="formula">p(y = c | x, D, K) = (1/K) Σ<sub>i ∈ N<sub>K</sub>(x)</sub> I(y<sub>i</sub> = c)<small>N<sub>K</sub>(x)는 x와 가장 가까운 학습 점 K개, I는 조건이 참이면 1인 지시 함수입니다 (Murphy 식 1.2).</small></p>
+  <p class="formula">\[p(y=c\mid \mathbf{x},\mathcal{D},K)=\frac{1}{K}\sum_{i\in N_K(\mathbf{x})}\mathbb{I}(y_i=c)\]<small>\(N_K(\mathbf{x})\)는 \(\mathbf{x}\)와 가장 가까운 학습 점 \(K\)개, \(\mathbb{I}\)는 조건이 참이면 1인 지시 함수입니다 (Murphy 식 1.2).</small></p>
   <figure class="bench" id="b6-1">
     <figcaption class="bench-head"><span class="bench-no">실험 6-1</span><h3>K에 따라 바뀌는 결정 경계</h3><p>배경색은 그 위치를 k-NN이 어느 클래스로 판정하는지 보여 줍니다. K = 1에서 시작해 늘려 보세요. 오른쪽 그래프는 K에 따른 학습 정확도와 테스트 정확도입니다.</p></figcaption>
     <div class="controls">
@@ -482,10 +491,10 @@ footer.colophon{max-width:1200px;margin:56px auto 0;padding-top:20px;border-top:
   </figure>
   <div class="prose">
     <h3>로지스틱 회귀</h3>
-    <p>로지스틱 회귀는 선형회귀의 출력 wᵀx + b를 <b>시그모이드 함수</b> σ(z) = 1/(1 + e<sup>−z</sup>)에 넣어 0과 1 사이의 확률로 바꿉니다. 이름에 회귀가 들어가지만 분류 모델입니다. p(y = 1 | x) = 0.5가 되는 곳, 곧 wᵀx + b = 0인 직선이 결정 경계입니다 (Murphy 8.2절).</p>
+    <p>로지스틱 회귀는 선형회귀의 출력 \(\mathbf{w}^{\top}\mathbf{x}+b\)를 <b>시그모이드 함수</b> \(\sigma(z)=1/(1+e^{-z})\)에 넣어 0과 1 사이의 확률로 바꿉니다. 이름에 회귀가 들어가지만 분류 모델입니다. \(p(y=1\mid\mathbf{x})=0.5\)가 되는 곳, 곧 \(\mathbf{w}^{\top}\mathbf{x}+b=0\)인 직선이 결정 경계입니다 (Murphy 8.2절).</p>
     <p>비용 함수로는 정답 클래스에 매긴 확률의 음의 로그를 평균한 <b>교차 엔트로피</b>(음의 로그 가능도)를 씁니다. 정답에 높은 확률을 주면 비용이 작고, 정답에 낮은 확률을 주면 비용이 크게 늘어납니다. 정규 방정식 같은 닫힌 해가 없어서 경사하강법으로 풉니다 (Murphy 8.3절, Goodfellow 5.7.1절).</p>
   </div>
-  <p class="formula">J(w, b) = −(1/m) Σ<sub>i</sub> [ y<sub>i</sub> log σ(wᵀx<sub>i</sub> + b) + (1 − y<sub>i</sub>) log(1 − σ(wᵀx<sub>i</sub> + b)) ]<small>기울기는 ∇<sub>w</sub>J = (1/m) Σ<sub>i</sub> (σ(wᵀx<sub>i</sub> + b) − y<sub>i</sub>) x<sub>i</sub>로, 선형회귀의 기울기와 모양이 같습니다 (Murphy 식 8.5).</small></p>
+  <p class="formula">\[\begin{aligned}J(\mathbf{w},b)=-\frac{1}{m}\sum_{i}\Big[\,&y_i\log\sigma(\mathbf{w}^{\top}\mathbf{x}_i+b)\\ &+(1-y_i)\log\big(1-\sigma(\mathbf{w}^{\top}\mathbf{x}_i+b)\big)\Big]\end{aligned}\]<small>기울기는 \(\nabla_{\mathbf{w}}J=\frac{1}{m}\sum_i\big(\sigma(\mathbf{w}^{\top}\mathbf{x}_i+b)-y_i\big)\mathbf{x}_i\)로, 선형회귀의 기울기와 모양이 같습니다 (Murphy 식 8.5).</small></p>
   <figure class="bench" id="b6-2">
     <figcaption class="bench-head"><span class="bench-no">실험 6-2</span><h3>로지스틱 회귀 학습 지켜보기</h3><p>학습을 누르면 경사하강법이 한 걸음씩 진행됩니다. 배경의 진하기가 확률을, 실선이 p = 0.5인 결정 경계를 나타냅니다. 클래스가 더 겹치게 해 보세요.</p></figcaption>
     <div class="controls">
@@ -512,7 +521,7 @@ footer.colophon{max-width:1200px;margin:56px auto 0;padding-top:20px;border-top:
     <p>그래서 양성 클래스를 따로 봅니다. <b>정밀도(precision)</b>는 모델이 양성이라고 한 것 가운데 실제로 양성인 비율이고, <b>재현율(recall)</b>은 실제 양성 가운데 모델이 찾아낸 비율입니다. 두 값을 하나로 합칠 때는 조화평균인 <b>F 점수</b>를 씁니다. 정밀도는 2장의 베이즈 계산에서 본 사후 확률 p(병 | 양성)과 같은 양입니다.</p>
     <p>분류기는 보통 점수나 확률을 내고, 그 값이 <b>임계값</b>을 넘으면 양성으로 판정합니다. 임계값을 낮추면 더 많이 찾아내지만(재현율 상승) 헛경보도 늘고(정밀도 하락), 높이면 그 반대입니다. 임계값을 옮기며 그린 정밀도–재현율 곡선(PR 곡선)이 이 맞바꿈을 보여 줍니다. 어느 오류가 더 비싼지는 문제마다 다릅니다 (Murphy 5.7.2절).</p>
   </div>
-  <p class="formula">정밀도 = TP / (TP + FP),  재현율 = TP / (TP + FN),  F = 2pr / (p + r)<small>TP는 맞게 찾은 양성, FP는 헛경보, FN은 놓친 양성입니다 (Goodfellow 11.1절).</small></p>
+  <p class="formula">\[\begin{aligned}\text{정밀도}&=\frac{TP}{TP+FP}\\ \text{재현율}&=\frac{TP}{TP+FN}\\ F&=\frac{2pr}{p+r}\end{aligned}\]<small>\(TP\)는 맞게 찾은 양성, \(FP\)는 헛경보, \(FN\)은 놓친 양성입니다 (Goodfellow 11.1절).</small></p>
   <figure class="bench" id="b7-1">
     <figcaption class="bench-head"><span class="bench-no">실험 7-1</span><h3>임계값과 유병률에 따른 평가 지표</h3><p>위 그래프는 음성(파랑)과 양성(주황) 사례의 분류기 점수 분포이고, 세로선이 임계값입니다. 임계값과 유병률을 바꿔 보세요. 유병률을 낮추면 같은 분류기의 정밀도가 무너집니다.</p></figcaption>
     <div class="controls">
@@ -578,9 +587,9 @@ footer.colophon{max-width:1200px;margin:56px auto 0;padding-top:20px;border-top:
   <p class="refs">교재: <b>Goodfellow</b> 6.1–6.4절 · <b>Murphy</b> 16.5절, 28.3절</p>
   <div class="prose">
     <p>선형 모델로는 풀 수 없는 가장 작은 문제가 <b>XOR</b>입니다. 두 입력 중 정확히 하나만 1일 때 1을 내야 합니다. Goodfellow(6.1절)가 네 점에 선형 모델을 최소제곱으로 맞추면 w = 0, b = 0.5가 나옵니다. 모든 입력에 0.5를 답하는 셈입니다. x₁이 0일 때와 1일 때 x₂의 효과가 반대여야 하는데, 선형 모델은 x₂에 하나의 계수만 줄 수 있기 때문입니다.</p>
-    <p>해법은 입력을 새 표현으로 바꾸는 <b>은닉층</b>입니다. 은닉층은 h = g(Wᵀx + c)를 계산하고, 출력층은 h 위에서 다시 선형 모델 y = wᵀh + b를 적용합니다. 여기서 g가 <b>활성화 함수</b>입니다. g가 없으면 층을 몇 개 쌓아도 전체가 하나의 선형 함수라서 아무 도움이 되지 않습니다. 오늘날 기본 추천은 <b>ReLU</b>, g(z) = max(0, z)입니다.</p>
+    <p>해법은 입력을 새 표현으로 바꾸는 <b>은닉층</b>입니다. 은닉층은 \(\mathbf{h}=g(W^{\top}\mathbf{x}+\mathbf{c})\)를 계산하고, 출력층은 \(\mathbf{h}\) 위에서 다시 선형 모델 \(y=\mathbf{w}^{\top}\mathbf{h}+b\)를 적용합니다. 여기서 \(g\)가 <b>활성화 함수</b>입니다. \(g\)가 없으면 층을 몇 개 쌓아도 전체가 하나의 선형 함수라서 아무 도움이 되지 않습니다. 오늘날 기본 추천은 <b>ReLU</b>, \(g(z)=\max(0,z)\)입니다.</p>
   </div>
-  <p class="formula">W = [[1, 1], [1, 1]],  c = [0, −1]ᵀ,  w = [1, −2]ᵀ,  b = 0<small>Goodfellow 식 6.4–6.6이 제시한 XOR 해입니다. ReLU를 지나면 (0,1)과 (1,0)이 은닉 공간의 한 점 (1,0)으로 모이고, 네 점이 직선 하나로 갈라집니다.</small></p>
+  <p class="formula">\[W=\begin{pmatrix}1&1\\1&1\end{pmatrix},\quad \mathbf{c}=\begin{pmatrix}0\\-1\end{pmatrix},\quad \mathbf{w}=\begin{pmatrix}1\\-2\end{pmatrix},\quad b=0\]<small>Goodfellow 식 6.4–6.6이 제시한 XOR 해입니다. ReLU를 지나면 (0,1)과 (1,0)이 은닉 공간의 한 점 (1,0)으로 모이고, 네 점이 직선 하나로 갈라집니다.</small></p>
   <figure class="bench" id="b9-1">
     <figcaption class="bench-head"><span class="bench-no">실험 9-1</span><h3>은닉층이 XOR을 펴는 방법</h3><p>왼쪽은 원래 입력 공간, 오른쪽은 은닉층이 만든 공간입니다. ReLU를 끄면 네 점이 한 직선 위에 늘어서 가를 수 없게 됩니다. 켜면 출력 1인 두 점이 한 점으로 겹칩니다.</p></figcaption>
     <div class="btnrow"><button class="btn" id="xor-relu" aria-pressed="true">ReLU 켬</button></div>
@@ -621,12 +630,12 @@ footer.colophon{max-width:1200px;margin:56px auto 0;padding-top:20px;border-top:
   <h2>역전파</h2>
   <p class="refs">교재: <b>Goodfellow</b> 6.5절, 6.3.2절, 8.2.5절, 11.5절 · <b>Murphy</b> 16.5.4절</p>
   <div class="prose">
-    <p>경사하강법을 쓰려면 모든 매개변수에 대한 비용의 기울기가 필요합니다. 신경망은 함수가 여러 겹으로 합성된 구조라서, 기울기는 미분의 <b>연쇄 법칙</b>으로 구합니다. y = g(x), z = f(y)이면 dz/dx = (dz/dy)(dy/dx)입니다 (Goodfellow 식 6.44).</p>
+    <p>경사하강법을 쓰려면 모든 매개변수에 대한 비용의 기울기가 필요합니다. 신경망은 함수가 여러 겹으로 합성된 구조라서, 기울기는 미분의 <b>연쇄 법칙</b>으로 구합니다. \(y=g(x),\ z=f(y)\)이면 \(\dfrac{dz}{dx}=\dfrac{dz}{dy}\dfrac{dy}{dx}\)입니다 (Goodfellow 식 6.44).</p>
     <p>계산을 연산 하나하나를 노드로 하는 <b>계산 그래프</b>로 그리면 이해가 쉽습니다. <b>순전파</b>는 입력에서 출력 쪽으로 값을 계산하고, <b>역전파</b>는 출력에서 입력 쪽으로 거슬러 가며 각 노드의 기울기를 계산합니다. 역전파는 중간 결과를 저장해 두었다가 다시 쓰므로, 같은 식을 반복해서 계산하는 낭비를 피합니다 (Goodfellow 6.5절).</p>
     <p>직접 짠 역전파 코드는 버그가 생기기 쉽습니다. Goodfellow(11.5절)는 역전파로 구한 기울기를 유한 차분으로 구한 수치 기울기와 비교해 보라고 권합니다. 아래 실험이 그 비교를 보여 줍니다.</p>
   </div>
   <figure class="bench" id="b10-1">
-    <figcaption class="bench-head"><span class="bench-no">실험 10-1</span><h3>뉴런 하나의 순전파와 역전파</h3><p>뉴런 하나가 a = σ(wx + b)를 계산하고, 비용은 L = (a − y)²입니다. 값을 바꾸면 위쪽 숫자(순전파 값)와 아래쪽 빨간 숫자(역전파 기울기)가 함께 바뀝니다.</p></figcaption>
+    <figcaption class="bench-head"><span class="bench-no">실험 10-1</span><h3>뉴런 하나의 순전파와 역전파</h3><p>뉴런 하나가 \(a=\sigma(wx+b)\)를 계산하고, 비용은 \(L=(a-y)^2\)입니다. 값을 바꾸면 위쪽 숫자(순전파 값)와 아래쪽 빨간 숫자(역전파 기울기)가 함께 바뀝니다.</p></figcaption>
     <div class="controls">
       <div class="ctl"><label for="bp-x">입력 x <output id="bp-x-o">1.50</output></label><input type="range" id="bp-x" min="-3" max="3" step="0.05" value="1.5"></div>
       <div class="ctl"><label for="bp-w">가중치 w <output id="bp-w-o">0.80</output></label><input type="range" id="bp-w" min="-3" max="3" step="0.05" value="0.8"></div>
@@ -662,8 +671,8 @@ footer.colophon{max-width:1200px;margin:56px auto 0;padding-top:20px;border-top:
   <p class="refs">교재: <b>Goodfellow</b> 7.8절, 7.12절, 8.1–8.5절 · <b>Murphy</b> 8.5절, 16.5.6절</p>
   <div class="prose">
     <h3>모멘텀과 Adam</h3>
-    <p>골짜기가 길쭉하면 기본 경사하강법은 지그재그로 느리게 내려갑니다. <b>모멘텀</b>은 지난 걸음들의 방향을 속도 v로 누적합니다. 일관된 방향으로는 점점 빨라지고, 계속 바뀌는 방향은 서로 상쇄됩니다. 업데이트는 v ← αv − ε∇J, θ ← θ + v이고, α로는 0.5, 0.9, 0.99를 흔히 씁니다 (Goodfellow 8.3.2절).</p>
-    <p><b>Adam</b>은 매개변수마다 학습률을 따로 조절하는 적응형 방법입니다. 기울기의 평균(1차 모멘트)과 제곱의 평균(2차 모멘트)을 함께 추적합니다. Goodfellow 알고리즘 8.7의 추천 기본값은 학습률 0.001, 감쇠율 ρ₁ = 0.9와 ρ₂ = 0.999, 안정화 상수 10⁻⁸입니다 (8.5.3절). 하이퍼파라미터에 비교적 덜 민감해 널리 쓰입니다.</p>
+    <p>골짜기가 길쭉하면 기본 경사하강법은 지그재그로 느리게 내려갑니다. <b>모멘텀</b>은 지난 걸음들의 방향을 속도 v로 누적합니다. 일관된 방향으로는 점점 빨라지고, 계속 바뀌는 방향은 서로 상쇄됩니다. 업데이트는 \(\mathbf{v}\leftarrow\alpha\mathbf{v}-\epsilon\nabla J,\ \boldsymbol{\theta}\leftarrow\boldsymbol{\theta}+\mathbf{v}\)이고, \(\alpha\)로는 0.5, 0.9, 0.99를 흔히 씁니다 (Goodfellow 8.3.2절).</p>
+    <p><b>Adam</b>은 매개변수마다 학습률을 따로 조절하는 적응형 방법입니다. 기울기의 평균(1차 모멘트)과 제곱의 평균(2차 모멘트)을 함께 추적합니다. Goodfellow 알고리즘 8.7의 추천 기본값은 학습률 0.001, 감쇠율 \(\rho_1=0.9\)와 \(\rho_2=0.999\), 안정화 상수 \(10^{-8}\)입니다 (8.5.3절). 하이퍼파라미터에 비교적 덜 민감해 널리 쓰입니다.</p>
   </div>
   <figure class="bench" id="b11-1">
     <figcaption class="bench-head"><span class="bench-no">실험 11-1</span><h3>세 최적화 방법의 경주</h3><p>길쭉하게 기운 골짜기(조건수 25)에서 같은 출발점으로 내려갑니다. 곡면을 눌러 출발점을 바꿀 수 있습니다. Adam의 학습률은 이 곡면의 크기에 맞춰 0.1로 두었습니다.</p></figcaption>
@@ -733,22 +742,22 @@ footer.colophon{max-width:1200px;margin:56px auto 0;padding-top:20px;border-top:
   <h2>순환 신경망과 어텐션의 등장</h2>
   <p class="refs">교재·논문: <b>Goodfellow</b> 10.1–10.2절, 10.7절, 10.10절, 12.4.5.1절 · <b>Bahdanau 외</b> (2015)</p>
   <div class="prose">
-    <p>문장, 음성, 시계열처럼 순서가 있는 데이터는 길이가 제각각입니다. <b>순환 신경망(RNN)</b>은 같은 가중치를 시점마다 다시 쓰면서, 지금까지 본 내용을 <b>은닉 상태</b> h에 요약해 다음 시점으로 넘깁니다. 시간 축으로 펼쳐 그리면 층이 시점 수만큼 쌓인 깊은 신경망과 같습니다 (Goodfellow 10.1절).</p>
+    <p>문장, 음성, 시계열처럼 순서가 있는 데이터는 길이가 제각각입니다. <b>순환 신경망(RNN)</b>은 같은 가중치를 시점마다 다시 쓰면서, 지금까지 본 내용을 <b>은닉 상태</b> \(\mathbf{h}\)에 요약해 다음 시점으로 넘깁니다. 시간 축으로 펼쳐 그리면 층이 시점 수만큼 쌓인 깊은 신경망과 같습니다 (Goodfellow 10.1절).</p>
   </div>
-  <p class="formula">a<sup>(t)</sup> = b + W h<sup>(t−1)</sup> + U x<sup>(t)</sup>,   h<sup>(t)</sup> = tanh(a<sup>(t)</sup>)<small>x<sup>(t)</sup>는 시점 t의 입력, W는 시점과 시점을 잇는 가중치, U는 입력 가중치입니다. 모든 시점이 같은 W와 U를 씁니다 (Goodfellow 식 10.8–10.9).</small></p>
+  <p class="formula">\[\begin{aligned}\mathbf{a}^{(t)}&=\mathbf{b}+W\mathbf{h}^{(t-1)}+U\mathbf{x}^{(t)}\\ \mathbf{h}^{(t)}&=\tanh\!\left(\mathbf{a}^{(t)}\right)\end{aligned}\]<small>\(\mathbf{x}^{(t)}\)는 시점 \(t\)의 입력, \(W\)는 시점과 시점을 잇는 가중치, \(U\)는 입력 가중치입니다. 모든 시점이 같은 \(W\)와 \(U\)를 씁니다 (Goodfellow 식 10.8–10.9).</small></p>
   <div class="prose">
     <h3>장기 의존성 문제</h3>
-    <p>RNN은 같은 함수를 시점마다 거듭 합성합니다. 그래서 먼 과거에서 오는 기울기는 10장에서 본 것처럼 대개 사라지고, 드물게는 폭주합니다 (Goodfellow 10.7절). 비선형성을 빼고 h<sup>(t)</sup> = Wᵀh<sup>(t−1)</sup>로 단순화하면, t시점 뒤의 영향은 W의 고유값을 t제곱한 크기로 줄거나 늘어납니다. <b>LSTM</b>은 입력·망각·출력 게이트로 정보를 얼마나 남길지 학습해, 이 문제를 크게 덜었습니다 (10.10절).</p>
+    <p>RNN은 같은 함수를 시점마다 거듭 합성합니다. 그래서 먼 과거에서 오는 기울기는 10장에서 본 것처럼 대개 사라지고, 드물게는 폭주합니다 (Goodfellow 10.7절). 비선형성을 빼고 \(\mathbf{h}^{(t)}=W^{\top}\mathbf{h}^{(t-1)}\)로 단순화하면, \(t\)시점 뒤의 영향은 \(W\)의 고유값을 \(t\)제곱한 크기로 줄거나 늘어납니다. <b>LSTM</b>은 입력·망각·출력 게이트로 정보를 얼마나 남길지 학습해, 이 문제를 크게 덜었습니다 (10.10절).</p>
     <h3>고정 길이 벡터라는 병목</h3>
     <p>번역용 <b>인코더–디코더</b> RNN은 원문 전체를 고정 길이 벡터 하나로 압축한 뒤, 그 벡터에서 번역문을 만듭니다. Bahdanau 등(2015)은 이 고정 길이 벡터가 성능의 병목이라고 보았습니다. 그래서 디코더가 단어를 하나 낼 때마다 원문에서 관련 있는 부분을 부드럽게 찾아 가중 평균하게 했습니다. 이것이 <b>어텐션</b>입니다. Goodfellow(12.4.5.1절)의 말로는, 문장 전체를 읽어 요지를 잡은 뒤 번역 단어를 하나씩 내면서 매번 원문의 다른 부분에 집중하는 방식입니다.</p>
-    <p>Vaswani 등(2017)은 여기서 한 걸음 더 나아가, 순환 없이 어텐션만으로 문장을 처리하는 <b>트랜스포머</b>를 내놓았습니다. 순환 층은 시점 순서대로 계산해야 하지만, 셀프 어텐션은 모든 위치를 한꺼번에 계산합니다. 또 멀리 떨어진 두 단어 사이의 경로 길이가 RNN에서는 O(n)이지만 셀프 어텐션에서는 O(1)입니다 (Vaswani 외 표 1).</p>
+    <p>Vaswani 등(2017)은 여기서 한 걸음 더 나아가, 순환 없이 어텐션만으로 문장을 처리하는 <b>트랜스포머</b>를 내놓았습니다. 순환 층은 시점 순서대로 계산해야 하지만, 셀프 어텐션은 모든 위치를 한꺼번에 계산합니다. 또 멀리 떨어진 두 단어 사이의 경로 길이가 RNN에서는 \(O(n)\)이지만 셀프 어텐션에서는 \(O(1)\)입니다 (Vaswani 외 표 1).</p>
   </div>
   <figure class="bench" id="b13-1">
     <figcaption class="bench-head"><span class="bench-no">실험 13-1</span><h3>순환 층과 셀프 어텐션 비교</h3><p>왼쪽은 첫 단어의 기울기가 n번째 단어까지 몇 배로 남는지, 오른쪽은 층 하나의 계산량입니다(Vaswani 외 표 1의 차수). 셀프 어텐션은 어느 두 위치든 한 걸음에 연결되므로, 왼쪽 그래프에서 RNN만 줄어듭니다.</p></figcaption>
     <div class="controls">
-      <div class="ctl"><label for="rn-n"><span>문장 길이 n (토큰 수)</span> <output id="rn-n-o">50</output></label><input type="range" id="rn-n" min="2" max="200" step="1" value="50"></div>
-      <div class="ctl"><label for="rn-l"><span>RNN이 한 시점마다 곱하는 크기 |λ|</span> <output id="rn-l-o">0.90</output></label><input type="range" id="rn-l" min="0.5" max="1.1" step="0.01" value="0.9"></div>
-      <div class="ctl"><label for="rn-d"><span>표현 차원 d</span> <output id="rn-d-o">512</output></label><input type="range" id="rn-d" min="6" max="11" step="1" value="9"></div>
+      <div class="ctl"><label for="rn-n"><span>문장 길이 \(n\) (토큰 수)</span> <output id="rn-n-o">50</output></label><input type="range" id="rn-n" min="2" max="200" step="1" value="50"></div>
+      <div class="ctl"><label for="rn-l"><span>RNN이 한 시점마다 곱하는 크기 \(|\lambda|\)</span> <output id="rn-l-o">0.90</output></label><input type="range" id="rn-l" min="0.5" max="1.1" step="0.01" value="0.9"></div>
+      <div class="ctl"><label for="rn-d"><span>표현 차원 \(d\)</span> <output id="rn-d-o">512</output></label><input type="range" id="rn-d" min="6" max="11" step="1" value="9"></div>
     </div>
     <div class="split">
       <canvas class="cv" id="rn-grad" style="height:260px" role="img" aria-label="거리에 따라 남는 기울기 크기"></canvas>
@@ -767,16 +776,16 @@ footer.colophon{max-width:1200px;margin:56px auto 0;padding-top:20px;border-top:
   <h2>트랜스포머</h2>
   <p class="refs">논문: <b>Vaswani 외</b>, 「Attention Is All You Need」 (NeurIPS 2017) · <b>Goodfellow</b> 12.4.5.1절</p>
   <div class="prose">
-    <p>트랜스포머는 순환도 합성곱도 쓰지 않고 어텐션만으로 만든 인코더–디코더 모델입니다. <b>인코더</b>는 같은 층 6개(N = 6)를 쌓았고, 각 층은 멀티헤드 셀프 어텐션과 위치별 피드포워드 신경망 두 부분으로 되어 있습니다. <b>디코더</b>도 층 6개이며, 인코더 출력을 보는 어텐션이 하나 더 있습니다. 각 부분은 <b>잔차 연결</b>과 <b>층 정규화</b>로 감쌉니다. 곧 출력이 LayerNorm(x + Sublayer(x))이고, 모든 층의 출력 차원은 d<sub>model</sub> = 512입니다 (Vaswani 외 3.1절).</p>
+    <p>트랜스포머는 순환도 합성곱도 쓰지 않고 어텐션만으로 만든 인코더–디코더 모델입니다. <b>인코더</b>는 같은 층 6개(\(N=6\))를 쌓았고, 각 층은 멀티헤드 셀프 어텐션과 위치별 피드포워드 신경망 두 부분으로 되어 있습니다. <b>디코더</b>도 층 6개이며, 인코더 출력을 보는 어텐션이 하나 더 있습니다. 각 부분은 <b>잔차 연결</b>과 <b>층 정규화</b>로 감쌉니다. 곧 출력이 \(\mathrm{LayerNorm}(x+\mathrm{Sublayer}(x))\)이고, 모든 층의 출력 차원은 \(d_{\text{model}}=512\)입니다 (Vaswani 외 3.1절).</p>
     <h3>질의, 키, 값</h3>
-    <p>어텐션은 <b>질의(query)</b> 하나와 <b>키(key)–값(value)</b> 쌍 여러 개를 받아, 값들의 가중합을 냅니다. 가중치는 질의와 각 키가 얼마나 잘 맞는지로 정합니다. 도서관에 비유하면 질의는 찾는 주제, 키는 책등의 제목, 값은 책의 내용입니다. 트랜스포머는 질의와 키의 내적을 √d<sub>k</sub>로 나눈 뒤 소프트맥스를 씁니다. 이것이 <b>스케일드 닷-프로덕트 어텐션</b>입니다.</p>
+    <p>어텐션은 <b>질의(query)</b> 하나와 <b>키(key)–값(value)</b> 쌍 여러 개를 받아, 값들의 가중합을 냅니다. 가중치는 질의와 각 키가 얼마나 잘 맞는지로 정합니다. 도서관에 비유하면 질의는 찾는 주제, 키는 책등의 제목, 값은 책의 내용입니다. 트랜스포머는 질의와 키의 내적을 \(\sqrt{d_k}\)로 나눈 뒤 소프트맥스를 씁니다. 이것이 <b>스케일드 닷-프로덕트 어텐션</b>입니다.</p>
   </div>
-  <p class="formula">Attention(Q, K, V) = softmax(QKᵀ / √d<sub>k</sub>) V<small>Q, K, V는 질의·키·값을 행으로 쌓은 행렬, d<sub>k</sub>는 키의 차원입니다 (Vaswani 외 식 1). 셀프 어텐션에서는 세 행렬이 모두 같은 문장에서 나옵니다.</small></p>
+  <p class="formula">\[\mathrm{Attention}(Q,K,V)=\mathrm{softmax}\!\left(\frac{QK^{\top}}{\sqrt{d_k}}\right)V\]<small>\(Q, K, V\)는 질의·키·값을 행으로 쌓은 행렬, \(d_k\)는 키의 차원입니다 (Vaswani 외 식 1). 셀프 어텐션에서는 세 행렬이 모두 같은 문장에서 나옵니다.</small></p>
   <figure class="bench" id="b14-1">
     <figcaption class="bench-head"><span class="bench-no">실험 14-1</span><h3>어텐션 가중치 직접 계산하기</h3><p>질의 단어를 고르세요. 그 단어가 문장의 각 단어에 주는 가중치가 계산됩니다. 두 헤드는 원리를 보이려고 손으로 만든 예입니다. 실제 모델의 헤드는 학습으로 정해집니다. 마스크를 켜면 디코더처럼 뒤쪽 단어를 볼 수 없습니다.</p></figcaption>
     <div class="controls">
       <div class="ctl"><span class="lab">헤드</span><div class="seg" id="at-head" role="group" aria-label="헤드"><button data-h="sem" aria-pressed="true">헤드 1: 문장 성분 관계</button><button data-h="prev" aria-pressed="false">헤드 2: 바로 앞 단어</button></div></div>
-      <div class="ctl" style="flex:0 0 auto"><span class="lab">설정</span><div class="btnrow"><button class="btn" id="at-scale" aria-pressed="true">√d<sub>k</sub>로 나누기</button><button class="btn" id="at-mask" aria-pressed="false">마스크 (디코더)</button></div></div>
+      <div class="ctl" style="flex:0 0 auto"><span class="lab">설정</span><div class="btnrow"><button class="btn" id="at-scale" aria-pressed="true">\(\sqrt{d_k}\)로 나누기</button><button class="btn" id="at-mask" aria-pressed="false">마스크 (디코더)</button></div></div>
     </div>
     <div class="btnrow" id="at-q" role="group" aria-label="질의 단어"></div>
     <div class="split">
@@ -786,31 +795,31 @@ footer.colophon{max-width:1200px;margin:56px auto 0;padding-top:20px;border-top:
     <p class="formula" id="at-calc"></p>
   </figure>
   <div class="prose">
-    <h3>왜 √d<sub>k</sub>로 나눌까</h3>
-    <p>질의와 키의 성분이 서로 독립이고 평균 0, 분산 1이라면, 둘의 내적은 평균 0, 분산 d<sub>k</sub>가 됩니다. d<sub>k</sub>가 크면 내적 값이 크게 벌어지고, 소프트맥스는 가장 큰 값 하나에 거의 모든 가중치를 몰아줍니다. 이 영역에서는 소프트맥스의 기울기가 극히 작아 학습이 어렵습니다. 그래서 √d<sub>k</sub>로 나눠 분산을 1로 되돌립니다 (Vaswani 외 3.2.1절, 각주 4).</p>
+    <h3>왜 \(\sqrt{d_k}\)로 나눌까</h3>
+    <p>질의와 키의 성분이 서로 독립이고 평균 0, 분산 1이라면, 둘의 내적은 평균 0, 분산 \(d_k\)가 됩니다. \(d_k\)가 크면 내적 값이 크게 벌어지고, 소프트맥스는 가장 큰 값 하나에 거의 모든 가중치를 몰아줍니다. 이 영역에서는 소프트맥스의 기울기가 극히 작아 학습이 어렵습니다. 그래서 \(\sqrt{d_k}\)로 나눠 분산을 1로 되돌립니다 (Vaswani 외 3.2.1절, 각주 4).</p>
   </div>
   <figure class="bench" id="b14-2">
-    <figcaption class="bench-head"><span class="bench-no">실험 14-2</span><h3>나누지 않으면 소프트맥스가 한쪽으로 쏠린다</h3><p>성분이 평균 0, 분산 1인 무작위 질의 하나와 키 8개를 뽑았습니다. 차원 d<sub>k</sub>를 키우면서 나누기 전과 후의 가중치를 비교해 보세요.</p></figcaption>
+    <figcaption class="bench-head"><span class="bench-no">실험 14-2</span><h3>나누지 않으면 소프트맥스가 한쪽으로 쏠린다</h3><p>성분이 평균 0, 분산 1인 무작위 질의 하나와 키 8개를 뽑았습니다. 차원 \(d_k\)를 키우면서 나누기 전과 후의 가중치를 비교해 보세요.</p></figcaption>
     <div class="controls">
-      <div class="ctl"><label for="sc-d"><span>키 차원 d<sub>k</sub></span> <output id="sc-d-o">128</output></label><input type="range" id="sc-d" min="0" max="9" step="1" value="7"></div>
+      <div class="ctl"><label for="sc-d"><span>키 차원 \(d_k\)</span> <output id="sc-d-o">128</output></label><input type="range" id="sc-d" min="0" max="9" step="1" value="7"></div>
       <div class="ctl" style="flex:0 0 auto"><button class="btn quiet" id="sc-new">새로 뽑기</button></div>
     </div>
     <canvas class="cv" id="sc-cv" style="height:240px" role="img" aria-label="스케일링 전후의 소프트맥스 가중치"></canvas>
-    <div class="legend"><span><i class="sw" style="background:var(--c3)"></i>√d<sub>k</sub>로 나누지 않음</span><span><i class="sw" style="background:var(--c0)"></i>√d<sub>k</sub>로 나눔</span></div>
+    <div class="legend"><span><i class="sw" style="background:var(--c3)"></i>\(\sqrt{d_k}\)로 나누지 않음</span><span><i class="sw" style="background:var(--c0)"></i>\(\sqrt{d_k}\)로 나눔</span></div>
     <div class="readouts" id="sc-ro"></div>
   </figure>
   <div class="prose">
     <h3>멀티헤드 어텐션과 마스크</h3>
-    <p>어텐션을 한 번만 하면 여러 관계가 하나의 평균으로 뭉개집니다. 트랜스포머는 질의·키·값을 서로 다른 학습된 행렬로 h번 투영해 어텐션을 따로 계산하고, 결과를 이어 붙여 다시 투영합니다. 이것이 <b>멀티헤드 어텐션</b>입니다. 원 논문은 h = 8개의 헤드를 쓰고, 헤드마다 d<sub>k</sub> = d<sub>v</sub> = 512/8 = 64입니다. 헤드마다 차원이 줄어든 덕분에 전체 계산량은 차원을 다 쓴 헤드 하나와 비슷합니다 (3.2.2절). 실험 14-1의 두 헤드처럼, 헤드마다 서로 다른 관계에 주목할 수 있습니다.</p>
+    <p>어텐션을 한 번만 하면 여러 관계가 하나의 평균으로 뭉개집니다. 트랜스포머는 질의·키·값을 서로 다른 학습된 행렬로 \(h\)번 투영해 어텐션을 따로 계산하고, 결과를 이어 붙여 다시 투영합니다. 이것이 <b>멀티헤드 어텐션</b>입니다. 원 논문은 \(h=8\)개의 헤드를 쓰고, 헤드마다 \(d_k=d_v=512/8=64\)입니다. 헤드마다 차원이 줄어든 덕분에 전체 계산량은 차원을 다 쓴 헤드 하나와 비슷합니다 (3.2.2절). 실험 14-1의 두 헤드처럼, 헤드마다 서로 다른 관계에 주목할 수 있습니다.</p>
     <p>디코더는 번역문을 한 단어씩 만들기 때문에, i번째 위치가 그 뒤의 단어를 미리 보면 안 됩니다. 그래서 디코더의 셀프 어텐션은 뒤쪽 위치의 점수를 소프트맥스 전에 −∞로 바꿔 가중치를 0으로 만듭니다. 이 <b>마스크</b>와 출력을 한 칸 밀어 넣는 방식 덕분에, i번째 예측은 i보다 앞선 단어에만 기댑니다 (3.1절, 3.2.3절).</p>
     <h3>위치 인코딩</h3>
     <p>어텐션은 단어들을 집합처럼 다루므로, 그대로는 단어 순서를 알 수 없습니다. 그래서 단어 임베딩에 같은 차원의 <b>위치 인코딩</b>을 더합니다. 원 논문은 차원마다 주파수가 다른 사인·코사인을 썼습니다. 파장은 2π에서 10000·2π까지 기하급수로 늘어납니다. 저자들은 이 방식이 상대 위치를 배우기 쉽게 하고, 학습 때보다 긴 문장에도 쓸 수 있을 것이라고 보았습니다. 학습된 위치 임베딩과 성능은 거의 같았습니다 (3.5절).</p>
   </div>
-  <p class="formula">PE(pos, 2i) = sin(pos / 10000<sup>2i/d<sub>model</sub></sup>),   PE(pos, 2i+1) = cos(pos / 10000<sup>2i/d<sub>model</sub></sup>)<small>pos는 위치, i는 차원 번호입니다 (Vaswani 외 3.5절).</small></p>
+  <p class="formula">\[\begin{aligned}PE_{(pos,\,2i)}&=\sin\!\left(\frac{pos}{10000^{2i/d_{\text{model}}}}\right)\\ PE_{(pos,\,2i+1)}&=\cos\!\left(\frac{pos}{10000^{2i/d_{\text{model}}}}\right)\end{aligned}\]<small>\(pos\)는 위치, \(i\)는 차원 번호입니다 (Vaswani 외 3.5절).</small></p>
   <figure class="bench" id="b14-3">
     <figcaption class="bench-head"><span class="bench-no">실험 14-3</span><h3>위치 인코딩의 무늬</h3><p>왼쪽은 위치(세로)마다 위치 인코딩 벡터(가로)를 색으로 그린 것입니다. 앞쪽 차원은 빠르게, 뒤쪽 차원은 느리게 진동합니다. 오른쪽은 고른 위치의 벡터와 다른 위치 벡터들의 내적입니다. 가까운 위치일수록 값이 큽니다.</p></figcaption>
     <div class="controls">
-      <div class="ctl"><label for="pe-d"><span>d<sub>model</sub></span> <output id="pe-d-o">64</output></label><input type="range" id="pe-d" min="4" max="7" step="1" value="6"></div>
+      <div class="ctl"><label for="pe-d"><span>\(d_{\text{model}}\)</span> <output id="pe-d-o">64</output></label><input type="range" id="pe-d" min="4" max="7" step="1" value="6"></div>
       <div class="ctl"><label for="pe-p"><span>기준 위치</span> <output id="pe-p-o">20</output></label><input type="range" id="pe-p" min="0" max="63" step="1" value="20"></div>
     </div>
     <div class="split">
@@ -820,22 +829,22 @@ footer.colophon{max-width:1200px;margin:56px auto 0;padding-top:20px;border-top:
   </figure>
   <div class="prose">
     <h3>피드포워드 층과 모델 크기</h3>
-    <p>어텐션 뒤에는 위치마다 따로, 같은 방식으로 적용하는 2층 신경망 FFN(x) = max(0, xW₁ + b₁)W₂ + b₂가 옵니다. 안쪽 차원은 d<sub>ff</sub> = 2048입니다 (3.3절). 단어는 학습된 임베딩으로 벡터가 되고, 입력 임베딩 두 개와 출력 직전의 선형 변환이 같은 가중치 행렬을 함께 씁니다 (3.4절).</p>
+    <p>어텐션 뒤에는 위치마다 따로, 같은 방식으로 적용하는 2층 신경망 \(\mathrm{FFN}(x)=\max(0,\,xW_1+b_1)W_2+b_2\)가 옵니다. 안쪽 차원은 \(d_{\text{ff}}=2048\)입니다 (3.3절). 단어는 학습된 임베딩으로 벡터가 되고, 입력 임베딩 두 개와 출력 직전의 선형 변환이 같은 가중치 행렬을 함께 씁니다 (3.4절).</p>
     <p>원 논문의 기본(base) 모델은 매개변수 6,500만 개이고, P100 GPU 8개로 10만 걸음, 12시간 학습했습니다. 큰(big) 모델은 2억 1,300만 개이고 3.5일 학습했습니다. 큰 모델은 WMT 2014 영어→독일어 번역에서 BLEU 28.4로, 앙상블을 포함한 이전 최고 기록을 2.0 넘게 앞섰습니다 (5.2절, 6.1절, 표 2–3).</p>
   </div>
   <figure class="bench" id="b14-4">
     <figcaption class="bench-head"><span class="bench-no">실험 14-4</span><h3>트랜스포머 매개변수 계산기</h3><p>논문의 base와 big 설정을 고르거나 값을 바꿔 보세요. 막대는 매개변수가 어느 부분에 있는지 보여 줍니다. 층마다 FFN이 어텐션보다 매개변수를 두 배 가까이 가집니다.</p></figcaption>
     <div class="btnrow" id="pc-pre"><span class="small">논문 설정</span><button class="btn" data-p="base" aria-pressed="true">base</button><button class="btn" data-p="big" aria-pressed="false">big</button></div>
     <div class="controls">
-      <div class="ctl"><label for="pc-d"><span>d<sub>model</sub></span> <output id="pc-d-o">512</output></label><input type="range" id="pc-d" min="128" max="2048" step="128" value="512"></div>
-      <div class="ctl"><label for="pc-ff"><span>d<sub>ff</sub></span> <output id="pc-ff-o">2048</output></label><input type="range" id="pc-ff" min="256" max="8192" step="256" value="2048"></div>
-      <div class="ctl"><label for="pc-n"><span>층 수 N (인코더·디코더 각각)</span> <output id="pc-n-o">6</output></label><input type="range" id="pc-n" min="1" max="24" step="1" value="6"></div>
+      <div class="ctl"><label for="pc-d"><span>\(d_{\text{model}}\)</span> <output id="pc-d-o">512</output></label><input type="range" id="pc-d" min="128" max="2048" step="128" value="512"></div>
+      <div class="ctl"><label for="pc-ff"><span>\(d_{\text{ff}}\)</span> <output id="pc-ff-o">2048</output></label><input type="range" id="pc-ff" min="256" max="8192" step="256" value="2048"></div>
+      <div class="ctl"><label for="pc-n"><span>층 수 \(N\) (인코더·디코더 각각)</span> <output id="pc-n-o">6</output></label><input type="range" id="pc-n" min="1" max="24" step="1" value="6"></div>
       <div class="ctl"><label for="pc-v"><span>어휘 크기</span> <output id="pc-v-o">37,000</output></label><input type="range" id="pc-v" min="1000" max="100000" step="1000" value="37000"></div>
     </div>
     <canvas class="cv" id="pc-cv" style="height:150px" role="img" aria-label="부분별 매개변수 수"></canvas>
     <div class="legend"><span><i class="sw" style="background:var(--c0)"></i>어텐션</span><span><i class="sw" style="background:var(--c1)"></i>피드포워드 (FFN)</span><span><i class="sw" style="background:var(--c2)"></i>공유 임베딩</span><span><i class="sw" style="background:var(--c4)"></i>층 정규화</span></div>
     <div class="readouts" id="pc-ro"></div>
-    <p class="note">어텐션 하나는 W<sup>Q</sup>, W<sup>K</sup>, W<sup>V</sup>, W<sup>O</sup>와 편향으로 4d² + 4d개, FFN은 2·d·d<sub>ff</sub> + d<sub>ff</sub> + d개입니다. 인코더 층은 어텐션 1개, 디코더 층은 2개를 씁니다. 헤드 수 h는 계산을 나눌 뿐 매개변수 수를 바꾸지 않습니다. 논문 표 3의 값(base 65M, big 213M)과는 어휘 크기를 "약 37,000"으로 넣은 데다 편향과 정규화 항을 세는 방식에 따라 조금 차이가 납니다.</p>
+    <p class="note">어텐션 하나는 \(W^Q, W^K, W^V, W^O\)와 편향으로 \(4d^2+4d\)개, FFN은 \(2d\,d_{\text{ff}}+d_{\text{ff}}+d\)개입니다. 인코더 층은 어텐션 1개, 디코더 층은 2개를 씁니다. 헤드 수 \(h\)는 계산을 나눌 뿐 매개변수 수를 바꾸지 않습니다. 논문 표 3의 값(base 65M, big 213M)과는 어휘 크기를 "약 37,000"으로 넣은 데다 편향과 정규화 항을 세는 방식에 따라 조금 차이가 납니다.</p>
   </figure>
   <div class="prose">
     <h3>트랜스포머 이후</h3>
@@ -1213,6 +1222,12 @@ function dataset(kind, n, seed, noise = 1) {
   return { X, Y };
 }
 
+/* 수식을 KaTeX로 그린다. small은 식 아래 설명 */
+function tex(el, latex, small = '') {
+  let html;
+  try { html = window.katex ? katex.renderToString(latex, { displayMode: true, throwOnError: false, strict: 'ignore' }) : null; } catch (e) { html = null; }
+  el.innerHTML = (html || `<span class="mono">${latex}</span>`) + (small ? `<small>${small}</small>` : '');
+}
 /* 버튼 묶음: aria-pressed 하나만 켜기 */
 function segGroup(root, attr, onPick) {
   const btns = $$('button', root);
@@ -1237,7 +1252,7 @@ function animator(el, tick) {
 }
 
 window.ML = { $, $$, TAU, clamp, nf, REDUCE, MONO, SANS, rng, gauss, C, rgba, hexRgb, viridis, plot, raf, frame, square, poly, vline, niceMax, label, dot,
-  heat, heatCanvas, probColor, Phi, sigmoid, solve, eig2, MLP, dataset, segGroup, toggle, pressed, chip, ro, animator };
+  heat, heatCanvas, probColor, Phi, sigmoid, solve, eig2, MLP, dataset, segGroup, toggle, pressed, chip, ro, animator, tex };
 })();
 
 </script>
@@ -1245,7 +1260,7 @@ window.ML = { $, $$, TAU, clamp, nf, REDUCE, MONO, SANS, rng, gauss, C, rgba, he
 (() => {
 'use strict';
 const { $, clamp, nf, REDUCE, MONO, SANS, rng, gauss, C, rgba, viridis, plot, raf, frame, square, poly, vline, niceMax, label, dot,
-  heat, heatCanvas, probColor, sigmoid, solve, MLP, dataset, toggle, pressed, chip, ro, animator } = window.ML;
+  heat, heatCanvas, probColor, sigmoid, solve, MLP, dataset, toggle, pressed, chip, ro, animator, tex } = window.ML;
 
 /* ════════════ 머리말: 나선을 배우는 신경망 ════════════ */
 (function hero() {
@@ -1329,7 +1344,9 @@ const { $, clamp, nf, REDUCE, MONO, SANS, rng, gauss, C, rgba, viridis, plot, ra
     $('#by-ro').innerHTML = ro('양성 판정을 받은 사람', `${(cnt[0] + cnt[2]).toLocaleString('ko-KR')}<small>명 / ${N.toLocaleString('ko-KR')}명</small>`) +
       ro('그중 실제 환자', `${cnt[0].toLocaleString('ko-KR')}<small>명</small>`) +
       ro('양성일 때 실제로 병이 있을 확률', `${nf(post * 100, post < 0.1 ? 1 : 0)}<small>%</small> ${chip(post < 0.2 ? '대부분 위양성' : post < 0.5 ? '절반 넘게 위양성' : '양성 판정 신뢰할 만함', post < 0.2 ? 'bad' : post < 0.5 ? 'warn' : 'ok')}`);
-    $('#by-calc').innerHTML = `p(병 | 양성) = (${nf(se, 2)} × ${pr})  /  (${nf(se, 2)} × ${pr} + ${nf(fp, 3)} × ${nf(1 - pr, 4)}) = <b>${nf(post, 3)}</b><small>Murphy의 기본값(0.8, 0.004, 0.1)이면 0.031, 곧 약 3%입니다 (Murphy 식 2.12).</small>`;
+    const fx = v => String(+v.toFixed(4));
+    tex($('#by-calc'), `p(\\text{병}\\mid\\text{양성})=\\frac{${fx(se)}\\times ${fx(pr)}}{${fx(se)}\\times ${fx(pr)}+${fx(fp)}\\times ${fx(1 - pr)}}=\\mathbf{${post.toFixed(3)}}`,
+      'Murphy의 기본값(0.8, 0.004, 0.1)이면 0.031, 곧 약 3%입니다 (Murphy 식 2.12).');
   }
   [sP, sS, sF].forEach(s => s.addEventListener('input', raf(update)));
   update();
@@ -1664,7 +1681,7 @@ const { $, clamp, nf, REDUCE, MONO, SANS, rng, gauss, C, rgba, viridis, plot, ra
 (() => {
 'use strict';
 const { $, $$, TAU, clamp, nf, REDUCE, MONO, SANS, rng, gauss, C, rgba, hexRgb, viridis, plot, raf, frame, square, poly, vline, niceMax, label, dot,
-  heat, heatCanvas, probColor, Phi, sigmoid, eig2, MLP, dataset, segGroup, toggle, pressed, chip, ro, animator } = window.ML;
+  heat, heatCanvas, probColor, Phi, sigmoid, eig2, MLP, dataset, segGroup, toggle, pressed, chip, ro, animator, tex } = window.ML;
 
 /* ════════════ 7장: 임계값과 평가 지표 ════════════ */
 (function evaluate() {
@@ -1935,7 +1952,9 @@ const { $, $$, TAU, clamp, nf, REDUCE, MONO, SANS, rng, gauss, C, rgba, hexRgb, 
     const rel = Math.abs(v.dLdw - v.num) / Math.max(1e-12, Math.abs(v.dLdw) + Math.abs(v.num));
     $('#bp-ro').innerHTML = ro('비용 L', nf(v.L, 4)) + ro('역전파로 구한 ∂L/∂w', sgn(v.dLdw)) + ro('유한 차분으로 구한 ∂L/∂w', sgn(v.num)) +
       ro('기울기 확인', chip(rel < 1e-5 ? '일치' : '불일치', rel < 1e-5 ? 'ok' : 'bad'));
-    $('#bp-chain').innerHTML = `∂L/∂w = ∂L/∂a · ∂a/∂z · ∂z/∂u · ∂u/∂w = 2(a − y) · a(1 − a) · 1 · x = ${sgn(v.dLda)} × ${sgn(v.dadz)} × 1 × ${sgn(v.x)} = <b>${sgn(v.dLdw)}</b><small>시그모이드의 미분 a(1 − a)는 a = 0.5일 때 최댓값 0.25입니다. a가 0이나 1에 가까우면 이 항이 0에 가까워져 학습이 멈춥니다.</small>`;
+    const tn = x => (x < 0 ? '(' + x.toFixed(3) + ')' : x.toFixed(3));
+    tex($('#bp-chain'), `\\begin{aligned}\\frac{\\partial L}{\\partial w}&=\\frac{\\partial L}{\\partial a}\\,\\frac{\\partial a}{\\partial z}\\,\\frac{\\partial z}{\\partial u}\\,\\frac{\\partial u}{\\partial w}=2(a-y)\\cdot a(1-a)\\cdot 1\\cdot x\\\\&=${tn(v.dLda)}\\times ${tn(v.dadz)}\\times 1\\times ${tn(v.x)}=\\mathbf{${v.dLdw.toFixed(3)}}\\end{aligned}`,
+      '시그모이드의 미분 a(1 − a)는 a = 0.5일 때 최댓값 0.25입니다. a가 0이나 1에 가까우면 이 항이 0에 가까워져 학습이 멈춥니다.');
     P.render();
   }
   [sx, sw, sb, sy].forEach(s => s.addEventListener('input', raf(update)));
@@ -2406,7 +2425,7 @@ paintProgress();
 <script>
 (() => {
 'use strict';
-const { $, $$, clamp, nf, MONO, SANS, rng, gauss, C, rgba, hexRgb, plot, raf, frame, poly, vline, label, heat, segGroup, toggle, pressed, chip, ro } = window.ML;
+const { $, $$, clamp, nf, MONO, SANS, rng, gauss, C, rgba, hexRgb, plot, raf, frame, poly, vline, label, heat, segGroup, toggle, pressed, chip, ro, tex } = window.ML;
 const ink = hex => { const [r, g, b] = hexRgb(hex); return 0.299 * r + 0.587 * g + 0.114 * b > 150 ? '#111111' : '#ffffff'; };
 const softmax = s => { const m = Math.max(...s.filter(isFinite)); const e = s.map(v => (isFinite(v) ? Math.exp(v - m) : 0)); const z = e.reduce((a, b) => a + b, 0); return e.map(v => v / z); };
 const sup = n => String(n).replace(/-/g, '⁻').replace(/\d/g, d => '⁰¹²³⁴⁵⁶⁷⁸⁹'[d]);
@@ -2508,9 +2527,11 @@ function divColor(v) { const pan = hexRgb(C.panel), c = hexRgb(v >= 0 ? C.c1 : C
     const { raw, sc, w, dk } = weights(qi), f2 = v => (isFinite(v) ? nf(v, 2) : '−∞');
     $$('button', qb).forEach(b => toggle(b, +b.dataset.i === qi));
     const visible = j => !(mask && j > qi);
-    $('#at-calc').innerHTML = `점수 q·k = [${raw.map((v, j) => (visible(j) ? f2(v) : '−∞')).join(', ')}]` +
-      (scale ? `  →  ÷√d<sub>k</sub> (√${dk} = ${nf(Math.sqrt(dk), 2)})  →  [${sc.map((v, j) => (visible(j) ? f2(v) : '−∞')).join(', ')}]` : '') +
-      `  →  softmax  →  <b>[${w.map(v => nf(v, 2)).join(', ')}]</b><small>출력은 이 가중치로 값 벡터들을 가중 평균한 것입니다. 마스크가 가린 칸은 점수가 −∞라서 가중치가 0이 됩니다.</small>`;
+    const vec = (arr, d = 2) => '[' + arr.map((v, j) => (visible(j) && isFinite(v) ? v.toFixed(d) : '-\\infty')).join(',\\ ') + ']';
+    tex($('#at-calc'), `\\begin{aligned}\\mathbf{q}\\cdot\\mathbf{k}&=${vec(raw)}` +
+      (scale ? `\\\\ \\div\\sqrt{${dk}}&\\;\\to\\;${vec(sc)}` : '') +
+      `\\\\ \\mathrm{softmax}&\\;\\to\\;\\mathbf{${'[' + w.map(v => v.toFixed(2)).join(',\\ ') + ']'}}\\end{aligned}`,
+      '출력은 이 가중치로 값 벡터들을 가중 평균한 것입니다. 마스크가 가린 칸은 점수가 −∞라서 가중치가 0이 됩니다.');
     PM.render(); PB.render();
   }
   qb.addEventListener('click', e => { const b = e.target.closest('button[data-i]'); if (b) { qi = +b.dataset.i; update(); } });
@@ -2620,6 +2641,14 @@ function divColor(v) { const pan = hexRgb(C.panel), c = hexRgb(v >= 0 ? C.c1 : C
   [sD, sF, sN, sV].forEach(s => s.addEventListener('input', raf(() => { cur = null; update(); })));
   update();
 })();
+
+/* ════════════ 본문 수식 조판 ════════════ */
+if (window.renderMathInElement) {
+  renderMathInElement(document.body, {
+    delimiters: [{ left: '\\[', right: '\\]', display: true }, { left: '\\(', right: '\\)', display: false }],
+    throwOnError: false, strict: 'ignore', ignoredClasses: ['quiz', 'gloss']
+  });
+}
 
 })();
 
