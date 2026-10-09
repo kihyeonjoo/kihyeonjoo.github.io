@@ -1,0 +1,1789 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Human–Robot Interaction: An Interactive Introduction</title>
+<meta name="description" content="Learn the concepts of human–robot interaction (HRI), from robot design and anthropomorphism through space, nonverbal cues, speech and emotion to trust, acceptance, research methods and ethics, through hands-on experiments and check questions in 12 chapters.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Hahmlet:wght@500;700;800&family=IBM+Plex+Sans+KR:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+/* Layout: a workbench-style textbook. A sticky chapter rail on the left, ordered foundations → interaction channels → relationships → research; a 68ch reading column with wider experiment panels on the right. Bench colors follow the colorblind-safe Okabe–Ito order (blue, orange, green, vermillion). */
+:root{
+  --paper:#f6f3f2;      /* ground: a neutral leaning slightly red */
+  --panel:#ffffff;
+  --line:#d5d2c7;
+  --grid:#e9e6dc;
+  --ink:#1c1e1b;
+  --muted:#5b5e57;
+  --trace:#7a3e9d;      /* purple: emphasis, links */
+  --mark:#c0400a;       /* vermillion, darkened for text: people, markers */
+  --c0:#0072b2; --c1:#e69f00; --c2:#009e73; --c3:#d55e00; --c4:#cc79a7; --c5:#56b4e9;
+  --ok:#17784f; --warn:#966300; --bad:#b3261e;
+  --f-display:"Hahmlet","Noto Serif KR","AppleMyungjo","Batang",serif;
+  --f-body:"IBM Plex Sans KR","Apple SD Gothic Neo","Malgun Gothic","Noto Sans KR",system-ui,sans-serif;
+  --f-mono:"IBM Plex Mono",ui-monospace,"SFMono-Regular",Menlo,Consolas,monospace;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --paper:#121411; --panel:#1a1d19; --line:#343830; --grid:#262a24; --ink:#e7e8e2; --muted:#a1a59b;
+    --trace:#c9a3e8; --mark:#ff8c4a;
+    --c0:#4aa3df; --c1:#f0b33a; --c2:#2fc497; --c3:#ff7a3d; --c4:#e08cbf; --c5:#86cdf2;
+    --ok:#5ccb8e; --warn:#e8b04c; --bad:#ff7a70;
+    color-scheme:dark;
+  }
+}
+:root[data-theme="dark"]{
+  --paper:#121411; --panel:#1a1d19; --line:#343830; --grid:#262a24; --ink:#e7e8e2; --muted:#a1a59b;
+    --trace:#c9a3e8; --mark:#ff8c4a;
+    --c0:#4aa3df; --c1:#f0b33a; --c2:#2fc497; --c3:#ff7a3d; --c4:#e08cbf; --c5:#86cdf2;
+    --ok:#5ccb8e; --warn:#e8b04c; --bad:#ff7a70;
+  color-scheme:dark;
+}
+*{box-sizing:border-box}
+[hidden]{display:none!important}
+html{scroll-behavior:smooth}
+body{margin:0;background:var(--paper);color:var(--ink);font-family:var(--f-body);font-size:16px;line-height:1.72;
+  padding-inline:clamp(16px,4vw,40px);padding-block:0 72px;-webkit-font-smoothing:antialiased;word-break:keep-all;overflow-wrap:anywhere}
+a{color:var(--trace);text-underline-offset:3px}
+:focus-visible{outline:2px solid var(--trace);outline-offset:2px}
+p{margin:0 0 .9em}
+sub,sup{line-height:0}
+.mono{font-family:var(--f-mono)}
+.num{font-variant-numeric:tabular-nums}
+
+/* ── masthead ── */
+.masthead{max-width:1200px;margin:0 auto;padding-block:44px 32px;display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.3fr);gap:36px;align-items:start}
+.eyebrow{font-family:var(--f-mono);font-size:12.5px;letter-spacing:.08em;color:var(--muted);margin:0}
+h1{font-family:var(--f-display);font-weight:800;font-size:clamp(42px,6.2vw,68px);line-height:1.04;margin:.18em 0 .32em;letter-spacing:-.015em;text-wrap:balance}
+.lead{font-size:17px;max-width:44ch;margin-bottom:1.1em}
+.srcline{font-size:13.5px;color:var(--muted);max-width:52ch}
+.monitor{background:var(--panel);border:1px solid var(--line);border-radius:6px;padding:14px;display:grid;gap:10px;min-width:0}
+.monitor-top{display:flex;flex-wrap:wrap;gap:8px 12px;align-items:center;justify-content:space-between}
+.monitor-title{font-family:var(--f-mono);font-size:12.5px;letter-spacing:.06em;color:var(--muted)}
+.rec{display:inline-block;width:8px;height:8px;border-radius:50%;background:var(--mark);margin-right:6px;vertical-align:1px}
+.paused .rec{background:var(--muted)}
+
+/* parts map */
+.pipeline{max-width:1200px;margin:0 auto 8px;padding:0;list-style:none;display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:0;border:1px solid var(--line);border-radius:6px;background:var(--panel);counter-reset:none}
+.pipeline li{padding:12px 14px;border-right:1px solid var(--line);display:grid;gap:2px;align-content:start;min-width:0}
+.pipeline li:last-child{border-right:0}
+.pipeline .k{font-family:var(--f-mono);font-size:12px;color:var(--trace)}
+.pipeline .n{font-weight:600}
+.pipeline .d{font-size:13px;color:var(--muted)}
+.loopnote{max-width:1200px;margin:0 auto 40px;font-size:13.5px;color:var(--muted)}
+
+/* ── page frame ── */
+.shell{max-width:1200px;margin:0 auto;display:grid;grid-template-columns:224px minmax(0,1fr);gap:52px}
+.rail{position:sticky;top:calc(env(safe-area-inset-top,0px) + 16px);align-self:start;max-height:calc(100vh - 32px);overflow:auto;padding-block:6px 12px}
+.rail-head{font-family:var(--f-mono);font-size:12.5px;color:var(--muted);margin:0 0 8px;display:flex;justify-content:space-between;gap:8px}
+.rail ol{list-style:none;margin:0;padding:0;display:grid;gap:1px}
+.rail a{display:grid;grid-template-columns:22px minmax(0,1fr) 10px;gap:8px;align-items:center;padding:6px 8px;border-radius:4px;color:var(--ink);text-decoration:none;font-size:14px;line-height:1.35}
+.rail a:hover{background:color-mix(in srgb,var(--trace) 8%,transparent)}
+.rail a.cur{background:color-mix(in srgb,var(--trace) 12%,transparent)}
+.rail .no{font-family:var(--f-mono);font-size:12.5px;color:var(--muted)}
+.rail .ts{display:none}
+.dot{width:10px;height:10px;border-radius:50%;border:1.5px solid var(--line)}
+.dot.half{border-color:var(--warn);background:linear-gradient(90deg,var(--warn) 50%,transparent 50%)}
+.dot.done{border-color:var(--ok);background:var(--ok)}
+.rail-foot{margin-top:12px;display:flex;flex-wrap:wrap;gap:6px;align-items:center;font-size:13px;color:var(--muted)}
+main{min-width:0}
+
+.chapter{padding-block:48px 20px;border-top:1px solid var(--line);scroll-margin-top:72px}
+.chapter:first-child{border-top:0;padding-top:8px}
+.ch-no{font-family:var(--f-mono);font-size:13px;color:var(--trace);letter-spacing:.06em;margin:0}
+h2{font-family:var(--f-display);font-weight:700;font-size:clamp(28px,3.4vw,38px);line-height:1.18;margin:.12em 0 .35em;text-wrap:balance;letter-spacing:-.01em}
+h3{text-wrap:balance}
+.refs{font-size:13.5px;color:var(--muted);margin:0 0 1.4em}
+.refs b{font-weight:600;color:var(--ink)}
+.prose{max-width:68ch}
+.prose h3{font-size:19px;font-weight:600;margin:1.6em 0 .4em}
+.prose ul,.prose ol{padding-left:1.25em;margin:0 0 1em}
+.prose li{margin-bottom:.3em}
+.defn{max-width:68ch;margin:0 0 1.2em;padding:14px 16px;border:1px solid var(--line);border-radius:6px;background:color-mix(in srgb,var(--trace) 6%,var(--panel))}
+.defn .lbl{font-family:var(--f-mono);font-size:12px;color:var(--muted);display:block;margin-bottom:4px}
+.defn p{margin:0;font-family:var(--f-display);font-weight:500;font-size:18px;line-height:1.6}
+.formula{font-family:var(--f-body);font-size:15px;background:var(--panel);border:1px solid var(--line);border-radius:4px;padding:10px 14px;overflow-x:auto;margin:0 0 1em;max-width:68ch}
+.katex{font-size:1.06em}
+.formula .katex-display{margin:2px 0 6px;text-align:left;overflow-x:auto;overflow-y:hidden;padding-block:3px}
+.formula .katex-display>.katex{text-align:left;font-size:1.14em;white-space:nowrap}
+@media (max-width:640px){.formula .katex-display>.katex{font-size:1em}.formula{padding:10px}}
+.formula small{font-family:var(--f-body);color:var(--muted);font-size:12.5px;white-space:normal;display:block;margin-top:4px}
+.tbl-wrap{overflow-x:auto;margin:0 0 1.2em;max-width:100%}
+table{border-collapse:collapse;width:100%;font-size:14.5px;line-height:1.55}
+th,td{padding:8px 10px;border-bottom:1px solid var(--line);text-align:left;vertical-align:top;overflow-wrap:break-word}
+thead th{font-weight:600;color:var(--muted);font-size:13px;white-space:nowrap}
+tbody th{font-weight:600}
+
+/* ── experiment benches ── */
+.bench{margin:28px 0;background:var(--panel);border:1px solid var(--line);border-radius:6px;padding:18px;display:grid;gap:14px;min-width:0}
+.bench-head{display:grid;gap:2px}
+.bench-no{font-family:var(--f-mono);font-size:12px;letter-spacing:.06em;color:var(--trace)}
+.bench-head h3{margin:0;font-size:18.5px;font-weight:600;line-height:1.4}
+.bench-head p{margin:2px 0 0;color:var(--muted);font-size:14.5px;max-width:72ch}
+.controls{display:flex;flex-wrap:wrap;gap:12px 22px;align-items:end}
+.ctl{display:grid;gap:3px;flex:1 1 190px;min-width:0}
+.ctl label,.ctl .lab{font-size:13.5px;color:var(--muted);display:flex;justify-content:space-between;gap:8px}
+.ctl output{font-family:var(--f-mono);color:var(--ink);font-variant-numeric:tabular-nums;white-space:nowrap}
+input[type=range]{width:100%;accent-color:var(--trace);margin:4px 0}
+input[type=search],input[type=number],select{font:inherit;font-size:14.5px;color:var(--ink);background:var(--paper);border:1px solid var(--line);border-radius:4px;padding:6px 10px;max-width:100%}
+.btn{font:inherit;font-size:14px;line-height:1.3;padding:7px 12px;border:1px solid var(--line);background:var(--paper);color:var(--ink);border-radius:4px;cursor:pointer}
+.btn:hover{border-color:var(--ink)}
+.btn[aria-pressed="true"]{background:var(--ink);color:var(--paper);border-color:var(--ink)}
+.btn.quiet{border-color:transparent;background:transparent;color:var(--muted);padding-inline:6px}
+.btn.quiet:hover{color:var(--ink)}
+.btn.danger{border-color:var(--bad);color:var(--bad)}
+.btnrow{display:flex;flex-wrap:wrap;gap:6px;align-items:center}
+.seg{display:inline-flex;flex-wrap:wrap;border:1px solid var(--line);border-radius:4px;overflow:hidden;max-width:100%}
+.seg button{font:inherit;font-size:14px;line-height:1.3;padding:7px 12px;border:0;border-right:1px solid var(--line);background:var(--paper);color:var(--ink);cursor:pointer}
+.seg button:last-child{border-right:0}
+.seg button[aria-pressed="true"]{background:var(--ink);color:var(--paper)}
+.cv{display:block;width:100%;border-radius:4px;background:var(--paper);touch-action:pan-y}
+.cv.drag{touch-action:none;cursor:crosshair}
+.readouts{display:flex;flex-wrap:wrap;gap:10px 28px;align-items:end}
+.ro{display:grid;gap:1px;min-width:0}
+.ro span{font-size:12.5px;color:var(--muted)}
+.ro b{font-family:var(--f-mono);font-size:20px;font-weight:500;font-variant-numeric:tabular-nums;line-height:1.3}
+.ro b small{font-size:13px;color:var(--muted);font-weight:400}
+.chip{display:inline-flex;align-items:center;gap:6px;font-size:12.5px;line-height:1.5;padding:1px 9px;border-radius:999px;border:1px solid currentColor;white-space:nowrap}
+.chip.ok{color:var(--ok)} .chip.warn{color:var(--warn)} .chip.bad{color:var(--bad)} .chip.neutral{color:var(--muted)} .chip.info{color:var(--trace)}
+.note{font-size:13.5px;color:var(--muted);margin:0;max-width:78ch}
+.legend{display:flex;flex-wrap:wrap;gap:6px 16px;font-size:13px;color:var(--muted);align-items:center}
+.sw{display:inline-block;width:12px;height:12px;border-radius:2px;vertical-align:-1px;margin-right:5px}
+.split{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:18px;align-items:start}
+.split3{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}
+.detail{border:1px solid var(--line);border-radius:6px;padding:12px 14px;background:var(--paper);font-size:14.5px;min-width:0}
+.detail h4{margin:0 0 4px;font-size:16px}
+.detail p{margin:0 0 .5em}
+.detail p:last-child{margin:0}
+.tagrow{display:flex;flex-wrap:wrap;gap:6px;margin:6px 0}
+.small{font-size:13px;color:var(--muted)}
+
+.cards{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:10px}
+.card{border:1px solid var(--line);border-radius:6px;padding:12px;background:var(--paper);display:grid;gap:8px;align-content:start;min-width:0}
+.card p{margin:0;font-size:14.5px}
+.card .verdict{font-size:13.5px;line-height:1.55}
+.card.right{border-color:var(--ok)} .card.wrong{border-color:var(--bad)}
+
+
+
+
+/* check questions */
+.quiz{margin:30px 0 6px;display:grid;gap:12px;max-width:78ch}
+.quiz-head{display:flex;justify-content:space-between;gap:8px;align-items:baseline;font-family:var(--f-mono);font-size:12.5px;letter-spacing:.05em;color:var(--muted)}
+.q{border:1px solid var(--line);border-radius:6px;padding:14px 16px;background:var(--panel)}
+.q .qt{margin:0 0 10px;font-weight:500}
+.q .qt .qn{font-family:var(--f-mono);color:var(--muted);margin-right:6px;font-weight:400}
+.q .opts{display:grid;gap:6px}
+.q .opt{font:inherit;font-size:15px;line-height:1.5;text-align:left;padding:8px 12px;border:1px solid var(--line);border-radius:4px;background:var(--paper);color:var(--ink);cursor:pointer}
+.q .opt:hover{border-color:var(--ink)}
+.q .opt.right{border-color:var(--ok);background:color-mix(in srgb,var(--ok) 12%,var(--paper))}
+.q .opt.wrong{border-color:var(--bad);background:color-mix(in srgb,var(--bad) 9%,var(--paper))}
+.q .why{margin:10px 0 0;font-size:14.5px}
+.q .why b{font-weight:600}
+
+/* glossary, sources */
+.gloss{display:grid;grid-template-columns:minmax(150px,220px) minmax(0,1fr);gap:0;margin:0;border-top:1px solid var(--line);max-width:78ch}
+.gloss dt,.gloss dd{padding:9px 0;border-bottom:1px solid var(--line);margin:0}
+.gloss dt{font-weight:600;padding-right:14px}
+.gloss dt small{display:block;font-family:var(--f-mono);font-weight:400;font-size:12px;color:var(--muted)}
+.gloss dd{font-size:15px}
+.empty{color:var(--muted);font-size:14px}
+footer.colophon{max-width:1200px;margin:56px auto 0;padding-top:20px;border-top:1px solid var(--line);font-size:13px;color:var(--muted)}
+
+@media (max-width:980px){
+  .masthead{grid-template-columns:minmax(0,1fr);gap:22px;padding-block:32px 24px}
+  .pipeline{grid-template-columns:minmax(0,1fr)}
+  .pipeline li{border-right:0;border-bottom:1px solid var(--line);grid-template-columns:auto auto minmax(0,1fr);gap:4px 10px;align-items:baseline}
+  .pipeline li:last-child{border-bottom:0}
+  .shell{grid-template-columns:minmax(0,1fr);gap:0}
+  .rail{top:env(safe-area-inset-top,0px);z-index:5;background:var(--paper);border-bottom:1px solid var(--line);max-height:none;overflow:visible;padding-block:8px}
+  .rail-head{margin-bottom:4px}
+  .rail ol{display:flex;gap:4px;overflow-x:auto;scrollbar-width:thin;padding-bottom:4px}
+  .rail a{grid-template-columns:auto auto 10px;white-space:nowrap;padding:5px 9px;border:1px solid var(--line)}
+  .rail .t{display:none}
+  .rail .ts{display:inline}
+  .rail-foot{display:none}
+  .chapter{scroll-margin-top:110px}
+}
+@media (max-width:640px){
+  .split,.split3{grid-template-columns:minmax(0,1fr)}
+  .bench{padding:14px}
+  .gloss{grid-template-columns:minmax(0,1fr)}
+  .gloss dt{border-bottom:0;padding-bottom:0}
+  .defn p{font-size:16.5px}
+}
+@media (prefers-reduced-motion: reduce){
+  html{scroll-behavior:auto}
+  *{transition:none!important;animation:none!important}
+}
+
+/* ── HRI benches ── */
+.h1-sub{display:block;font-size:.56em;font-weight:500;letter-spacing:0;margin-top:.28em;color:var(--muted)}
+.vh{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+.ctl{max-width:100%}
+.scen{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:10px}
+.h1-long{font-size:clamp(36px,4.8vw,60px)}
+.homelink{max-width:1200px;margin:0 auto;padding-block:18px 0;font-family:var(--f-mono);font-size:13px;display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap}
+.homelink a{text-decoration:none}
+.homelink a:hover{text-decoration:underline}
+.pipeline{grid-template-columns:repeat(4,minmax(0,1fr))}
+.pad{display:grid;grid-template-columns:repeat(3,44px);grid-template-rows:repeat(2,40px);gap:4px}
+.pad .btn{padding:0;font-size:18px;line-height:1}
+.pad .up{grid-column:2}
+.pad .lf{grid-column:1;grid-row:2} .pad .dn{grid-column:2;grid-row:2} .pad .rt{grid-column:3;grid-row:2}
+.steplog{font-family:var(--f-mono);font-size:12.5px;width:auto;min-width:260px;font-variant-numeric:tabular-nums}
+.steplog th,.steplog td{padding:3px 10px;text-align:right;border-bottom:1px solid var(--grid)}
+.steplog thead th{font-family:var(--f-body)}
+.logwrap{max-height:188px;overflow:auto;border:1px solid var(--line);border-radius:4px;background:var(--paper)}
+.tokens{font-family:var(--f-mono);font-size:14px;line-height:1.7;background:var(--paper);border:1px solid var(--line);border-radius:4px;padding:8px 12px;overflow-x:auto;white-space:nowrap}
+.tokens b{font-weight:500;color:var(--trace)}
+.pair{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:12px}
+.pair .opt-card{border:1px solid var(--line);border-radius:6px;background:var(--paper);padding:8px;display:grid;gap:6px;min-width:0}
+.pair .opt-card .btn{justify-self:stretch}
+.rlds{font-size:13.5px}
+.rlds td,.rlds th{padding:5px 8px}
+.rlds code{font-family:var(--f-mono);font-size:12.5px}
+.mapkey{display:flex;flex-wrap:wrap;gap:6px 14px;font-size:13px;color:var(--muted)}
+.mapkey i{display:inline-block;width:14px;height:14px;border-radius:3px;vertical-align:-2px;margin-right:5px;border:1px solid var(--line)}
+.kbd{font-family:var(--f-mono);font-size:12px;border:1px solid var(--line);border-bottom-width:2px;border-radius:3px;padding:0 5px;background:var(--paper)}
+.calc-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:10px}
+@media (max-width:640px){.pair{grid-template-columns:minmax(0,1fr)}.pipeline{grid-template-columns:minmax(0,1fr)}}
+</style>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🤝</text></svg>">
+<meta property="og:title" content="Human–Robot Interaction: An Interactive Introduction">
+<meta property="og:description" content="Learn the concepts of human–robot interaction (HRI), from robot design and anthropomorphism through space, nonverbal cues, speech and emotion to trust, acceptance, research methods and ethics, through hands-on experiments and check questions in 12 chapters.">
+<meta property="og:url" content="https://kihyeonjoo.github.io/hri/en/">
+<meta property="og:locale" content="en_US">
+<link rel="alternate" hreflang="ko" href="https://kihyeonjoo.github.io/hri/">
+<link rel="alternate" hreflang="en" href="https://kihyeonjoo.github.io/hri/en/">
+
+</head>
+<body>
+<nav class="homelink" aria-label="Site"><a href="/">← Kihyeon Joo</a><span><a href="/robot/en/">Robot Learning guide</a> · <a href="/ml/en/">Machine Learning and Deep Learning guide</a> · <a href="/bci/en/">Brain–Computer Interfaces guide</a> · <a href="../" lang="ko" hreflang="ko">한국어</a></span></nav>
+
+<header class="masthead">
+  <div>
+    <p class="eyebrow">Design · Anthropomorphism · Space · Nonverbal cues · Speech · Emotion · Trust · Research methods · An undergraduate introduction</p>
+    <h1 class="h1-long">Human–Robot Interaction<span class="vh">:</span> <span class="h1-sub">An Interactive Introduction</span></h1>
+    <p class="lead">Twelve chapters on how people perceive robots and how robots should behave around people. Every chapter has hands-on experiments and check questions.</p>
+    <p class="srcline">The guide follows <i>Human-Robot Interaction: An Introduction</i>, 2nd edition, by Bartneck, Belpaeme, Eyssel, Kanda, Keijsers and Šabanović (Cambridge University Press, 2024, free official edition from the authors) and the original papers behind each chapter; both are listed at the head of every chapter. How robots learn to act is covered in the <a href="/robot/en/">Robot Learning guide</a>. Every experiment runs in this page; human responses are simplified models of the tendencies the textbook describes and do not stand in for real people.</p>
+  </div>
+  <figure class="monitor" id="hero" style="margin:0">
+    <div class="monitor-top">
+      <span class="monitor-title"><span class="rec"></span>A robot passing people in a corridor</span>
+      <div class="btnrow">
+        <button class="btn" id="hero-social" aria-pressed="true">Social navigation</button>
+        <button class="btn quiet" id="hero-pause" aria-pressed="false">Pause</button>
+      </div>
+    </div>
+    <canvas class="cv" id="hero-cv" style="height:270px" role="img" aria-label="People walking along a corridor and a robot"></canvas>
+    <p class="note" id="hero-note">People (vermillion) walk up and down the corridor while the robot (purple) heads for the far end. The faint circle around each person is their personal space. With "Social navigation" on, the robot treats people as people rather than obstacles: it yields early and steers around personal space. Off, it swerves only just before a collision. Chapter 4 covers this.</p>
+  </figure>
+</header>
+
+<ol class="pipeline" aria-label="The four parts of the guide">
+  <li><span class="k">Part I</span><a class="n" href="#ch1">Foundations</a><span class="d">What HRI is, design, anthropomorphism · Ch. 1–3</span></li>
+  <li><span class="k">Part II</span><a class="n" href="#ch4">Interaction channels</a><span class="d">Space, nonverbal cues, speech, emotion · Ch. 4–7</span></li>
+  <li><span class="k">Part III</span><a class="n" href="#ch8">People and robots</a><span class="d">Trust and acceptance, applications · Ch. 8–9</span></li>
+  <li><span class="k">Part IV</span><a class="n" href="#ch10">Doing research</a><span class="d">Methods, statistics, ethics · Ch. 10–12</span></li>
+</ol>
+<p class="loopnote">HRI is built jointly by robotics, psychology, design, human–computer interaction and philosophy (textbook ch. 2). This guide starts with how people perceive robots (Part I), then looks at the channels through which robots and people exchange signals, one at a time (Part II), and at the trust, acceptance and real applications that follow (Part III). Part IV is about studying all of this scientifically and handling it ethically.</p>
+
+<div class="shell">
+<nav class="rail" aria-label="Chapters">
+  <p class="rail-head"><span>Chapters</span><span>Done <b id="prog-count" class="num">0</b>/12</span></p>
+  <ol id="rail-list">
+    <li><a href="#ch1"><span class="no">1</span><span class="t">What HRI is</span><span class="ts">HRI</span><span class="dot" data-ch="1"></span></a></li>
+    <li><a href="#ch2"><span class="no">2</span><span class="t">Designing robots</span><span class="ts">Design</span><span class="dot" data-ch="2"></span></a></li>
+    <li><a href="#ch3"><span class="no">3</span><span class="t">Anthropomorphism and the uncanny valley</span><span class="ts">Anthropo.</span><span class="dot" data-ch="3"></span></a></li>
+    <li><a href="#ch4"><span class="no">4</span><span class="t">Space</span><span class="ts">Space</span><span class="dot" data-ch="4"></span></a></li>
+    <li><a href="#ch5"><span class="no">5</span><span class="t">Nonverbal: gaze, gesture, motion</span><span class="ts">Nonverbal</span><span class="dot" data-ch="5"></span></a></li>
+    <li><a href="#ch6"><span class="no">6</span><span class="t">Speech</span><span class="ts">Speech</span><span class="dot" data-ch="6"></span></a></li>
+    <li><a href="#ch7"><span class="no">7</span><span class="t">Emotion</span><span class="ts">Emotion</span><span class="dot" data-ch="7"></span></a></li>
+    <li><a href="#ch8"><span class="no">8</span><span class="t">Trust and acceptance</span><span class="ts">Trust</span><span class="dot" data-ch="8"></span></a></li>
+    <li><a href="#ch9"><span class="no">9</span><span class="t">Applications</span><span class="ts">Apps</span><span class="dot" data-ch="9"></span></a></li>
+    <li><a href="#ch10"><span class="no">10</span><span class="t">HRI research methods</span><span class="ts">Methods</span><span class="dot" data-ch="10"></span></a></li>
+    <li><a href="#ch11"><span class="no">11</span><span class="t">Statistics and reproducibility</span><span class="ts">Stats</span><span class="dot" data-ch="11"></span></a></li>
+    <li><a href="#ch12"><span class="no">12</span><span class="t">Ethics and society</span><span class="ts">Ethics</span><span class="dot" data-ch="12"></span></a></li>
+    <li><a href="#glossary"><span class="no">··</span><span class="t">Glossary</span><span class="ts">Glossary</span><span></span></a></li>
+    <li><a href="#sources"><span class="no">··</span><span class="t">Textbook and paper map</span><span class="ts">Sources</span><span></span></a></li>
+  </ol>
+  <div class="rail-foot">
+    <span class="dot done"></span>All correct
+    <span class="dot half"></span>In progress
+    <span id="reset-wrap"><button class="btn quiet" id="prog-reset">Clear progress</button></span>
+  </div>
+</nav>
+
+<main>
+
+<!-- ───────────── Chapter 1 ───────────── -->
+<section class="chapter" id="ch1">
+  <p class="ch-no">Chapter 1</p>
+  <h2>What HRI is</h2>
+  <p class="refs">Textbook: <b>Bartneck et al.</b> ch. 1, 2</p>
+  <div class="defn"><span class="lbl">Definition · Bartneck et al. ch. 2</span>
+    <p>Where robotics deals with the robot's body and the physical world, human–robot interaction (HRI) deals with how robots interact with people inside the human social world, and how people respond to the presence of robots.</p>
+  </div>
+  <div class="prose">
+    <h3>Physical and social interaction</h3>
+    <p>A robot picking boxes in an empty warehouse only has to handle the physics of its own body and the environment. But as soon as it brings that box to a warehouse worker, or carries a coffee to a café customer, the robot has to think about social things on top of the physical motion: where the people are, how to approach them safely and appropriately, and how to follow social rules such as answering "thank you" with "you're welcome". These rules are obvious to people and entirely unknown to the robot, so the designer has to supply every one of them. That is what makes the questions of HRI different from the questions of robotics alone.</p>
+    <h3>What embodiment changes</h3>
+    <p>What sets HRI apart from other computing technologies is that the robot has a body: <b>embodiment</b>. The body constrains how the robot can sense and act, but it is also an <b>affordance</b> that makes people treat the robot like a person. If the robot has eyes, people assume it can see; if it has a mouth, that it can talk. People bring their experience of human interaction straight over to the robot, and when the robot falls short of those expectations, disappointment follows (chapters 2 and 8).</p>
+    <h3>Where the disciplines meet</h3>
+    <p>HRI is a multidisciplinary field in which engineers, psychologists, designers, anthropologists, sociologists and philosophers work together. The textbook (section 2.2) summarises three walls between the groups: how knowledge is expressed (engineers and scientists publish it explicitly; designers embed it in the artefact and in intuition), how reality is viewed (engineers and designers want to change the world; scientists want to understand it), and the main concern (technology for engineers; people for designers and scientists). Knowing these differences in advance makes collaboration easier.</p>
+    <h3>A short history</h3>
+    <p>The term "social robot" was first used for robots in a 1978 magazine article. The behaviour-based robots of the 1990s produced a lifelike impression from simple reactive rules alone, changing ideas about how apparent intelligence arises. MIT's <b>Kismet</b> (1997) was an early social robot that moved its eyes, eyebrows, lips and neck in response to people's voices and movements. With only a handful of social drives, it used big eyes and an exaggerated face (the baby schema) to project a surprisingly social presence. Commercial platforms such as Nao (2006–), Pepper, Keepon and Paro then allowed many labs to replicate and compare studies on the same robot.</p>
+  </div>
+  <figure class="bench" id="b1-1">
+    <figcaption class="bench-head"><span class="bench-no">Experiment 1-1</span><h3>What kind of interaction is this?</h3><p>For each situation, decide whether the robot has to deal with something physical, something social, or both. Choosing an answer shows the reasoning.</p></figcaption>
+    <div class="scen" id="kind-cards"></div>
+    <div class="readouts"><div class="ro"><span>Correct calls</span><b id="kind-score" class="num">0 / 8</b></div><button class="btn quiet" id="kind-reset">Start over</button></div>
+  </figure>
+  <div class="quiz" data-ch="1"></div>
+</section>
+
+<!-- ───────────── Chapter 2 ───────────── -->
+<section class="chapter" id="ch2">
+  <p class="ch-no">Chapter 2</p>
+  <h2>Designing robots</h2>
+  <p class="refs">Textbook: <b>Bartneck et al.</b> sections 4.1, 4.2</p>
+  <div class="prose">
+    <h3>Inside-out and outside-in</h3>
+    <p>Robots are usually built by engineers first and tested by social scientists later: bolt sensors and an arm onto a mobile platform such as a TurtleBot, and add a shell if there is time. The textbook (ch. 4) calls this stitching-together of existing technology the "Frankenstein approach" and considers it poor practice, because it ignores the user and the context. The opposite direction is <b>outside-in</b> design: start from the interaction the robot is meant to have, decide on the appearance and behaviour, and fill in the technology. ASIMO was made small so as not to be threatening; Pepper was given a waist that can bow to greet customers in Japanese shops. The seal robot Paro started as a cat, but people knew real cats too well and compared it unfavourably, so it became a seal. It also had wheels, which were removed because its main users, older adults with limited mobility, had no need for a robot that roams.</p>
+    <h3>Choices of form</h3>
+    <ul>
+      <li><b>Androids and humanoids</b>: closest to humans, and so with the most expectations to live up to.</li>
+      <li><b>Zoomorphic</b>: a familiar animal such as a cat, or an animal people know but have never handled, such as a dinosaur or a seal.</li>
+      <li><b>Minimalist</b>: robots such as Keepon and Muu that explore the minimum needed to trigger social interaction. The most extreme example is a busker robot that is nothing but a pair of moving sandals on a box and a sign reading "Naked Invisible Guy".</li>
+      <li><b>Robjects</b>: designs that start from an object rather than a creature, such as a social rubbish bin or a robotic ottoman.</li>
+    </ul>
+    <h3>Affordances and design principles</h3>
+    <p>Norman's <b>affordance</b> is a visible relationship that tells you what actions are possible. A robot's appearance is a major affordance, because people assume the robot's abilities will match its looks. The textbook (section 4.1.4) distils the following principles.</p>
+    <ul>
+      <li><b>Match form to function.</b> A humanoid is expected to talk, think and act like a human. For a job such as cleaning that needs none of this, a less humanlike design is better.</li>
+      <li><b>Underpromise and overdeliver.</b> Raising expectations through appearance or an introduction as an "intelligent companion", and then failing to deliver, causes deep disappointment and sometimes wrecks the interaction. Because the word "robot" itself makes the public expect high capability, the textbook suggests even considering not calling the artefact a robot.</li>
+      <li><b>Interaction expands function.</b> People fill in what the design leaves open with their own values and beliefs. Paro evokes a pet without being compared to any animal people know, so it is accepted as a pet-like creature even though its abilities fall far short of a real baby seal.</li>
+      <li><b>Do not mix metaphors.</b> A humanlike robot with skin covering only part of its body, or an animal robot that speaks like an adult and teaches mathematics, is odd. The Philip K. Dick android with its mechanics exposed is more unsettling because it is humanlike and machinelike at once (this connects to the uncanny valley in chapter 3).</li>
+    </ul>
+  </div>
+  <figure class="bench" id="b2-1">
+    <figcaption class="bench-head"><span class="bench-no">Experiment 2-1</span><h3>The gap between what looks promise and what the robot can do</h3><p>The upper sliders set the robot's appearance; the outlines of the bars show the abilities people expect from that appearance. The lower sliders set the actual abilities, drawn as filled bars. Wherever expectation exceeds reality is a source of disappointment. The textbook's principle is to keep the promise made by appearance below the actual ability.</p></figcaption>
+    <div class="controls">
+      <div class="ctl"><label for="ex-face">Face and eyes <output id="ex-face-o">0.7</output></label><input type="range" id="ex-face" min="0" max="1" step="0.05" value="0.7"></div>
+      <div class="ctl"><label for="ex-voice">Speaks to you <output id="ex-voice-o">0.8</output></label><input type="range" id="ex-voice" min="0" max="1" step="0.05" value="0.8"></div>
+      <div class="ctl"><label for="ex-arms">Arms and hands <output id="ex-arms-o">0.6</output></label><input type="range" id="ex-arms" min="0" max="1" step="0.05" value="0.6"></div>
+      <div class="ctl"><label for="ex-human">Overall humanlikeness <output id="ex-human-o">0.5</output></label><input type="range" id="ex-human" min="0" max="1" step="0.05" value="0.5"></div>
+    </div>
+    <div class="controls">
+      <div class="ctl"><label for="ex-see">Actual: recognises people <output id="ex-see-o">0.3</output></label><input type="range" id="ex-see" min="0" max="1" step="0.05" value="0.3"></div>
+      <div class="ctl"><label for="ex-talk">Actual: understands open conversation <output id="ex-talk-o">0.2</output></label><input type="range" id="ex-talk" min="0" max="1" step="0.05" value="0.2"></div>
+      <div class="ctl"><label for="ex-grasp">Actual: picks up and hands over objects <output id="ex-grasp-o">0.3</output></label><input type="range" id="ex-grasp" min="0" max="1" step="0.05" value="0.3"></div>
+      <div class="ctl"><label for="ex-social">Actual: follows social rules <output id="ex-social-o">0.3</output></label><input type="range" id="ex-social" min="0" max="1" step="0.05" value="0.3"></div>
+    </div>
+    <canvas class="cv" id="ex-cv" style="height:230px" role="img" aria-label="Bars of expected and actual abilities"></canvas>
+    <div class="readouts" id="ex-ro"></div>
+    <p class="note" id="ex-note"></p>
+  </figure>
+  <div class="quiz" data-ch="2"></div>
+</section>
+
+<!-- ───────────── Chapter 3 ───────────── -->
+<section class="chapter" id="ch3">
+  <p class="ch-no">Chapter 3</p>
+  <h2>Anthropomorphism and the uncanny valley</h2>
+  <p class="refs">Textbook and papers: <b>Bartneck et al.</b> sections 4.2, 8.1–8.3 · <b>Mori</b> (1970; transl. 2012) · <b>Epley et al.</b> (2007) · <b>Reeves &amp; Nass</b> (1996) · <b>Kätsyri et al.</b> (2015)</p>
+  <div class="prose">
+    <h3>Anthropomorphism</h3>
+    <p>"My computer hates me." People attribute human traits, emotions and intentions to things that are not human. This is <b>anthropomorphization</b>. Seeing faces in random patterns, <b>pareidolia</b>, is one instance: the "face" on Mars photographed by Viking 1 in 1976 turned out to be plain terrain when re-photographed at higher resolution in 2001. HRI designers use this tendency as a design resource. Keepon expresses attention and affect with nothing more than two eyes and a symmetrical body.</p>
+    <p>In early HRI, anthropomorphism meant little more than how humanlike a robot looked. Epley et al. (2007) widened it into a psychological process with three factors: <b>effectance motivation</b>, the wish to explain the behaviour of an unfamiliar agent; <b>sociality motivation</b>, the wish for social connection; and <b>elicited agent knowledge</b>, the ease with which knowledge about humans comes to mind. People try to understand non-human things through the knowledge structures they have about themselves, and so attach feelings and intentions to robots. This changes not only impressions of the robot but actual behaviour towards it.</p>
+    <h3>The media equation</h3>
+    <p>Reeves and Nass (1996) showed in a series of HCI experiments that people treat computers as social actors. When a computer asked about its own performance, people rated it more generously than when another computer asked, which is to say they were polite to it. The response is almost automatic. This "computers are social actors" (CASA) approach led to studies of gender attribution to robots and of mental models of robots (textbook section 10.1).</p>
+    <h3>Mind perception, warmth and competence</h3>
+    <p>Gray et al. (2007) split mind perception into two dimensions: <b>agency</b> (planning, thinking, self-control) and <b>experience</b> (feeling emotions, having hopes). The two core dimensions of social judgement about people, <b>warmth</b> and <b>competence</b>, are used for robots as well. The Godspeed questionnaire (Bartneck et al. 2009) is a widely used HRI-specific instrument for anthropomorphism, available in many languages.</p>
+    <h3>The uncanny valley</h3>
+    <p>Mori (1970) proposed that affinity rises as robots become more humanlike, then plunges into a valley at the point where they are almost, but not quite, human. His example is the prosthetic hand. One that imitates wrinkles, veins and even fingerprints looks real at a glance, but shaking it reveals a boneless feel and coldness, and the result is eeriness. Movement amplifies both peak and valley: a switched-off industrial robot is just an oily machine, but the moment it moves like a hand some affinity appears, while a moving prosthetic hand becomes eerier. Mori suggested that stopping at a moderate degree of humanlikeness, like a Bunraku puppet, is the safe design.</p>
+    <p>Recent work points to <b>mismatched features</b> as a cause of the valley: when features differ in their degree of humanlikeness, such as very humanlike skin with slightly off facial muscle movement, eeriness grows (Kätsyri et al. 2015). The effect has been replicated with zoomorphic robots and with robots that mix gender cues. There is also a novelty component: eeriness fades with repeated interaction, short or long (textbook section 8.4).</p>
+  </div>
+  <figure class="bench" id="b3-1">
+    <figcaption class="bench-head"><span class="bench-no">Experiment 3-1</span><h3>Exploring the uncanny valley</h3><p>A curve modelled on Mori's figure 1. Humanlikeness runs along the horizontal axis, affinity along the vertical. Move the slider to see the position on the curve and the example Mori gave for it. Turning on movement enlarges both peak and valley (figure 2); raising feature mismatch deepens the valley.</p></figcaption>
+    <div class="controls">
+      <div class="ctl"><label for="uv-h">Humanlikeness <output id="uv-h-o">50%</output></label><input type="range" id="uv-h" min="0" max="100" step="1" value="50"></div>
+      <div class="ctl"><label for="uv-mm">Feature mismatch (Kätsyri et al.) <output id="uv-mm-o">0.3</output></label><input type="range" id="uv-mm" min="0" max="1" step="0.05" value="0.3"></div>
+      <div class="ctl" style="flex:0 0 auto"><span class="lab">Settings</span><div class="btnrow"><button class="btn" id="uv-move" aria-pressed="false">Movement</button><button class="btn" id="uv-fam" aria-pressed="false">Repeated encounters (novelty fades)</button></div></div>
+    </div>
+    <canvas class="cv" id="uv-cv" style="height:300px" role="img" aria-label="Affinity as a function of humanlikeness"></canvas>
+    <div class="readouts" id="uv-ro"></div>
+    <p class="note">The shape of the curve is hand-drawn after Mori's figure, not measured data; Mori himself presented it as a proposal rather than a measurement. The textbook notes that the original vertical-axis term, <i>shinwakan</i>, spans familiarity, affinity and likeability and is hard to translate even into English.</p>
+  </figure>
+  <div class="quiz" data-ch="3"></div>
+</section>
+
+<!-- ───────────── Chapter 4 ───────────── -->
+<section class="chapter" id="ch4">
+  <p class="ch-no">Chapter 4</p>
+  <h2>Space</h2>
+  <p class="refs">Textbook and papers: <b>Bartneck et al.</b> ch. 5 · <b>Hall</b> (1966) · <b>Kendon</b> (1990)</p>
+  <div class="prose">
+    <p>Joggobot, a 2012 jogging-companion drone, flew just ahead of the runner. When its developers tested whether above, behind, in front or beside was best, runners who had the drone behind them felt chased and enjoyed the exercise less. They much preferred to be the one doing the chasing. Where a robot is placed relative to a person is a major design element in HRI.</p>
+    <h3>Proxemics</h3>
+    <p>The anthropologist Hall called the way people use space in relation to other people <b>proxemics</b> and divided it into four zones: <b>intimate distance</b> (a few centimetres to about 0.5 m) for close relationships and private talk, <b>personal distance</b> (about 0.5–1.2 m), <b>social distance</b> (1.2 to about 4 m) between acquaintances and colleagues, and <b>public distance</b> (about 4 m and beyond) for impersonal settings such as a speech. Intimate plus personal distance make up the <b>personal space</b> that people regard as their own. The distances vary with age and culture; Hall illustrated the difference between high-contact cultures such as South America and low-contact ones such as the United States with the North American barricading themselves behind a desk and chair. Arrangement follows rules too: people seated side by side behaved more cooperatively, people seated face to face more competitively, and people in conversation usually stand at an angle to each other.</p>
+    <h3>Space in groups: F-formations</h3>
+    <p>Kendon (1990) called an arrangement in which two or more people face each other and focus on a shared space an <b>F-formation</b>. It consists of the o-space in the middle, the p-space where the participants stand and the r-space beyond; two people form a face-to-face, L or side-by-side arrangement, larger groups a circle. At a cocktail party a tightly closed circle is hard to join, while an opened circle reads as an invitation. A robot can use this to judge which groups it may approach, and can change a group's F-formation by turning its body (Kuzuoka et al. 2010). One should not walk between two people in conversation even when there is room.</p>
+    <h3>Social navigation for robots</h3>
+    <p>Localisation (SLAM), finding people and avoiding collisions (dynamic window approach, path planning) are well studied in robotics. The problem is that an algorithm that weaves nicely between obstacles is socially inappropriate near people. A robot that treats people as obstacles swerves only inches before hitting someone coming the other way in a corridor. It avoids the collision, but to the person it looks aggressive. People give way much earlier, signalling with their bodies which way they will go, and never enter each other's personal space. The textbook summarises the research findings:</p>
+    <ul>
+      <li>Most people prefer to interact with a robot at personal or social distance (Walters et al. 2005). When passing in a corridor, the robot should keep enough distance not to enter the intimate zone (Pacchierotti et al. 2006).</li>
+      <li>Approaching from the front is good for starting a conversation, but for handing over an object a frontal approach was less preferred and failed more often (Dautenhahn et al. 2006; Shi et al. 2013).</li>
+      <li>When following someone, tracing the person's trajectory feels more natural than taking a shortcut (Gockley et al. 2007).</li>
+      <li>When a person approaches the robot, it has to respond in time. A late response is awkward, and the person may not approach again (Kato et al. 2015).</li>
+    </ul>
+    <p>A robot's trajectory is also a way of signalling intent: passing slowly a few metres from a visitor to show it is available, or using <b>legible motion</b> whose goal can be read when handing something over (chapter 5).</p>
+  </div>
+  <figure class="bench" id="b4-1">
+    <figcaption class="bench-head"><span class="bench-no">Experiment 4-1</span><h3>From which direction, and how close</h3><p>The person in the middle faces up, with Hall's four zones drawn around them. Choose from which direction the robot comes, how close it stops and what it has come to do. The verdict is a rule-based simplification of the findings above.</p></figcaption>
+    <div class="controls">
+      <div class="ctl" style="flex:0 0 auto"><span class="lab">Approach direction</span><div class="seg" id="px-dir" role="group" aria-label="Approach direction"><button data-d="front" aria-pressed="true">Front</button><button data-d="side" aria-pressed="false">Side</button><button data-d="back" aria-pressed="false">Behind</button></div></div>
+      <div class="ctl" style="flex:0 0 auto"><span class="lab">Task</span><div class="seg" id="px-task" role="group" aria-label="Task"><button data-t="talk" aria-pressed="true">Start a conversation</button><button data-t="hand" aria-pressed="false">Hand over an object</button><button data-t="pass" aria-pressed="false">Just pass by</button></div></div>
+      <div class="ctl"><label for="px-d">Stopping distance <output id="px-d-o">1.0 m</output></label><input type="range" id="px-d" min="0.2" max="4.5" step="0.1" value="1"></div>
+    </div>
+    <canvas class="cv" id="px-cv" style="height:320px" role="img" aria-label="Distance zones around a person and the robot's position"></canvas>
+    <div class="readouts" id="px-ro"></div>
+    <p class="note" id="px-note"></p>
+  </figure>
+  <figure class="bench" id="b4-2">
+    <figcaption class="bench-head"><span class="bench-no">Experiment 4-2</span><h3>When to give way in a corridor</h3><p>A person and a robot approach each other in a corridor. Set the distance at which the robot starts to move aside. A robot that yields late avoids the collision but enters the person's intimate zone, which the person reads as aggressive.</p></figcaption>
+    <div class="controls">
+      <div class="ctl"><label for="cr-d">Distance at which the robot starts to yield <output id="cr-d-o">3.0 m</output></label><input type="range" id="cr-d" min="0.3" max="6" step="0.1" value="3"></div>
+      <div class="ctl" style="flex:0 0 auto"><div class="btnrow"><button class="btn" id="cr-run">Pass again</button></div></div>
+    </div>
+    <canvas class="cv" id="cr-cv" style="height:180px" role="img" aria-label="A robot and a person passing in a corridor"></canvas>
+    <div class="readouts" id="cr-ro"></div>
+  </figure>
+  <div class="quiz" data-ch="4"></div>
+</section>
+
+<!-- ───────────── Chapter 5 ───────────── -->
+<section class="chapter" id="ch5">
+  <p class="ch-no">Chapter 5</p>
+  <h2>Nonverbal: gaze, gesture, motion</h2>
+  <p class="refs">Textbook and papers: <b>Bartneck et al.</b> ch. 6, section 5.2.4 · <b>Mutlu et al.</b> (2009) · <b>Dragan, Lee &amp; Srinivasa</b> (2013)</p>
+  <div class="prose">
+    <p>Even without words, people convey a great deal through gaze, facial expression, gesture and posture. Nonverbal signals are mostly automatic and sometimes unconscious, so they are considered more honest than speech: greeting someone you dislike politely while making less eye contact and avoiding touch. The same holds in HRI. A person may say nice things about a robot while their body is tense, and a robot whose gestures do not match the rhythm of its speech looks awkward. If a robot stares straight ahead and does not react to what we say, the interaction collapses. The textbook calls implementing nonverbal signals a precondition for smooth HRI.</p>
+    <h3>Gaze</h3>
+    <p>Gaze signals interest, understanding and attention, and manages turn-taking in conversation, for instance by moving the eyes from one person to another to choose who speaks next. <b>Joint attention</b>, two partners looking at the same thing together, is a scaffold for children learning language and the basis of coordination in collaboration. Robot gaze cues produce effects similar to those between people. In a conversation with several people, a robot can choose the next speaker with its gaze (Mutlu et al. 2009), can assign the roles of addressee, bystander and overhearer (Mutlu et al. 2012), and people who received eye contact while a robot told a story remembered it better (Mutlu et al. 2006). Making eye contact and then deliberately looking away makes a robot seem more thoughtful (Andrist et al. 2014).</p>
+    <h3>Gesture</h3>
+    <p>Gestures are grouped by role: <b>deictic</b> gestures that point at something, <b>iconic</b> gestures such as spreading the arms to show a big ball, <b>symbolic</b> gestures such as a wave that carry meaning on their own, and <b>beat</b> gestures that follow the rhythm of speech like conducting. In Salem et al. (2013), an ASIMO that gestured while speaking was rated more humanlike and likeable, and participants were more willing to interact with it again. Interestingly, gestures that did not match the speech raised the robot's ratings further but lowered task performance. Today, models trained on hundreds of hours of video of people talking generate gestures to accompany speech; the meaning does not always fit, but the movement itself is hard to tell from a human's (Yoon et al. 2022).</p>
+    <h3>Mimicry, touch and channels only robots have</h3>
+    <p>Unconscious <b>mimicry</b> signals liking, and when a partner copies your posture you are more inclined to accept their proposals, the "chameleon effect" (Chartrand &amp; Bargh 1999). Mimicry that is too obvious or too late, however, looks manipulative and backfires. A robot that copied people's facial expressions and matched their head movements collected more donations (Wills et al. 2016). Besides body parts such as limbs, ears and tails, robots can signal through channels people do not have: sound, light and colour.</p>
+    <h3>Signalling intent through motion</h3>
+    <p>When handing over objects, people prefer robot motion whose goal and intent can be read (Koay et al. 2007). The most energy-efficient path may be unreadable to a person, so Dragan et al. (2013) proposed an algorithm that makes a robot arm produce <b>legible</b> motion towards its goal. They distinguish two concepts: <b>predictable</b> motion is the most efficient motion an observer who knows the goal would expect, while <b>legible</b> motion lets an observer infer the goal quickly while watching. The two sometimes conflict: to be more legible, the path has to be exaggerated away from the other candidate goals, which costs efficiency.</p>
+  </div>
+  <figure class="bench" id="b5-1">
+    <figcaption class="bench-head"><span class="bench-no">Experiment 5-1</span><h3>The robot's gaze chooses the next speaker</h3><p>A robot talks with two people. Decide whom the robot looks at as it finishes speaking and press "Run 100 trials". The observer model gives the person the robot looks at a higher probability of speaking next. The proportions are made-up values that simplify the tendency reported by Mutlu et al. (2009).</p></figcaption>
+    <div class="controls">
+      <div class="ctl" style="flex:0 0 auto"><span class="lab">Robot's gaze as it finishes speaking</span><div class="seg" id="gz-target" role="group" aria-label="Gaze"><button data-g="A" aria-pressed="true">Look at A</button><button data-g="B" aria-pressed="false">Look at B</button><button data-g="alt" aria-pressed="false">Alternate A and B</button><button data-g="away" aria-pressed="false">Look at no one</button></div></div>
+      <div class="ctl" style="flex:0 0 auto"><div class="btnrow"><button class="btn" id="gz-run">Run 100 trials</button><button class="btn quiet" id="gz-reset">Clear</button></div></div>
+    </div>
+    <div class="split">
+      <canvas class="cv" id="gz-cv" style="height:220px" role="img" aria-label="The robot, two people and the robot's gaze"></canvas>
+      <canvas class="cv" id="gz-bar" style="height:220px" role="img" aria-label="Share of next speakers"></canvas>
+    </div>
+    <div class="readouts" id="gz-ro"></div>
+  </figure>
+  <figure class="bench" id="b5-2">
+    <figcaption class="bench-head"><span class="bench-no">Experiment 5-2</span><h3>Predictable motion and legible motion</h3><p>A robot hand moves to one of two cups. An observer infers the target cup from the path so far (a simplification of Dragan et al.'s probabilistic model). The more you exaggerate the path away from the other cup with the slider, the sooner the observer is sure, but the longer the path becomes.</p></figcaption>
+    <div class="controls">
+      <div class="ctl"><label for="lg-ex">Path exaggeration <output id="lg-ex-o">0.0</output></label><input type="range" id="lg-ex" min="0" max="1" step="0.05" value="0"></div>
+      <div class="ctl"><label for="lg-t">Progress <output id="lg-t-o">50%</output></label><input type="range" id="lg-t" min="0" max="1" step="0.01" value="0.5"></div>
+      <div class="ctl"><label for="lg-gap">Distance between the cups <output id="lg-gap-o">0.30</output></label><input type="range" id="lg-gap" min="0.1" max="0.6" step="0.05" value="0.3"></div>
+    </div>
+    <div class="split">
+      <canvas class="cv" id="lg-cv" style="height:260px" role="img" aria-label="Two goals and the path of the robot hand"></canvas>
+      <canvas class="cv" id="lg-p" style="height:260px" role="img" aria-label="The observer's confidence over time"></canvas>
+    </div>
+    <div class="readouts" id="lg-ro"></div>
+  </figure>
+  <div class="quiz" data-ch="5"></div>
+</section>
+
+<!-- ───────────── Chapter 6 ───────────── -->
+<section class="chapter" id="ch6">
+  <p class="ch-no">Chapter 6</p>
+  <h2>Speech</h2>
+  <p class="refs">Textbook: <b>Bartneck et al.</b> ch. 7</p>
+  <div class="prose">
+    <p>A robot in an electronics shop asks, "Hello, what are you looking for?" You answer, "Um, well, a camera for my daughter and some batteries, and I'm also just browsing." After a long silence the robot repeats the question and asks you to speak more slowly and closer to it. Why is talking to a robot so hard? Spoken interaction has several stages, and each has its own difficulties.</p>
+    <h3>Speech recognition</h3>
+    <p><b>Automatic speech recognition (ASR)</b> turns recorded speech into text. It is transcription, not understanding. The technology assumes a quiet environment and a directional microphone, assumptions that often break in HRI: the person stands away from the robot, and ambient noise and the robot's own motors are recorded too. Lapel microphones and headsets are therefore common. Since deep learning, performance has risen sharply; in one test the textbook cites, the word error rate (WER) was 1.4%, below the human average of 5.8% (Zhang et al. 2022). Dialects, non-native speakers, children's speech, proper names and noisy, echoing rooms remain hard. Restricting what has to be recognised to numbers or short commands improves performance. ASR engines usually return a <b>confidence</b> score with the transcript, and sometimes alternative transcripts. In very noisy places, voice activity detection (VAD) alone can give the impression that the robot is listening and let it hand over the turn.</p>
+    <h3>Extracting meaning and managing dialogue</h3>
+    <p>Getting meaning out of the transcribed text is a separate problem. Sentiment analysis reduces an utterance to a single number for how positive it is; intent recognition spots requests such as "play some music". For tasks that take several turns, a <b>dialogue manager (DM)</b> tracks the state of the conversation; for a pizza order, the state is which pizza, size and toppings have been settled. In a real transcript the textbook quotes, a participant talking to a waiter robot that took everything literally had to rephrase several times, starting from "Could I have a glass of water?", before finding a wording the robot understood (Williams et al. 2018).</p>
+    <h3>Turn-taking</h3>
+    <p>While listening, people signal that they are following with <b>back-channel</b> signals such as "uh-huh" and "really?" and with nods. A robot can imitate this with short sounds, blinking lights and nods. Human responses are fast: in an analysis of telephone conversations, a "yes" came on average after 100 ms, and an answer to an unwelcome proposal after almost 500 ms (Strömbergsson et al. 2013). People prepare their answer before the question has ended. A robot chains recognition, understanding and generation and routinely takes seconds. Fillers and visual signals can bridge the silence but cannot replace fast turn-taking, so research looks at incremental synthesis that starts speaking before the sentence is planned, and incremental dialogue processing that starts acting before an instruction has finished.</p>
+    <h3>Producing speech</h3>
+    <p><b>Text-to-speech (TTS)</b>, turning text into sound, has advanced greatly over the last decade and is now hard to tell from a human voice. Traditional parametric synthesis is flexible but less natural; concatenative synthesis, which stitches recordings together, is natural but tied to the voice actor who was recorded. Generative models have moved past both limits. What remains is adapting to context: a robot speaks in the same voice in a quiet room and in a noisy exhibition hall.</p>
+  </div>
+  <figure class="bench" id="b6-1">
+    <figcaption class="bench-head"><span class="bench-no">Experiment 6-1</span><h3>What to do when you may have misheard</h3><p>A robot takes 200 orders. Set the recognition error rate, the confidence threshold and the confirmation strategy; for each order the model draws a recognition result and a confidence score and simulates the dialogue. "Always confirm" is safe but long; "Never confirm" is short but sends out wrong orders. Confirming only when confidence is low sits between them. The model's numbers are made up.</p></figcaption>
+    <div class="controls">
+      <div class="ctl"><label for="dm-wer">Recognition error rate <output id="dm-wer-o">15%</output></label><input type="range" id="dm-wer" min="0" max="0.5" step="0.01" value="0.15"></div>
+      <div class="ctl"><label for="dm-th">Confidence threshold for confirming <output id="dm-th-o">0.70</output></label><input type="range" id="dm-th" min="0" max="1" step="0.05" value="0.7"></div>
+      <div class="ctl" style="flex:0 0 auto"><span class="lab">Confirmation strategy</span><div class="seg" id="dm-strat" role="group" aria-label="Confirmation strategy"><button data-s="never" aria-pressed="false">Never confirm</button><button data-s="thresh" aria-pressed="true">Only when confidence is low</button><button data-s="always" aria-pressed="false">Always confirm</button></div></div>
+    </div>
+    <canvas class="cv" id="dm-cv" style="height:220px" role="img" aria-label="Success rate and dialogue length by strategy"></canvas>
+    <div class="readouts" id="dm-ro"></div>
+    <p class="note" id="dm-note"></p>
+  </figure>
+  <div class="quiz" data-ch="6"></div>
+</section>
+
+<!-- ───────────── Chapter 7 ───────────── -->
+<section class="chapter" id="ch7">
+  <p class="ch-no">Chapter 7</p>
+  <h2>Emotion</h2>
+  <p class="refs">Textbook and papers: <b>Bartneck et al.</b> ch. 9 · <b>Russell</b> (1980) · <b>Ekman &amp; Friesen</b> (1978)</p>
+  <div class="prose">
+    <p>Emotion is a universal communication channel that makes an inner state visible. Emotions differ from moods: an emotion has a clear cause and object and passes quickly, while a mood is more diffuse and its cause less clear.</p>
+    <h3>How to represent emotion</h3>
+    <p>Lists of emotions differ between people and cultures, so no single list is agreed on. Ekman and Friesen (1975) compiled six <b>facial expressions</b> recognised across cultures. This is often mistaken for a list of basic emotions, but it was originally a set of expressions that are shown on the face and recognised in many cultures. Russell (1980) argued that emotions are not discrete categories but interpretations of two independent neurophysiological systems, <b>arousal</b> and <b>valence</b>, and proposed the <b>circumplex model</b>, which spreads emotions over a two-dimensional plane. The model has been confirmed in many languages and cultures, although a meta-analysis notes that not every affective state lands where expected (Remington et al. 2000). Because the circumplex places "angry" and "afraid" side by side, the three-dimensional PAD model added a dominance axis; Kismet and many other robots use it. The OCC model defines 22 emotion categories through appraisal of situations, but many designers implement only Ekman's six expressions: reliably recognised, but narrow in interactional range.</p>
+    <h3>Expression by robots</h3>
+    <p>Ekman's <b>Facial Action Coding System (FACS)</b> groups facial muscles into action units (AUs) and writes an expression as a combination of AUs. A smile is AU6, which raises the cheeks, plus AU12, which pulls up the corners of the mouth. A robot face with rubber skin and 19 pneumatic actuators makes expressions from these AUs (Hashimoto et al. 2013), and many robots such as Kismet, iCat and eMuu use simplified facial cues. Non-humanlike robots express emotion too: a cleaning robot and a flying robot conveyed affect through movement patterns alone (Saerbeck &amp; Bartneck 2010; Sharma et al. 2013), and speed, posture, sound, colour and orientation towards the person all serve as means. The <b>facial feedback hypothesis</b> holds that expressions in turn influence the emotion felt: people made to hold a pencil between their teeth, forcing a smile, found cartoons slightly funnier (Strack et al. 1988).</p>
+    <h3>Why reading emotion is hard</h3>
+    <p>Reading emotion from a still photograph of a face alone is nearly impossible even for people; whether a tennis player has just won or lost a point is hard to tell from the face by itself. Context, moving expressions and gestures raise recognition rates for people and algorithms alike. Most emotion-recognition software outputs only probabilities for the six basic expressions or a point in a two- or three-dimensional space, missing everyday emotions such as pride, embarrassment, guilt and irritation. The same emotion differs in intensity and context from person to person, so a robot has to be sensitive to the individual and the culture.</p>
+  </div>
+  <figure class="bench" id="b7-1">
+    <figcaption class="bench-head"><span class="bench-no">Experiment 7-1</span><h3>Building a robot face on the circumplex</h3><p>The plane on the left is Russell's circumplex. Valence (unpleasant–pleasant) runs horizontally, arousal (sleepy–excited) vertically. Click the plane or move the sliders and the simple robot face on the right expresses that state with its eyebrows, eyes, mouth and colour, with nearby emotion words shown. See how many states a non-human robot can convey with a few cues.</p></figcaption>
+    <div class="controls">
+      <div class="ctl"><label for="em-v">Valence <output id="em-v-o">+0.5</output></label><input type="range" id="em-v" min="-1" max="1" step="0.05" value="0.5"></div>
+      <div class="ctl"><label for="em-a">Arousal <output id="em-a-o">+0.3</output></label><input type="range" id="em-a" min="-1" max="1" step="0.05" value="0.3"></div>
+    </div>
+    <div class="split">
+      <canvas class="cv drag" id="em-cv" style="height:280px" role="img" aria-label="The valence–arousal plane. Click to choose an emotional state"></canvas>
+      <canvas class="cv" id="em-face" style="height:280px" role="img" aria-label="Robot face"></canvas>
+    </div>
+    <div class="readouts" id="em-ro"></div>
+    <p class="note">The face rules simplify the cues the textbook describes. Valence is shown by the corners of the mouth and the angle of the inner eyebrows; arousal by eye size, eyebrow height, the saturation of the body colour and the speed of movement. Word positions follow Russell's (1980) circumplex layout.</p>
+  </figure>
+  <div class="quiz" data-ch="7"></div>
+</section>
+
+<!-- ───────────── Chapter 8 ───────────── -->
+<section class="chapter" id="ch8">
+  <p class="ch-no">Chapter 8</p>
+  <h2>Trust and acceptance</h2>
+  <p class="refs">Textbook and papers: <b>Bartneck et al.</b> section 8.4 · <b>Lee &amp; See</b> (2004) · <b>Hancock et al.</b> (2011, 2021) · <b>Heerink et al.</b> (2010)</p>
+  <div class="prose">
+    <h3>What trust is</h3>
+    <p>Definitions of trust differ across psychology, sociology, economics and philosophy, but all contain the confidence that the other party will act appropriately. The textbook quotes Sabel's (1993) definition: "the mutual confidence that no party will exploit the other's vulnerability". It implies believing in the other's goodwill, integrity and ability (Lee &amp; See 2004). In automation research, trust is what determines how much people <b>rely</b> on a system, and the key is not the amount of trust but its <b>calibration</b>. Trusting a system beyond its real ability is <b>overtrust</b>, which lets errors slip through; trusting it less is <b>distrust</b>, which throws away useful help. Hancock et al.'s (2011) meta-analysis grouped the factors behind trust in HRI into robot, human and environmental factors, and found the robot's performance-related factors the largest. The 2021 follow-up meta-analysis gives more weight to human factors. There are several scales for measuring trust, but no agreed definition yet.</p>
+    <h3>Acceptance</h3>
+    <p>A social robot has to be accepted by its users. Robot acceptance research mostly leans on the classic <b>technology acceptance model (TAM)</b>: the intention to use depends on <b>perceived usefulness</b> and <b>perceived ease of use</b>. Because it treats the robot as a tool and leaves out context, extensions appeared: <b>UTAUT</b> adds social influence and facilitating conditions to performance and effort expectancy, and the <b>Almere model</b> (Heerink et al. 2010) adds affective factors such as trust, enjoyment and attitude for the acceptance of assistive technology by older adults. De Graaf et al. (2019) propose a user-experience (UX) perspective that includes hedonic factors, social norms and control beliefs.</p>
+    <h3>Likeability and novelty</h3>
+    <p>Affective cues and movement synchronised with the user raised a robot's likeability. But the response at a first encounter differs from the long-term response because of the <b>novelty effect</b>: people are unfamiliar with robots and are at first more enthusiastic or more anxious, and this settles over time. Short studies therefore tell us about first encounters, not about living with a robot (chapter 10).</p>
+  </div>
+  <figure class="bench" id="b8-1">
+    <figcaption class="bench-head"><span class="bench-no">Experiment 8-1</span><h3>Calibrating trust</h3><p>A person does 60 tasks with a robot. Each time they decide whether to follow the robot's suggestion (rely) or do it themselves. In the model, trust rises a little after a success and drops a lot after a failure, and the person relies on the robot only when trust is above a threshold. Change the robot's real reliability and the person's initial trust and see where overtrust and distrust arise. The rule for how trust changes is a made-up teaching model.</p></figcaption>
+    <div class="controls">
+      <div class="ctl"><label for="tr-rel">Robot's real success rate <output id="tr-rel-o">80%</output></label><input type="range" id="tr-rel" min="0.3" max="1" step="0.05" value="0.8"></div>
+      <div class="ctl"><label for="tr-init">Person's initial trust <output id="tr-init-o">0.9</output></label><input type="range" id="tr-init" min="0" max="1" step="0.05" value="0.9"></div>
+      <div class="ctl" style="flex:0 0 auto"><span class="lab">After a failure the robot</span><div class="seg" id="tr-repair" role="group" aria-label="Behaviour after a failure"><button data-r="none" aria-pressed="true">Says nothing</button><button data-r="explain" aria-pressed="false">Admits the mistake and explains</button></div></div>
+      <div class="ctl" style="flex:0 0 auto"><button class="btn quiet" id="tr-new">Redraw</button></div>
+    </div>
+    <canvas class="cv" id="tr-cv" style="height:260px" role="img" aria-label="Trust and reliance over time"></canvas>
+    <div class="legend"><span><i class="sw" style="background:var(--c0)"></i>Person's trust</span><span><i class="sw" style="background:var(--muted)"></i>Robot's real success rate</span><span><i class="sw" style="background:var(--c3)"></i>Robot failure</span><span>Strip below: trials where the person relied on the robot</span></div>
+    <div class="readouts" id="tr-ro"></div>
+  </figure>
+  <div class="quiz" data-ch="8"></div>
+</section>
+
+<!-- ───────────── Chapter 9 ───────────── -->
+<section class="chapter" id="ch9">
+  <p class="ch-no">Chapter 9</p>
+  <h2>Applications</h2>
+  <p class="refs">Textbook: <b>Bartneck et al.</b> ch. 11</p>
+  <div class="prose">
+    <p>Robots in closed environments, such as warehouse and delivery robots, are already commercial successes. The next wave is open environments with people in them: customer service, companionship, and social and physical assistance. Here an understanding of HRI decides success or failure (textbook ch. 11).</p>
+    <ul>
+      <li><b>Customer service</b>: robots in malls and shops draw people in, at least while the novelty lasts. The museum tour guide was one of the first HRI applications, driving autonomously between exhibits and explaining them (Burgard et al. 1998); emotional expression such as a frustrated face when asking people to move helped the guiding. Hotel reception and in-store promotion are others.</li>
+      <li><b>Education</b>: the role of teacher's assistant was preferred by teachers and students alike (Reich-Stiebert &amp; Eyssel 2016). Robots also appear as peers. One-to-one tutoring is highly effective (Bloom's 1984 two-standard-deviation claim has since been scaled back, but the benefit is clear), and the robot's physical presence was found to help learning more than an on-screen agent (Kennedy et al. 2015; Leyzberg et al. 2012). Why is not yet clear.</li>
+      <li><b>Entertainment</b>: companion and toy robots, exhibitions, performing arts.</li>
+      <li><b>Health and therapy</b>: long-term studies reported psychological, physiological and social effects of the seal robot Paro on older adults in care homes (Wada &amp; Shibata 2007). In Japan individuals buy it; in Europe and the United States almost only institutions do. Children and adults with autism spectrum disorder generally respond well to robots, so there is much research on therapy support. Rehabilitation robots exist too.</li>
+      <li><b>Service</b>: cleaning robots, delivery robots in hospitals, hotels and restaurants. A restaurant robot must be designed not to block customers, or to let them step aside without irritation.</li>
+      <li><b>Collaborative robots (cobots)</b>: traditional industrial robots were stiff, strong and senseless, so people could not go near them. Cobots work in the same space as people.</li>
+      <li><b>Autonomous vehicles</b>: signalling intent to pedestrians and other drivers is an HRI question.</li>
+    </ul>
+    <p>Every application brings its own questions, such as the ethics of care robots (chapter 12).</p>
+  </div>
+  <figure class="bench" id="b9-1">
+    <figcaption class="bench-head"><span class="bench-no">Experiment 9-1</span><h3>Choosing the role for the situation</h3><p>For each situation, pick the closest robot role from the textbook's application categories. Choosing shows what is known in that area.</p></figcaption>
+    <div class="scen" id="app-cards"></div>
+    <div class="readouts"><div class="ro"><span>Correct calls</span><b id="app-score" class="num">0 / 6</b></div><button class="btn quiet" id="app-reset">Start over</button></div>
+  </figure>
+  <div class="quiz" data-ch="9"></div>
+</section>
+
+<!-- ───────────── Chapter 10 ───────────── -->
+<section class="chapter" id="ch10">
+  <p class="ch-no">Chapter 10</p>
+  <h2>HRI research methods</h2>
+  <p class="refs">Textbook and papers: <b>Bartneck et al.</b> sections 10.1–10.7 · <b>Riek</b> (2012) · <b>Baxter et al.</b> (2016)</p>
+  <div class="prose">
+    <p>The experimental approach has become the standard in HRI (Hoffman &amp; Zhao 2020). Early HRI research used many methods that are embarrassing by today's standards, and there is a strong push to follow the standards of empirical sciences such as psychology (Baxter et al. 2016).</p>
+    <h3>Research questions</h3>
+    <p>A good research question replicates or extends prior work. Studies of human–human interaction are a blueprint for HRI; Reeves and Nass's CASA approach, which replicated classic results from psychology in HCI and then in HRI, is an example.</p>
+    <h3>Kinds of methods</h3>
+    <ul>
+      <li><b>Qualitative methods</b> interpret qualities of an interaction that are hard to capture in numbers. They cannot establish correlation or causation, but they generate new hypotheses from rich data. The stopping criterion is not a fixed number of participants but <b>saturation</b>, the point where new data only repeat existing themes.</li>
+      <li><b>Quantitative methods</b> obtain numbers from questionnaires and controlled experiments to test correlation and causation.</li>
+      <li><b>Mixed methods</b> find factors through interviews and observation, then confirm them experimentally. If interviews suggest that a Roomba's autonomy makes it seem social, compare an autonomous Roomba with one driven by a gamepad.</li>
+      <li>Others include user studies, surveys, system studies, observational studies, ethnography, conversation analysis, crowdsourcing and case studies.</li>
+    </ul>
+    <h3>Experimental design</h3>
+    <p>What the researcher manipulates is the <b>independent variable</b>, and its values are its <b>levels</b>: a male and a female robot give two levels and two conditions. Factors that cannot be manipulated, such as participant gender, are quasi-experimental factors. What is measured is the <b>dependent variable</b>. A <b>manipulation check</b> is also needed to confirm that the manipulation worked, by asking whether participants actually perceived the robot's gender as intended. A <b>between-subjects design</b> assigns participants to conditions at random; in a <b>within-subjects design</b> the same people experience every condition, which reduces noise and needs fewer people. Some questions cannot use a within-subjects design, such as recovering from a broken leg with robot assistance, and there are <b>order effects</b>, such as always liking the first robot better, so the order of conditions has to be <b>counterbalanced</b>.</p>
+    <h3>Measurement</h3>
+    <p>Questionnaires commonly use <b>Likert scales</b>, which ask how much you agree with a statement, and <b>semantic differential scales</b>, which ask you to choose between opposites such as scary–friendly. Validated scales are better than home-made ones: the Godspeed questionnaire (Bartneck et al. 2009), which measures anthropomorphism, animacy, likeability, perceived intelligence and perceived safety, as well as RoSAS, the revised Godspeed and HRIES. Questionnaires are self-report, so they are complemented with implicit measures such as behavioural indicators, language use and physiological signals.</p>
+    <h3>Wizard of Oz</h3>
+    <p>When developing autonomy is not the point of the study, the <b>Wizard of Oz (WoZ)</b> technique has the research team control the robot from behind the scenes while it appears autonomous to participants. It suits technology that is almost usable but still unreliable, such as speech recognition. Participants must be told afterwards (debriefing), and faking unrealistic abilities, such as inventing an entire long conversation, is problematic. Riek (2012) proposed reporting guidelines for WoZ studies.</p>
+    <h3>Participants, setting, duration</h3>
+    <p>Sample size depends on the design and the target population and is calculated in advance with tools such as G*Power (chapter 11). Laboratory studies are easy to control; field studies capture the real context. Because first encounters differ from long-term interaction owing to the novelty effect, long-term studies spanning days to months, rarely years, are needed.</p>
+  </div>
+  <figure class="bench" id="b10-1">
+    <figcaption class="bench-head"><span class="bench-no">Experiment 10-1</span><h3>How many participants do you need?</h3><p>For a study comparing two conditions, the calculator gives the number of participants needed from the expected effect size (Cohen's d), the desired power and the design. In a within-subjects design, the more the two measurements from the same person are correlated, the fewer people are needed. The values use a normal approximation and may differ slightly from G*Power.</p></figcaption>
+    <div class="controls">
+      <div class="ctl"><label for="pw-d">Effect size d <output id="pw-d-o">0.50</output></label><input type="range" id="pw-d" min="0.1" max="1.5" step="0.05" value="0.5"></div>
+      <div class="ctl"><label for="pw-pow">Desired power <output id="pw-pow-o">80%</output></label><input type="range" id="pw-pow" min="0.5" max="0.99" step="0.01" value="0.8"></div>
+      <div class="ctl"><label for="pw-r">Within-subjects: correlation r of the two measurements <output id="pw-r-o">0.5</output></label><input type="range" id="pw-r" min="0" max="0.9" step="0.05" value="0.5"></div>
+    </div>
+    <canvas class="cv" id="pw-cv" style="height:250px" role="img" aria-label="Power curve against number of participants"></canvas>
+    <div class="readouts" id="pw-ro"></div>
+    <p class="note">The significance level is fixed at two-sided 0.05. d = 0.2, 0.5 and 0.8 are the usual benchmarks for small, medium and large effects. The between-subjects number is the two groups combined.</p>
+  </figure>
+  <div class="quiz" data-ch="10"></div>
+</section>
+
+<!-- ───────────── Chapter 11 ───────────── -->
+<section class="chapter" id="ch11">
+  <p class="ch-no">Chapter 11</p>
+  <h2>Statistics and reproducibility</h2>
+  <p class="refs">Textbook and papers: <b>Bartneck et al.</b> section 10.8 · <b>Cumming</b> (2008)</p>
+  <div class="prose">
+    <h3>Descriptive statistics first</h3>
+    <p>The tendency of the data (mean), the sample size and the variability (standard deviation) are the <b>descriptive statistics</b>. Always report the means, standard deviations (or ranges when the data are not normal), the number of participants, demographics, and any excluded data with the reason.</p>
+    <h3>What a p-value says and does not say</h3>
+    <p>Most classical tests combine tendency, sample size and variability into a single test statistic and produce a <b>p-value</b>: the probability of getting the present data if there were no real effect. The textbook's analogy is the probability of seeing this difference in ratings between two restaurants that are in fact equally good. This is the logic of null hypothesis significance testing (NHST). Two misunderstandings are common.</p>
+    <ul>
+      <li><b>A p-value is not the robustness of a result.</b> If you replicate a significant result, the replication's p-value will, 80% of the time, land anywhere between 0.00008 and 0.44 (Cumming 2008). p-values are highly unstable across replications.</li>
+      <li><b>A p-value is not the size or importance of an effect.</b> Significance, size and importance are different things. An <b>effect size</b> (Cohen's d for t-tests, η² for ANOVA, adjusted R² for regression) measures how different two conditions are; the p-value adds the sample size to that. A rise in recovery rate from 4% to 6% is negligible for athlete's foot but important for survival of an aggressive cancer.</li>
+    </ul>
+    <p>Reporting a 95% <b>confidence interval</b> conveys both the size of the effect and the precision of the estimate. The probability that a replication's mean falls inside the original study's confidence interval is about 83%.</p>
+    <h3>Errors, power and p-hacking</h3>
+    <p>Claiming an effect where there is none is a <b>type I error</b>; missing an effect that exists is a <b>type II error</b>. Both are reduced with sufficient <b>power</b>. Of the three things that determine power (tendency, variability, sample size), the researcher can only change the sample size. With p ≤ 0.05 as the criterion, one test in twenty comes out significant even without an effect, so running many tests eventually "finds" something. This is <b>p-hacking</b>. Psychology went through a <b>replication crisis</b> in which established effects failed to replicate, and HRI faces the same questions (Irfan et al. 2018). Widely used platforms such as Nao and Baxter make replication easier than before. <b>Preregistration</b>, registering a study in advance, prevents p-hacking and supports replication.</p>
+  </div>
+  <figure class="bench" id="b11-1">
+    <figcaption class="bench-head"><span class="bench-no">Experiment 11-1</span><h3>Running the same experiment 1,000 times</h3><p>Set the true effect size and the number of participants per group, and the page simulates a two-group experiment 1,000 times and plots the distribution of p-values. With a true effect of 0, turn on "report only the significant one of several dependent variables" to see how much the false positives grow.</p></figcaption>
+    <div class="controls">
+      <div class="ctl"><label for="rp-d">True effect size d <output id="rp-d-o">0.50</output></label><input type="range" id="rp-d" min="0" max="1.2" step="0.05" value="0.5"></div>
+      <div class="ctl"><label for="rp-n">Participants per group <output id="rp-n-o">20</output></label><input type="range" id="rp-n" min="5" max="150" step="5" value="20"></div>
+      <div class="ctl" style="flex:0 0 auto"><span class="lab">Analysis</span><div class="btnrow"><button class="btn" id="rp-hack" aria-pressed="false">Report only the significant one of 5 dependent variables</button><button class="btn quiet" id="rp-new">Redraw</button></div></div>
+    </div>
+    <canvas class="cv" id="rp-cv" style="height:240px" role="img" aria-label="Histogram of p-values over 1,000 replications"></canvas>
+    <div class="readouts" id="rp-ro"></div>
+    <p class="note" id="rp-note"></p>
+  </figure>
+  <div class="quiz" data-ch="11"></div>
+</section>
+
+<!-- ───────────── Chapter 12 ───────────── -->
+<section class="chapter" id="ch12">
+  <p class="ch-no">Chapter 12</p>
+  <h2>Ethics and society</h2>
+  <p class="refs">Textbook and papers: <b>Bartneck et al.</b> sections 4.6, 10.9, ch. 12 · <b>Sparrow &amp; Sparrow</b> (2006) · <b>Sharkey &amp; Sharkey</b> (2012)</p>
+  <div class="prose">
+    <h3>Robots in the media</h3>
+    <p>People meet robots in stories before they meet them in person. Western narratives are full of robot uprisings (Čapek's R.U.R., the Terminator, the Matrix), and Asimov named the idea that robots will take over the world the "Frankenstein complex". Japan's Astro Boy and Doraemon are benevolent robots that help people, and this difference is often said to have played a part in Japan's development and acceptance of domestic robots. Either way, fictional robots colour people's expectations and responses. Recent research finds attitudes towards robots to be <b>ambivalent</b> rather than neutral or mildly positive (Stapels &amp; Eyssel 2021, 2022): the hope that they will help sits alongside the fear of losing jobs or privacy.</p>
+    <h3>Asimov's three laws</h3>
+    <p>A robot may not injure a human being or, through inaction, allow one to come to harm; it must obey human orders unless they conflict with the first law; and it must protect its own existence as long as that does not conflict with the first two. A zeroth law protecting humanity as a whole was added later. The laws are widely known but have been criticised by philosophers, and Asimov's own stories show that they are not a practical guide.</p>
+    <h3>Research ethics</h3>
+    <p>The WoZ technique deceives participants, and can inflate expectations of robot ability so that people believe the technology is further along than it is (Riek 2012). Robots can also be used as persuasive technology that changes not just attitudes but behaviour, and the problem is that users are influenced without knowing how. Research with human participants needs approval from an ethics board (IRB), informed consent and debriefing.</p>
+    <h3>Care, deception and dignity</h3>
+    <p>Suppose you give your grandmother a companion robot. Sparrow and Sparrow (2006) argue that even if a robot provided perfect emotional and physical care, handing care over to a machine would be unethical. A relationship has meaning only between two parties who can exchange affect and concern, and however perfect the imitation of care, it must not replace the real thing. Sharkey and Sharkey (2012) ask how care robots might harm or support older adults' autonomy and independence. Alongside these sit the views of the robot as a tool, as a socially capable tool, and as a relational partner.</p>
+    <h3>Further issues</h3>
+    <ul>
+      <li><b>Privacy</b>: a robot in the home moves around carrying cameras and microphones.</li>
+      <li><b>Jobs</b>: robots replace some occupations and create new ones. The task is to help those displaced find new work.</li>
+      <li><b>Robot abuse</b>: there is concern that mistreating humanlike robots could carry over to people; more research is needed.</li>
+      <li><b>Expectations of relationships</b>: a robot that complies with every demand may change what people expect of human relationships.</li>
+      <li><b>Autonomous weapons</b>: there is clear opposition, such as the campaign to stop killer robots.</li>
+    </ul>
+    <p>The textbook's conclusion is that robots, people and their interaction are part of a larger society. Stories and values differ between cultures, and they decide how people see robots and how robots will change society.</p>
+  </div>
+  <figure class="bench" id="b12-1">
+    <figcaption class="bench-head"><span class="bench-no">Experiment 12-1</span><h3>Which ethical issue is it?</h3><p>For each situation, pick the closest issue. These are not questions with a single right answer, but you can compare your choice with the issue the textbook files the situation under.</p></figcaption>
+    <div class="scen" id="eth-cards"></div>
+    <div class="readouts"><div class="ro"><span>Correct calls</span><b id="eth-score" class="num">0 / 6</b></div><button class="btn quiet" id="eth-reset">Start over</button></div>
+  </figure>
+  <div class="prose">
+    <h3>Further reading</h3>
+    <ul>
+      <li>The remaining textbook chapters: how robots work (ch. 3), the future (ch. 13)</li>
+      <li>How robots learn to act, and learning from human preferences: the <a href="/robot/en/">Robot Learning guide</a></li>
+      <li>Controlling robots with brain signals: the <a href="/bci/en/">Brain–Computer Interfaces guide</a></li>
+    </ul>
+  </div>
+  <div class="quiz" data-ch="12"></div>
+</section>
+
+<!-- ───────────── Appendices ───────────── -->
+<section class="chapter" id="glossary">
+  <p class="ch-no">Appendix A</p>
+  <h2>Glossary</h2>
+  <div class="ctl" style="max-width:380px;margin-bottom:14px"><label for="gl-q">Find a term</label><input type="search" id="gl-q" placeholder="e.g. proxemics, Wizard of Oz, anthropomorphism" autocomplete="off"></div>
+  <dl class="gloss" id="gl-list"></dl>
+  <p class="empty" id="gl-empty" hidden>No matching term. Try an abbreviation or a different spelling.</p>
+</section>
+
+<section class="chapter" id="sources">
+  <p class="ch-no">Appendix B</p>
+  <h2>Textbook and paper map</h2>
+  <div class="prose"><p>Each chapter of this guide matched to the chapters of Bartneck et al. (2024), 2nd edition, and to the papers it draws on. The textbook can be read chapter by chapter for free on the authors' official site.</p></div>
+  <div class="tbl-wrap">
+    <table>
+      <thead><tr><th>Chapter</th><th>Bartneck et al. (2024)</th><th>Original papers</th></tr></thead>
+      <tbody>
+        <tr><th>1 What HRI is</th><td>1, 2</td><td>–</td></tr>
+        <tr><th>2 Designing robots</th><td>4.1, 4.2</td><td>Kahn et al. 2008 (design patterns)</td></tr>
+        <tr><th>3 Anthropomorphism and the uncanny valley</th><td>4.2, 8.1–8.3</td><td>Mori 1970/2012, Epley et al. 2007, Reeves &amp; Nass 1996, Gray et al. 2007, Bartneck et al. 2009, Kätsyri et al. 2015</td></tr>
+        <tr><th>4 Space</th><td>5</td><td>Hall 1966, Kendon 1990, Walters et al. 2005, Dautenhahn et al. 2006</td></tr>
+        <tr><th>5 Nonverbal</th><td>6, 5.2.4</td><td>Mutlu et al. 2006, 2009, 2012, Salem et al. 2013, Chartrand &amp; Bargh 1999, Dragan et al. 2013</td></tr>
+        <tr><th>6 Speech</th><td>7</td><td>Zhang et al. 2022, Strömbergsson et al. 2013, Williams et al. 2018</td></tr>
+        <tr><th>7 Emotion</th><td>9</td><td>Russell 1980, Ekman &amp; Friesen 1975, 1978, Mehrabian &amp; Russell 1974, Ortony et al. 1988</td></tr>
+        <tr><th>8 Trust and acceptance</th><td>8.4</td><td>Lee &amp; See 2004, Hancock et al. 2011, 2021, Davis 1989, Heerink et al. 2010</td></tr>
+        <tr><th>9 Applications</th><td>11</td><td>Burgard et al. 1998, Wada &amp; Shibata 2007, Kennedy et al. 2015</td></tr>
+        <tr><th>10 HRI research methods</th><td>10.1–10.7, 10.9</td><td>Riek 2012, Baxter et al. 2016, Bartneck et al. 2009</td></tr>
+        <tr><th>11 Statistics and reproducibility</th><td>10.8</td><td>Cumming 2008, Irfan et al. 2018</td></tr>
+        <tr><th>12 Ethics and society</th><td>4.6, 10.9, 12</td><td>Sparrow &amp; Sparrow 2006, Sharkey &amp; Sharkey 2012, Riek 2012</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="prose">
+    <h3>Textbook</h3>
+    <ul>
+      <li>Bartneck, C., Belpaeme, T., Eyssel, F., Kanda, T., Keijsers, M., &amp; Šabanović, S. (2024). <i>Human-Robot Interaction: An Introduction</i> (2nd ed.). Cambridge University Press. <a href="https://www.human-robot-interaction.org/">free official edition from the authors</a></li>
+    </ul>
+    <h3>Papers</h3>
+    <ul>
+      <li>Bartneck, C., Kulić, D., Croft, E., &amp; Zoghbi, S. (2009). Measurement instruments for the anthropomorphism, animacy, likeability, perceived intelligence, and perceived safety of robots. <i>International Journal of Social Robotics</i>, 1(1), 71–81.</li>
+      <li>Baxter, P., Kennedy, J., Senft, E., Lemaignan, S., &amp; Belpaeme, T. (2016). From characterising three years of HRI to methodology and reporting recommendations. <i>HRI 2016</i>, 391–398.</li>
+      <li>Chartrand, T. L., &amp; Bargh, J. A. (1999). The chameleon effect: The perception–behavior link and social interaction. <i>Journal of Personality and Social Psychology</i>, 76(6), 893–910.</li>
+      <li>Cumming, G. (2008). Replication and p intervals: p values predict the future only vaguely, but confidence intervals do much better. <i>Perspectives on Psychological Science</i>, 3(4), 286–300.</li>
+      <li>Davis, F. D. (1989). Perceived usefulness, perceived ease of use, and user acceptance of information technology. <i>MIS Quarterly</i>, 13(3), 319–340.</li>
+      <li>Dragan, A. D., Lee, K. C. T., &amp; Srinivasa, S. S. (2013). Legibility and predictability of robot motion. <i>HRI 2013</i>, 301–308.</li>
+      <li>Ekman, P., &amp; Friesen, W. V. (1978). <i>Facial Action Coding System</i>. Consulting Psychologists Press.</li>
+      <li>Epley, N., Waytz, A., &amp; Cacioppo, J. T. (2007). On seeing human: A three-factor theory of anthropomorphism. <i>Psychological Review</i>, 114(4), 864–886.</li>
+      <li>Gray, H. M., Gray, K., &amp; Wegner, D. M. (2007). Dimensions of mind perception. <i>Science</i>, 315(5812), 619.</li>
+      <li>Hall, E. T. (1966). <i>The Hidden Dimension</i>. Doubleday.</li>
+      <li>Hancock, P. A., Billings, D. R., Schaefer, K. E., Chen, J. Y. C., de Visser, E. J., &amp; Parasuraman, R. (2011). A meta-analysis of factors affecting trust in human-robot interaction. <i>Human Factors</i>, 53(5), 517–527.</li>
+      <li>Hancock, P. A., Kessler, T. T., Kaplan, A. D., Brill, J. C., &amp; Szalma, J. L. (2021). Evolving trust in robots: Specification through sequential and comparative meta-analyses. <i>Human Factors</i>, 63(7), 1196–1229.</li>
+      <li>Heerink, M., Kröse, B., Evers, V., &amp; Wielinga, B. (2010). Assessing acceptance of assistive social agent technology by older adults: The Almere model. <i>International Journal of Social Robotics</i>, 2(4), 361–375.</li>
+      <li>Kätsyri, J., Förger, K., Mäkäräinen, M., &amp; Takala, T. (2015). A review of empirical evidence on different uncanny valley hypotheses: Support for perceptual mismatch as one road to the valley of eeriness. <i>Frontiers in Psychology</i>, 6, 390.</li>
+      <li>Kendon, A. (1990). <i>Conducting Interaction: Patterns of Behavior in Focused Encounters</i>. Cambridge University Press.</li>
+      <li>Lee, J. D., &amp; See, K. A. (2004). Trust in automation: Designing for appropriate reliance. <i>Human Factors</i>, 46(1), 50–80.</li>
+      <li>Mori, M. (1970/2012). The uncanny valley (K. F. MacDorman &amp; N. Kageki, Trans.). <i>IEEE Robotics &amp; Automation Magazine</i>, 19(2), 98–100. (original: <i>Energy</i>, 7(4), 33–35, 1970)</li>
+      <li>Mutlu, B., Shiwa, T., Kanda, T., Ishiguro, H., &amp; Hagita, N. (2009). Footing in human-robot conversations: How robots might shape participant roles using gaze cues. <i>HRI 2009</i>, 61–68.</li>
+      <li>Reeves, B., &amp; Nass, C. (1996). <i>The Media Equation: How People Treat Computers, Television, and New Media Like Real People and Places</i>. Cambridge University Press.</li>
+      <li>Riek, L. D. (2012). Wizard of Oz studies in HRI: A systematic review and new reporting guidelines. <i>Journal of Human-Robot Interaction</i>, 1(1), 119–136.</li>
+      <li>Russell, J. A. (1980). A circumplex model of affect. <i>Journal of Personality and Social Psychology</i>, 39(6), 1161–1178.</li>
+      <li>Salem, M., Eyssel, F., Rohlfing, K., Kopp, S., &amp; Joublin, F. (2013). To err is human(-like): Effects of robot gesture on perceived anthropomorphism and likability. <i>International Journal of Social Robotics</i>, 5(3), 313–323.</li>
+      <li>Sharkey, A., &amp; Sharkey, N. (2012). Granny and the robots: Ethical issues in robot care for the elderly. <i>Ethics and Information Technology</i>, 14(1), 27–40.</li>
+      <li>Sparrow, R., &amp; Sparrow, L. (2006). In the hands of machines? The future of aged care. <i>Minds and Machines</i>, 16(2), 141–161.</li>
+    </ul>
+  </div>
+</section>
+
+</main>
+</div>
+
+<footer class="colophon">
+  <p>Every experiment in this guide is computed in the browser, and the human responses are simplified teaching models of the tendencies the textbook describes. Check-question progress is stored only in this browser.</p>
+  <p><a href="/">Back to Kihyeon Joo’s homepage</a> · <a href="/robot/en/">Robot Learning guide</a> · <a href="/ml/en/">Machine Learning and Deep Learning guide</a> · <a href="/bci/en/">Brain–Computer Interfaces guide</a> · <a href="../" lang="ko">한국어판</a></p>
+</footer>
+<script>
+(() => {
+'use strict';
+
+/* ════════════ Shared tools ════════════ */
+const $ = (s, r = document) => r.querySelector(s);
+const $$ = (s, r = document) => Array.from(r.querySelectorAll(s));
+const TAU = Math.PI * 2;
+const clamp = (v, a, b) => Math.min(b, Math.max(a, v));
+const nf = (v, d = 1) => Number(v).toLocaleString('en-US', { minimumFractionDigits: d, maximumFractionDigits: d });
+const REDUCE = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+const MONO = '"IBM Plex Mono", ui-monospace, Menlo, monospace';
+const SANS = '"IBM Plex Sans KR", "Apple SD Gothic Neo", "Malgun Gothic", sans-serif';
+
+function rng(seed) {
+  let a = seed >>> 0;
+  return () => {
+    a = (a + 0x6D2B79F5) | 0;
+    let t = Math.imul(a ^ (a >>> 15), 1 | a);
+    t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t;
+    return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
+  };
+}
+function gauss(r) { let u = 0; while (u === 0) u = r(); return Math.sqrt(-2 * Math.log(u)) * Math.cos(TAU * r()); }
+
+/* Theme colors */
+const C = {};
+const TOK = ['paper', 'panel', 'line', 'grid', 'ink', 'muted', 'trace', 'mark', 'c0', 'c1', 'c2', 'c3', 'c4', 'c5', 'ok', 'warn', 'bad'];
+function readColors() {
+  const cs = getComputedStyle(document.documentElement);
+  TOK.forEach(k => { C[k] = cs.getPropertyValue('--' + k).trim() || '#888888'; });
+}
+function hexRgb(hex) {
+  let h = hex.replace('#', '');
+  if (h.length === 3) h = h.split('').map(c => c + c).join('');
+  const n = parseInt(h, 16);
+  return [(n >> 16) & 255, (n >> 8) & 255, n & 255];
+}
+function rgba(hex, a) { const [r, g, b] = hexRgb(hex); return `rgba(${r},${g},${b},${a})`; }
+readColors();
+
+/* Canvas registry: redraw on resize and theme change */
+const plots = [];
+function plot(id, draw) {
+  const cv = document.getElementById(id);
+  if (!cv) return null;
+  const p = { cv, ctx: cv.getContext('2d'), w: 0, h: 0, draw };
+  p.fit = () => {
+    const r = cv.getBoundingClientRect();
+    const dpr = Math.min(window.devicePixelRatio || 1, 2);
+    const w = Math.max(1, Math.round(r.width)), h = Math.max(1, Math.round(r.height));
+    if (w !== p.w || h !== p.h || cv.width !== Math.round(w * dpr)) {
+      p.w = w; p.h = h; cv.width = Math.round(w * dpr); cv.height = Math.round(h * dpr);
+      p.ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    }
+  };
+  p.render = () => { p.fit(); p.ctx.clearRect(0, 0, p.w, p.h); try { draw(p); } catch (e) { console.error(e); } };
+  if ('ResizeObserver' in window) new ResizeObserver(() => p.render()).observe(cv);
+  plots.push(p);
+  return p;
+}
+function redrawAll() { readColors(); plots.forEach(p => p.render()); }
+window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', redrawAll);
+new MutationObserver(redrawAll).observe(document.documentElement, { attributes: true, attributeFilter: ['data-theme'] });
+
+function raf(fn) { let q = false; return () => { if (q) return; q = true; requestAnimationFrame(() => { q = false; fn(); }); }; }
+
+/* Axes and grid */
+function frame(p, o) {
+  const ctx = p.ctx;
+  const L = o.l ?? 46, R = o.r ?? 12, T = o.t ?? (o.yl ? 22 : 10), B = o.b ?? (o.xl ? 34 : 22);
+  const W = Math.max(10, p.w - L - R), H = Math.max(10, p.h - T - B);
+  const tx = o.xlog ? Math.log10 : v => v, ty = o.ylog ? Math.log10 : v => v;
+  const ax0 = tx(o.x0), ax1 = tx(o.x1), ay0 = ty(o.y0), ay1 = ty(o.y1);
+  const X = v => L + (tx(v) - ax0) / (ax1 - ax0) * W;
+  const Y = v => T + H - (ty(v) - ay0) / (ay1 - ay0) * H;
+  ctx.save();
+  ctx.font = `11px ${MONO}`; ctx.lineWidth = 1;
+  ctx.fillStyle = C.panel; ctx.fillRect(L, T, W, H);
+  ctx.strokeStyle = C.grid; ctx.fillStyle = C.muted;
+  ctx.textAlign = 'center'; ctx.textBaseline = 'top';
+  (o.xt || []).forEach(v => {
+    const x = Math.round(X(v)) + 0.5;
+    ctx.beginPath(); ctx.moveTo(x, T); ctx.lineTo(x, T + H); ctx.stroke();
+    ctx.fillText(o.xf ? o.xf(v) : String(v), x, T + H + 5);
+  });
+  ctx.textAlign = 'right'; ctx.textBaseline = 'middle';
+  (o.yt || []).forEach(v => {
+    const y = Math.round(Y(v)) + 0.5;
+    ctx.beginPath(); ctx.moveTo(L, y); ctx.lineTo(L + W, y); ctx.stroke();
+    ctx.fillText(o.yf ? o.yf(v) : String(v), L - 6, y);
+  });
+  ctx.strokeStyle = C.line; ctx.strokeRect(L + 0.5, T + 0.5, W - 1, H - 1);
+  if (o.yl) { ctx.textAlign = 'left'; ctx.textBaseline = 'top'; ctx.fillText(o.yl, 4, 4); }
+  if (o.xl) { ctx.textAlign = 'right'; ctx.textBaseline = 'bottom'; ctx.fillText(o.xl, L + W, p.h - 2); }
+  ctx.restore();
+  return {
+    X, Y, L, T, W, H,
+    clip() { ctx.save(); ctx.beginPath(); ctx.rect(L, T, W, H); ctx.clip(); },
+    unclip() { ctx.restore(); }
+  };
+}
+/* A square region with equal scales on both axes */
+function square(p, lo, hi, pad = 8) {
+  const side = Math.max(10, Math.min(p.w, p.h) - 2 * pad), ox = (p.w - side) / 2, oy = (p.h - side) / 2;
+  const X = v => ox + (v - lo[0]) / (hi[0] - lo[0]) * side, Y = v => oy + (hi[1] - v) / (hi[1] - lo[1]) * side;
+  const ix = px => lo[0] + (px - ox) / side * (hi[0] - lo[0]), iy = py => hi[1] - (py - oy) / side * (hi[1] - lo[1]);
+  return { ox, oy, side, X, Y, ix, iy };
+}
+function poly(ctx, n, fx, fy, col, lw = 1.5, dash) {
+  ctx.beginPath();
+  for (let i = 0; i < n; i++) { const x = fx(i), y = fy(i); if (i) ctx.lineTo(x, y); else ctx.moveTo(x, y); }
+  ctx.strokeStyle = col; ctx.lineWidth = lw; ctx.lineJoin = 'round';
+  ctx.setLineDash(dash || []); ctx.stroke(); ctx.setLineDash([]);
+}
+function vline(ctx, x, T, H, col, dash, lw = 1.2) {
+  ctx.beginPath(); ctx.moveTo(Math.round(x) + 0.5, T); ctx.lineTo(Math.round(x) + 0.5, T + H);
+  ctx.strokeStyle = col; ctx.lineWidth = lw; ctx.setLineDash(dash || []); ctx.stroke(); ctx.setLineDash([]);
+}
+function niceMax(v, steps = [0.1, 0.2, 0.5, 1, 2, 5, 10, 20, 50, 100]) {
+  for (const s of steps) if (v <= s) return s;
+  return steps[steps.length - 1];
+}
+function label(ctx, txt, x, y, col, align = 'left', base = 'top', font = `12px ${MONO}`) {
+  ctx.save(); ctx.font = font; ctx.fillStyle = col; ctx.textAlign = align; ctx.textBaseline = base; ctx.fillText(txt, x, y); ctx.restore();
+}
+function dot(ctx, x, y, r, fill, stroke) {
+  ctx.beginPath(); ctx.arc(x, y, r, 0, TAU);
+  if (fill) { ctx.fillStyle = fill; ctx.fill(); }
+  if (stroke) { ctx.strokeStyle = stroke; ctx.lineWidth = 1.2; ctx.stroke(); }
+}
+/* Draw a grid function f(i, j) over a screen region; f returns [r, g, b, a(0–255)] */
+const heatCv = document.createElement('canvas');
+function heat(ctx, x, y, w, h, gw, gh, f) {
+  heatCv.width = gw; heatCv.height = gh;
+  const hc = heatCv.getContext('2d'), img = hc.createImageData(gw, gh), d = img.data;
+  for (let j = 0; j < gh; j++) for (let i = 0; i < gw; i++) {
+    const c = f(i, j), k = (j * gw + i) * 4;
+    d[k] = c[0]; d[k + 1] = c[1]; d[k + 2] = c[2]; d[k + 3] = c[3] ?? 255;
+  }
+  hc.putImageData(img, 0, 0);
+  ctx.save(); ctx.imageSmoothingEnabled = true; ctx.drawImage(heatCv, x, y, w, h); ctx.restore();
+}
+/* Compute a background that never changes once and keep it as a canvas */
+function heatCanvas(gw, gh, f) {
+  const cv = document.createElement('canvas'); cv.width = gw; cv.height = gh;
+  const hc = cv.getContext('2d'), img = hc.createImageData(gw, gh), d = img.data;
+  for (let j = 0; j < gh; j++) for (let i = 0; i < gw; i++) {
+    const c = f(i, j), k = (j * gw + i) * 4;
+    d[k] = c[0]; d[k + 1] = c[1]; d[k + 2] = c[2]; d[k + 3] = c[3] ?? 255;
+  }
+  hc.putImageData(img, 0, 0);
+  return cv;
+}
+/* Mix the background toward blue (+) or vermillion (−) by t in −1…1 */
+function divColor(t, strength = 0.85) {
+  const base = hexRgb(C.panel), c = hexRgb(t >= 0 ? C.c0 : C.c3), k = Math.min(1, Math.abs(t)) * strength;
+  return [base[0] + (c[0] - base[0]) * k, base[1] + (c[1] - base[1]) * k, base[2] + (c[2] - base[2]) * k, 255];
+}
+const css = a => `rgb(${a[0] | 0},${a[1] | 0},${a[2] | 0})`;
+function mix(h1, h2, t) { const a = hexRgb(h1), b = hexRgb(h2); return css([a[0] + (b[0] - a[0]) * t, a[1] + (b[1] - a[1]) * t, a[2] + (b[2] - a[2]) * t]); }
+
+/* Standard normal CDF */
+function erf(x) {
+  const s = Math.sign(x); x = Math.abs(x);
+  const t = 1 / (1 + 0.3275911 * x);
+  const y = 1 - (((((1.061405429 * t - 1.453152027) * t) + 1.421413741) * t - 0.284496736) * t + 0.254829592) * t * Math.exp(-x * x);
+  return s * y;
+}
+const Phi = z => 0.5 * (1 + erf(z / Math.SQRT2));
+const sigmoid = z => 1 / (1 + Math.exp(-z));
+
+/* Linear system Ax = b (Gaussian elimination with partial pivoting) */
+function solve(A, b) {
+  const n = b.length, M = A.map((row, i) => [...row, b[i]]);
+  for (let c = 0; c < n; c++) {
+    let piv = c; for (let r = c + 1; r < n; r++) if (Math.abs(M[r][c]) > Math.abs(M[piv][c])) piv = r;
+    [M[c], M[piv]] = [M[piv], M[c]];
+    const d = M[c][c] || 1e-300;
+    for (let r = c + 1; r < n; r++) { const f = M[r][c] / d; if (!f) continue; for (let k = c; k <= n; k++) M[r][k] -= f * M[c][k]; }
+  }
+  const x = new Array(n).fill(0);
+  for (let r = n - 1; r >= 0; r--) { let s = M[r][n]; for (let k = r + 1; k < n; k++) s -= M[r][k] * x[k]; x[r] = s / (M[r][r] || 1e-300); }
+  return x;
+}
+/* Eigenvalues and eigenvectors of the 2×2 symmetric matrix [[a,b],[b,c]] */
+function eig2(a, b, c) {
+  const tr = a + c, det = a * c - b * b, disc = Math.sqrt(Math.max(0, tr * tr / 4 - det));
+  const l1 = tr / 2 + disc, l2 = tr / 2 - disc;
+  let v = Math.abs(b) > 1e-12 ? [l1 - c, b] : (a >= c ? [1, 0] : [0, 1]);
+  const n = Math.hypot(v[0], v[1]); v = [v[0] / n, v[1] / n];
+  return { l: [l1, l2], v: [v, [-v[1], v[0]]] };
+}
+
+
+/* Render a formula with KaTeX; small is the caption under it */
+function tex(el, latex, small = '') {
+  let html;
+  try { html = window.katex ? katex.renderToString(latex, { displayMode: true, throwOnError: false, strict: 'ignore' }) : null; } catch (e) { html = null; }
+  el.innerHTML = (html || `<span class="mono">${latex}</span>`) + (small ? `<small>${small}</small>` : '');
+}
+/* Button group: only one aria-pressed at a time */
+function segGroup(root, attr, onPick) {
+  const btns = $$('button', root);
+  btns.forEach(b => b.addEventListener('click', () => {
+    btns.forEach(o => o.setAttribute('aria-pressed', o === b ? 'true' : 'false'));
+    onPick(b.dataset[attr], b);
+  }));
+  return btns;
+}
+function toggle(btn, on) { btn.setAttribute('aria-pressed', on ? 'true' : 'false'); }
+const pressed = btn => btn.getAttribute('aria-pressed') === 'true';
+function chip(text, kind) { return `<span class="chip ${kind}">${text}</span>`; }
+function ro(lab, val) { return `<div class="ro"><span>${lab}</span><b>${val}</b></div>`; }
+/* Animation loop that runs only while on screen */
+function animator(el, tick) {
+  let on = false, vis = true, running = false;
+  const loop = () => { if (!on || !vis || document.hidden) { running = false; return; } const go = tick(); if (go === false) { on = false; running = false; return; } requestAnimationFrame(loop); };
+  const kick = () => { if (on && vis && !document.hidden && !running) { running = true; requestAnimationFrame(loop); } };
+  if ('IntersectionObserver' in window) new IntersectionObserver(es => { vis = es[0].isIntersecting; kick(); }).observe(el);
+  document.addEventListener('visibilitychange', kick);
+  return { start() { on = true; kick(); }, stop() { on = false; }, get on() { return on; } };
+}
+
+window.HR = { $, $$, TAU, clamp, nf, REDUCE, MONO, SANS, rng, gauss, C, rgba, hexRgb, divColor, mix, plot, raf, frame, square, poly, vline, niceMax, label, dot,
+  heat, heatCanvas, Phi, sigmoid, solve, segGroup, toggle, pressed, chip, ro, animator, tex };
+})();
+
+</script>
+<script>
+(() => {
+'use strict';
+const { $, $$, clamp, nf, REDUCE, MONO, SANS, rng, gauss, C, rgba, mix, plot, raf, frame, label, dot, poly, vline, segGroup, toggle, pressed, chip, ro, animator } = window.HR;
+const fmt = (v, d = 2) => nf(v, d).replace('-', '−');
+/* Card set: pick one option per situation to see the verdict and the reason */
+function cardGame(rootId, scoreId, resetId, OPT, D) {
+  const root = $(rootId), score = $(scoreId); let ans = {};
+  function render() {
+    root.innerHTML = D.map((d, i) => {
+      const got = ans[i], done = got !== undefined, ok = done && got === d.a;
+      return `<div class="card ${done ? (ok ? 'right' : 'wrong') : ''}"><p>${d.t}</p>
+        <div class="btnrow">${OPT.map((o, j) => `<button class="btn" data-i="${i}" data-v="${j}" ${done ? 'disabled' : ''} aria-pressed="${got === j}">${o}</button>`).join('')}</div>
+        ${done ? `<div class="verdict"><div class="tagrow">${chip(ok ? 'Correct' : 'Wrong', ok ? 'ok' : 'bad')}${chip('Answer: ' + OPT[d.a], 'info')}</div>${d.why}</div>` : ''}</div>`;
+    }).join('');
+    score.textContent = `${Object.keys(ans).filter(i => ans[i] === D[i].a).length} / ${D.length}`;
+  }
+  root.addEventListener('click', e => { const b = e.target.closest('button[data-i]'); if (!b) return; ans[b.dataset.i] = +b.dataset.v; render(); });
+  $(resetId).addEventListener('click', () => { ans = {}; render(); });
+  render();
+}
+window.HR.cardGame = cardGame;
+
+/* ════════════ Masthead: social navigation in a corridor ════════════ */
+(function hero() {
+  const W = 10, H = 3.2, PS = 0.6; // corridor 10 m × 3.2 m, personal-space radius 0.6 m
+  let people, robot, t, social = true, r, bumps, intrusions;
+  function reset() {
+    r = rng(31 + Math.floor(Math.random() * 1000));
+    people = Array.from({ length: 5 }, (_, i) => ({ x: 1 + r() * 8, y: 0.5 + r() * (H - 1), vx: (r() < 0.5 ? -1 : 1) * (0.5 + r() * 0.5), vy: 0, ph: r() * 6 }));
+    robot = { x: 0.4, y: H / 2, dir: 1 }; t = 0; bumps = 0; intrusions = 0;
+  }
+  function step(dt) {
+    t += dt;
+    people.forEach(p => {
+      p.x += p.vx * dt; p.y += Math.sin(t * 0.7 + p.ph) * 0.15 * dt;
+      if (p.x < 0.3) { p.x = 0.3; p.vx = Math.abs(p.vx); } if (p.x > W - 0.3) { p.x = W - 0.3; p.vx = -Math.abs(p.vx); }
+      p.y = clamp(p.y, 0.4, H - 0.4);
+    });
+    // robot: its goal is the end of the corridor. With social navigation it steps aside early to avoid personal space; otherwise it swerves only within 0.35 m
+    const goalX = robot.dir > 0 ? W - 0.4 : 0.4; let fx = Math.sign(goalX - robot.x) * 0.9, fy = (H / 2 - robot.y) * 0.4;
+    people.forEach(p => {
+      const dx = robot.x - p.x, dy = robot.y - p.y, d = Math.hypot(dx, dy);
+      const reach = social ? 2.2 : 0.35, k = social ? 1.6 : 6;
+      if (d < reach) { const f = k * (reach - d) / reach; fx += dx / (d + 1e-6) * f * 0.3; fy += dy / (d + 1e-6) * f; }
+      if (d < PS) intrusions += dt; if (d < 0.3) bumps += dt;
+    });
+    const sp = Math.hypot(fx, fy) || 1, v = Math.min(0.9, sp);
+    robot.x += fx / sp * v * dt; robot.y = clamp(robot.y + fy / sp * v * dt, 0.35, H - 0.35);
+    if (Math.abs(robot.x - goalX) < 0.2) robot.dir *= -1;
+  }
+  reset();
+  const P = plot('hero-cv', p => {
+    const { ctx, w, h } = p, sc = Math.min(w / W, h / H), ox = (w - W * sc) / 2, oy = (h - H * sc) / 2, X = x => ox + x * sc, Y = y => oy + y * sc;
+    ctx.fillStyle = C.paper; ctx.fillRect(X(0), Y(0), W * sc, H * sc);
+    ctx.strokeStyle = C.line; ctx.lineWidth = 2; ctx.strokeRect(X(0) + 1, Y(0) + 1, W * sc - 2, H * sc - 2);
+    people.forEach(pp => { ctx.fillStyle = rgba(C.c3, 0.12); ctx.beginPath(); ctx.arc(X(pp.x), Y(pp.y), PS * sc, 0, Math.PI * 2); ctx.fill(); });
+    people.forEach(pp => { dot(ctx, X(pp.x), Y(pp.y), 0.17 * sc, C.c3, C.panel); });
+    ctx.fillStyle = C.trace; ctx.fillRect(X(robot.x) - 0.17 * sc, Y(robot.y) - 0.15 * sc, 0.34 * sc, 0.3 * sc);
+    dot(ctx, X(robot.x) - 0.06 * sc, Y(robot.y) - 0.04 * sc, 2, C.panel); dot(ctx, X(robot.x) + 0.06 * sc, Y(robot.y) - 0.04 * sc, 2, C.panel);
+    const txt = `${social ? 'Social navigation' : 'Obstacle avoidance only'} · in personal space ${nf(intrusions, 1)} s · collisions ${nf(bumps, 1)} s`;
+    ctx.font = `12px ${MONO}`; const tw = ctx.measureText(txt).width; ctx.fillStyle = rgba(C.panel, 0.92); ctx.fillRect(X(0) + 6, Y(0) + 6, tw + 12, 22);
+    label(ctx, txt, X(0) + 12, Y(0) + 17, C.ink, 'left', 'middle', `12px ${MONO}`);
+  });
+  const mon = $('#hero'), pauseBtn = $('#hero-pause'), socBtn = $('#hero-social');
+  const anim = animator(mon, () => { for (let i = 0; i < 3; i++) step(1 / 90); P.render(); });
+  function setPaused(v) { toggle(pauseBtn, v); pauseBtn.textContent = v ? 'Resume' : 'Pause'; mon.classList.toggle('paused', v); if (v) anim.stop(); else anim.start(); }
+  pauseBtn.addEventListener('click', () => setPaused(!pressed(pauseBtn)));
+  socBtn.addEventListener('click', () => { social = !social; toggle(socBtn, social); bumps = 0; intrusions = 0; P.render(); });
+  if (REDUCE) { for (let i = 0; i < 600; i++) step(1 / 30); P.render(); setPaused(true); } else setPaused(false);
+})();
+
+/* ════════════ Chapter 1: physical vs social interaction cards ════════════ */
+cardGame('#kind-cards', '#kind-score', '#kind-reset', ['Physical only', 'Mainly social', 'Both'], [
+  { t: 'A robot cleaning an empty office at night.', a: 0, why: 'With no one around it only has to handle the physics of its body and the environment (the warehouse example in textbook ch. 2).' },
+  { t: 'A robot carrying coffee to a customer’s table in a café.', a: 2, why: 'Besides the physical movement it has to handle social rules: where the people are and how to approach appropriately.' },
+  { t: 'A chatbot that talks only through an on-screen avatar.', a: 1, why: 'Social interaction, but no body. The absence of embodiment is the difference between HRI and HCI.' },
+  { t: 'The seal robot Paro, held and stroked by older adults in a care home.', a: 1, why: 'It barely moves, but pet-like social interaction is the whole point.' },
+  { t: 'A cobot lifting a heavy panel together with a person who holds the other end.', a: 2, why: 'The physics of force and contact, plus coordination such as who leads.' },
+  { t: 'A museum guide robot leading visitors to the exhibits.', a: 2, why: 'The physical problem of navigating among people and face-to-face interaction together (textbook section 11.1.1).' },
+  { t: 'An industrial robot welding inside a fence in a factory.', a: 0, why: 'People cannot come near it, so there is no social interaction.' },
+  { t: 'A delivery robot avoiding an employee coming the other way in a corridor.', a: 2, why: 'Collision avoidance is physics, but when and to which side to yield is a social rule (ch. 4).' }
+]);
+
+/* ════════════ Chapter 2: the gap between expectation and ability ════════════ */
+(function expectation() {
+  const ids = ['face', 'voice', 'arms', 'human', 'see', 'talk', 'grasp', 'social'];
+  const S = {}; ids.forEach(k => { S[k] = $('#ex-' + k); });
+  const CAP = [['Recognises people', 'see'], ['Understands open conversation', 'talk'], ['Picks up and hands over objects', 'grasp'], ['Follows social rules', 'social']];
+  /* Expectations each appearance feature creates for each ability (textbook section 4.1.2: eyes → it sees, speech → it understands, arms → it grasps) */
+  function expected() {
+    const f = +S.face.value, v = +S.voice.value, a = +S.arms.value, h = +S.human.value;
+    return [clamp(0.75 * f + 0.25 * h, 0, 1), clamp(0.7 * v + 0.2 * f + 0.1 * h, 0, 1), clamp(0.75 * a + 0.25 * h, 0, 1), clamp(0.5 * h + 0.25 * f + 0.25 * v, 0, 1)];
+  }
+  const actual = () => CAP.map(c => +S[c[1]].value);
+  const P = plot('ex-cv', p => {
+    const E = expected(), A = actual();
+    const f = frame(p, { l: 150, r: 14, t: 22, b: 26, x0: 0, x1: 1, y0: 0, y1: 4, xt: [0, 0.5, 1], xf: v => Math.round(v * 100) + '%', yt: [], yl: 'Outline: expectation from appearance · fill: actual ability' });
+    const { ctx } = p, bh = f.H / 4;
+    CAP.forEach(([nm], i) => {
+      const y = f.T + i * bh + bh * 0.2, h = bh * 0.6, gap = E[i] - A[i];
+      label(ctx, nm, f.L - 8, y + h / 2, C.ink, 'right', 'middle', `12px ${SANS}`);
+      ctx.fillStyle = rgba(gap > 0.15 ? C.c3 : C.c0, 0.8); ctx.fillRect(f.L, y, f.X(A[i]) - f.L, h);
+      ctx.strokeStyle = C.ink; ctx.lineWidth = 1.5; ctx.strokeRect(f.L + 0.5, y + 0.5, f.X(E[i]) - f.L - 1, h - 1);
+      if (gap > 0.15) label(ctx, `disappointment ${Math.round(gap * 100)} pts`, f.X(E[i]) + 6, y + h / 2, C.c3, 'left', 'middle', `11px ${MONO}`);
+    });
+  });
+  function update() {
+    ids.forEach(k => { $('#ex-' + k + '-o').textContent = nf(+S[k].value, 2).replace(/0$/, ''); });
+    const E = expected(), A = actual(), gaps = E.map((e, i) => e - A[i]), worst = gaps.indexOf(Math.max(...gaps)), mean = gaps.reduce((a, b) => a + b, 0) / 4;
+    const st = Math.max(...gaps) > 0.3 ? chip('Expectation far exceeds ability', 'bad') : Math.max(...gaps) > 0.15 ? chip('Some disappointment', 'warn') : mean < -0.1 ? chip('Underpromises and overdelivers', 'ok') : chip('Expectation and ability match', 'ok');
+    $('#ex-ro').innerHTML = ro('Largest gap', `${CAP[worst][0]} <small>${fmt(gaps[worst] * 100, 0)} pts</small>`) + ro('Mean gap (expected − actual)', fmt(mean * 100, 0) + '<small> pts</small>') + ro('Verdict', st);
+    $('#ex-note').textContent = Math.max(...gaps) > 0.3
+      ? 'The function does not keep the promise the appearance makes. Either tone down the appearance (drop the eyes and mouth, or stop calling it a robot) or raise the function. The textbook warns that disappointment can wreck the interaction itself.'
+      : mean < -0.1 ? 'Ability exceeds appearance. People fill the gaps with their own expectations, so this becomes a pleasant surprise (the Paro example).'
+      : 'Expectation and ability roughly match: a design where form fits function.';
+    P.render();
+  }
+  ids.forEach(k => S[k].addEventListener('input', raf(update)));
+  update();
+})();
+
+/* ════════════ Chapter 3: the uncanny valley ════════════ */
+(function uncanny() {
+  const sH = $('#uv-h'), sM = $('#uv-mm'), mvBtn = $('#uv-move'), famBtn = $('#uv-fam');
+  const EX = [[8, 'industrial robot'], [28, 'toy robot'], [50, 'stuffed animal'], [72, 'Bunraku puppet'], [84, 'prosthetic hand'], [90, 'corpse (moving: zombie)'], [100, 'healthy person']];
+  /* Curve after Mori’s figure: rises to a peak (about 70%), valley near 85%, highest at 100% */
+  function affinity(h, move, mm, fam) {
+    const x = h / 100, rise = Math.sin(Math.PI * Math.min(x / 0.7, 1) / 2) * 0.6;
+    const valley = Math.exp(-((x - 0.85) ** 2) / 0.006) * (0.9 + 1.4 * mm) * (fam ? 0.6 : 1);
+    const top = x > 0.85 ? (x - 0.85) / 0.15 : 0;
+    let y = rise - valley + top * 1.0;
+    if (move) y *= 1.35;
+    return y;
+  }
+  const P = plot('uv-cv', p => {
+    const move = pressed(mvBtn), mm = +sM.value, fam = pressed(famBtn), h = +sH.value;
+    const f = frame(p, { l: 48, r: 14, t: 22, b: 34, x0: 0, x1: 100, y0: -1.4, y1: 1.5, xt: [0, 50, 100], xf: v => v + '%', yt: [-1, 0, 1], yf: v => (v === 0 ? '0' : v > 0 ? '+' : '−'), xl: 'Humanlikeness', yl: 'Affinity (Mori’s shinwakan)' });
+    const { ctx } = p;
+    ctx.fillStyle = rgba(C.c3, 0.08); ctx.fillRect(f.X(76), f.T, f.X(95) - f.X(76), f.H);
+    label(ctx, 'uncanny valley', f.X(85.5), f.T + 4, C.c3, 'center', 'top', `11px ${SANS}`);
+    poly(ctx, 2, i => f.L + i * f.W, () => f.Y(0), C.line, 1, [4, 4]);
+    f.clip();
+    poly(ctx, 201, i => f.X(i / 2), i => f.Y(affinity(i / 2, false, mm, fam)), rgba(C.c0, move ? 0.35 : 1), 2.2);
+    if (move) poly(ctx, 201, i => f.X(i / 2), i => f.Y(affinity(i / 2, true, mm, fam)), C.c0, 2.4);
+    f.unclip();
+    EX.forEach(([x, nm]) => { const y = affinity(x, move, mm, fam); dot(ctx, f.X(x), f.Y(y), 3.5, C.muted, C.panel); });
+    const y = affinity(h, move, mm, fam); dot(ctx, f.X(h), f.Y(y), 6, C.mark, C.panel);
+  });
+  function update() {
+    const h = +sH.value, move = pressed(mvBtn), mm = +sM.value, fam = pressed(famBtn), y = affinity(h, move, mm, fam);
+    $('#uv-h-o').textContent = h + '%'; $('#uv-mm-o').textContent = nf(mm, 2);
+    let near = EX[0]; EX.forEach(e => { if (Math.abs(e[0] - h) < Math.abs(near[0] - h)) near = e; });
+    const zone = h >= 76 && h <= 95 ? chip('In the valley', 'bad') : h > 95 ? chip('Past the valley', 'ok') : h >= 55 ? chip('Near the first peak: where Mori advised staying', 'ok') : chip('Close to a machine', 'neutral');
+    $('#uv-ro').innerHTML = ro('Affinity', fmt(y)) + ro('Mori’s nearest example', near[1]) + ro('Position', zone);
+    P.render();
+  }
+  [sH, sM].forEach(s => s.addEventListener('input', raf(update)));
+  [mvBtn, famBtn].forEach(b => b.addEventListener('click', () => { toggle(b, !pressed(b)); update(); }));
+  update();
+})();
+})();
+
+</script>
+<script>
+(() => {
+'use strict';
+const { $, $$, clamp, nf, REDUCE, MONO, SANS, rng, gauss, C, rgba, mix, plot, raf, frame, label, dot, poly, vline, segGroup, toggle, pressed, chip, ro, animator, Phi } = window.HR;
+const fmt = (v, d = 2) => nf(v, d).replace('-', '−');
+function drawPerson(ctx, x, y, r, col, heading) { // a person seen from above: circle + nose (heading)
+  dot(ctx, x, y, r, col, C.panel);
+  ctx.strokeStyle = C.panel; ctx.lineWidth = 2; ctx.beginPath(); ctx.moveTo(x, y); ctx.lineTo(x + Math.cos(heading) * r * 0.9, y + Math.sin(heading) * r * 0.9); ctx.stroke();
+}
+function drawBot(ctx, x, y, s, col) { ctx.fillStyle = col; ctx.fillRect(x - s / 2, y - s / 2, s, s); dot(ctx, x - s * 0.2, y - s * 0.12, Math.max(1.5, s * 0.08), C.panel); dot(ctx, x + s * 0.2, y - s * 0.12, Math.max(1.5, s * 0.08), C.panel); }
+
+/* ════════════ Chapter 4: approach direction and distance ════════════ */
+(function proxemics() {
+  let dir = 'front', task = 'talk'; const sD = $('#px-d');
+  const ZONES = [[0.45, 'intimate', C.c3], [1.2, 'personal', C.c1], [4, 'social', C.c2], [6, 'public', C.c0]];
+  const zoneOf = d => (d < 0.45 ? 0 : d < 1.2 ? 1 : d < 4 ? 2 : 3);
+  const P = plot('px-cv', p => {
+    const d = +sD.value, { ctx, w, h } = p, cx = w / 2, cy = h * 0.52, sc = Math.min(w, h) / 9.6;
+    ZONES.slice().reverse().forEach(([rad, nm, col]) => { ctx.fillStyle = rgba(col, 0.1); ctx.beginPath(); ctx.arc(cx, cy, rad * sc, 0, Math.PI * 2); ctx.fill(); ctx.strokeStyle = rgba(col, 0.6); ctx.lineWidth = 1; ctx.stroke(); const la = Math.PI * 0.75; label(ctx, `${nm}${rad < 6 ? ' < ' + rad + ' m' : ''}`, cx + Math.cos(la) * (rad * sc - 6), cy + Math.sin(la) * (rad * sc - 6), col, 'right', 'bottom', `11px ${SANS}`); });
+    const ang = dir === 'front' ? -Math.PI / 2 : dir === 'side' ? 0 : Math.PI / 2, rx = cx + Math.cos(ang) * d * sc, ry = cy + Math.sin(ang) * d * sc;
+    ctx.setLineDash([4, 4]); ctx.strokeStyle = C.muted; ctx.beginPath(); ctx.moveTo(cx + Math.cos(ang) * 4.6 * sc, cy + Math.sin(ang) * 4.6 * sc); ctx.lineTo(rx, ry); ctx.stroke(); ctx.setLineDash([]);
+    drawPerson(ctx, cx, cy, 0.25 * sc, C.c3, -Math.PI / 2);
+    drawBot(ctx, rx, ry, 0.5 * sc, C.trace);
+    label(ctx, `${nf(d, 1)} m`, rx + 0.35 * sc, ry + (dir === 'side' ? 0.4 * sc : 0), C.ink, 'left', 'middle', `12px ${MONO}`);
+    label(ctx, 'person faces up ↑', cx + 0.5 * sc, cy, C.muted, 'left', 'middle', `11px ${SANS}`);
+  });
+  function update() {
+    const d = +sD.value, z = zoneOf(d); $('#px-d-o').textContent = `${nf(d, 1)} m`;
+    const notes = [], tags = [];
+    if (z === 0) { tags.push(chip('Intrudes into the intimate zone', 'bad')); notes.push('Most people are uncomfortable when a robot they have just met comes within intimate distance; most prefer personal or social distance (Walters et al. 2005).'); }
+    else if (z === 1) { tags.push(chip('Personal distance', task === 'pass' ? 'warn' : 'ok')); }
+    else if (z === 2) { tags.push(chip('Social distance', task === 'hand' ? 'warn' : 'ok')); }
+    else { tags.push(chip('Public distance', 'warn')); notes.push('Too far away to be read as a signal that it wants to start an interaction.'); }
+    if (task === 'talk') { if (dir === 'front') notes.push('Approaching from the front is preferred for starting a conversation.'); else if (dir === 'back') { tags.push(chip('Approach from behind', 'bad')); notes.push('Coming from behind startles people and makes them feel chased (the Joggobot lesson).'); } else notes.push('A side approach is a less clear opener than a frontal one, but not threatening.'); if (z === 2 && d > 2.5) notes.push('For a conversation it is more natural to come a little closer, near personal distance.'); }
+    if (task === 'hand') { if (dir === 'front') { tags.push(chip('Frontal handover', 'warn')); notes.push('For handing over objects a frontal approach was less preferred and failed more often (Dautenhahn et al. 2006; Shi et al. 2013). Diagonally from the side is better.'); } else if (dir === 'side') notes.push('For handovers a side approach is preferred.'); else { tags.push(chip('Approach from behind', 'bad')); notes.push('An object held out from behind cannot be seen.'); } if (z >= 2) notes.push('To reach, the robot has to come within personal distance, and then the path of its hand must be readable (ch. 5).'); }
+    if (task === 'pass') { if (z <= 1) { tags.push(chip('Passes too close', z === 0 ? 'bad' : 'warn')); notes.push('When just passing, it is better to go around personal space at social distance (Pacchierotti et al. 2006).'); } else notes.push('It passes outside personal space. Showing its direction early is even better (experiment 4-2).'); }
+    $('#px-ro').innerHTML = ro('Zone', ZONES[z][1]) + ro('Verdict', tags.join(' '));
+    $('#px-note').textContent = notes.join(' ');
+    P.render();
+  }
+  segGroup($('#px-dir'), 'd', v => { dir = v; update(); });
+  segGroup($('#px-task'), 't', v => { task = v; update(); });
+  sD.addEventListener('input', raf(update));
+  update();
+})();
+
+/* ════════════ Chapter 4: yielding in a corridor ════════════ */
+(function corridor() {
+  const sD = $('#cr-d'), L = 8, Wd = 2.2; let t0 = 0, playing = false, hist = [];
+  function sim(dStart) { // the person walks left at y=1.1, the robot right; within dStart the robot steps aside
+    const pts = []; let minD = 9, intimate = 0, rx = 0.3, ry = Wd / 2, px = L - 0.3, py = Wd / 2;
+    for (let t = 0; t < 12; t += 0.02) {
+      const d = Math.hypot(px - rx, py - ry);
+      const targetY = (px - rx > 0 && d < dStart) || (px - rx < 0 && rx - px < 1.0) ? Wd - 0.45 : Wd / 2;
+      ry += clamp(targetY - ry, -0.9 * 0.02, 0.9 * 0.02) * 2.5; rx += 0.8 * 0.02; px -= 0.8 * 0.02;
+      minD = Math.min(minD, d); if (d < 0.45) intimate += 0.02;
+      pts.push([rx, ry, px, py, d]);
+      if (rx > L - 0.3 || px < 0.3) break;
+    }
+    return { pts, minD, intimate };
+  }
+  let res;
+  const P = plot('cr-cv', p => {
+    const { ctx, w, h } = p, sc = Math.min(w / L, h / Wd), ox = (w - L * sc) / 2, oy = (h - Wd * sc) / 2, X = x => ox + x * sc, Y = y => oy + y * sc;
+    ctx.fillStyle = C.paper; ctx.fillRect(X(0), Y(0), L * sc, Wd * sc); ctx.strokeStyle = C.line; ctx.lineWidth = 2; ctx.strokeRect(X(0) + 1, Y(0) + 1, L * sc - 2, Wd * sc - 2);
+    const k = playing ? Math.min(res.pts.length - 1, Math.floor((performance.now() - t0) / 20)) : res.pts.length - 1, [rx, ry, px, py] = res.pts[k];
+    poly(ctx, k + 1, i => X(res.pts[i][0]), i => Y(res.pts[i][1]), rgba(C.trace, 0.5), 1.5);
+    ctx.fillStyle = rgba(C.c3, 0.12); ctx.beginPath(); ctx.arc(X(px), Y(py), 0.45 * sc, 0, Math.PI * 2); ctx.fill();
+    drawPerson(ctx, X(px), Y(py), 0.2 * sc, C.c3, Math.PI); drawBot(ctx, X(rx), Y(ry), 0.4 * sc, C.trace);
+  });
+  const anim = animator($('#b4-2'), () => { P.render(); if ((performance.now() - t0) / 20 >= res.pts.length) { playing = false; P.render(); return false; } });
+  function update() {
+    const d = +sD.value; $('#cr-d-o').textContent = `${nf(d, 1)} m`; res = sim(d);
+    const st = res.intimate > 0 ? chip('Intrudes into the intimate zone: looks aggressive', 'bad') : res.minD < 1.2 ? chip('Enters personal space', 'warn') : chip('Yields early, as people do', 'ok');
+    $('#cr-ro').innerHTML = ro('Closest distance', `${nf(res.minD, 2)}<small> m</small>`) + ro('Time inside the intimate zone (0.45 m)', `${nf(res.intimate, 1)}<small> s</small>`) + ro('Verdict', st);
+    P.render();
+  }
+  sD.addEventListener('input', raf(update));
+  $('#cr-run').addEventListener('click', () => { update(); playing = true; t0 = performance.now(); anim.start(); });
+  update();
+})();
+
+/* ════════════ Chapter 5: gaze and the next speaker ════════════ */
+(function gaze() {
+  let target = 'A', count = { A: 0, B: 0, none: 0 }, r = rng(7);
+  const PROB = { A: [0.7, 0.15, 0.15], B: [0.15, 0.7, 0.15], alt: [0.42, 0.42, 0.16], away: [0.3, 0.3, 0.4] }; // made-up values
+  const PC = plot('gz-cv', p => {
+    const { ctx, w, h } = p, bx = w / 2, by = h * 0.72, ax = w * 0.25, ay = h * 0.3, cx2 = w * 0.75;
+    drawBot(ctx, bx, by, 34, C.trace); dot(ctx, ax, ay, 15, C.c1, C.panel); dot(ctx, cx2, ay, 15, C.c2, C.panel);
+    label(ctx, 'A', ax, ay - 22, C.ink, 'center', 'bottom', `600 13px ${SANS}`); label(ctx, 'B', cx2, ay - 22, C.ink, 'center', 'bottom', `600 13px ${SANS}`);
+    const to = target === 'A' ? [ax, ay] : target === 'B' ? [cx2, ay] : target === 'alt' ? [bx, ay] : [bx + 80, by + 40];
+    ctx.strokeStyle = C.mark; ctx.lineWidth = 2; ctx.setLineDash([5, 4]); ctx.beginPath(); ctx.moveTo(bx, by - 8); ctx.lineTo(to[0], to[1]); ctx.stroke(); ctx.setLineDash([]);
+    label(ctx, target === 'alt' ? 'alternates' : target === 'away' ? 'looks away' : `looks at ${target}`, bx, by + 26, C.muted, 'center', 'top', `11px ${SANS}`);
+  });
+  const PB = plot('gz-bar', p => {
+    const tot = count.A + count.B + count.none || 1;
+    const f = frame(p, { l: 40, r: 10, t: 22, b: 30, x0: 0, x1: 3, y0: 0, y1: 1, yt: [0, 0.5, 1], yf: v => Math.round(v * 100) + '%', yl: 'Share of who spoke next' });
+    const { ctx } = p, bw = f.W / 3;
+    [['A', C.c1], ['B', C.c2], ['none', C.muted]].forEach(([k, col], i) => { const v = count[k] / tot, x = f.L + i * bw + bw * 0.2; ctx.fillStyle = col; ctx.fillRect(x, f.Y(v), bw * 0.6, f.Y(0) - f.Y(v)); label(ctx, k === 'none' ? 'no one (silence)' : k, x + bw * 0.3, f.T + f.H + 6, C.muted, 'center', 'top', `11px ${SANS}`); if (tot > 1) label(ctx, Math.round(v * 100) + '%', x + bw * 0.3, f.Y(v) - 3, C.ink, 'center', 'bottom', `11px ${MONO}`); });
+  });
+  function trials(n) { const pr = PROB[target]; for (let i = 0; i < n; i++) { const u = r(); if (u < pr[0]) count.A++; else if (u < pr[0] + pr[1]) count.B++; else count.none++; } }
+  function update() { const tot = count.A + count.B + count.none; $('#gz-ro').innerHTML = ro('Trials', `${tot}`) + ro('Turns taken by A', tot ? `${Math.round(count.A / tot * 100)}<small>%</small>` : '–') + ro('Turns taken by B', tot ? `${Math.round(count.B / tot * 100)}<small>%</small>` : '–'); PC.render(); PB.render(); }
+  segGroup($('#gz-target'), 'g', v => { target = v; update(); });
+  $('#gz-run').addEventListener('click', () => { trials(100); update(); });
+  $('#gz-reset').addEventListener('click', () => { count = { A: 0, B: 0, none: 0 }; update(); });
+  update();
+})();
+
+/* ════════════ Chapter 5: predictability and legibility (simplified from Dragan et al. 2013) ════════════ */
+(function legibility() {
+  const sE = $('#lg-ex'), sT = $('#lg-t'), sG = $('#lg-gap');
+  const S = [0, 0], N = 60;
+  function goals() { const g = +sG.value; return [[0.5 - g / 2, 1], [0.5 + g / 2, 1]]; }
+  /* Path: from start S to goal G1 (left), bulging away from G2 by exaggeration e before coming in */
+  function path(e) { const [G1, G2] = goals(); return Array.from({ length: N + 1 }, (_, i) => { const u = i / N, bulge = Math.sin(Math.PI * u) * e * 0.6 * Math.sign(G1[0] - G2[0]); return [S[0] + (G1[0] - S[0]) * u + bulge, S[1] + (G1[1] - S[1]) * u]; }); }
+  /* Observer: scores each goal by how inefficient (path so far + remaining straight line) is relative to the shortest path to it */
+  function belief(pts, k) {
+    const [G1, G2] = goals(); let len = 0; for (let i = 1; i <= k; i++) len += Math.hypot(pts[i][0] - pts[i - 1][0], pts[i][1] - pts[i - 1][1]);
+    const q = pts[k], cost = G => len + Math.hypot(G[0] - q[0], G[1] - q[1]) - Math.hypot(G[0] - S[0], G[1] - S[1]);
+    const a = Math.exp(-22 * cost(G1)), b = Math.exp(-22 * cost(G2)); return a / (a + b);
+  }
+  const PM = plot('lg-cv', p => {
+    const e = +sE.value, t = +sT.value, pts = path(e), k = Math.round(t * N), [G1, G2] = goals();
+    const { ctx, w, h } = p, sc = Math.min(w / 1.3, h / 1.3), X = x => w / 2 + (x - 0.5) * sc, Y = y => h - 20 - y * sc * 0.9;
+    [[G1, 'target cup'], [G2, 'other cup']].forEach(([g, nm], i) => { ctx.fillStyle = rgba(i ? C.muted : C.c2, 0.25); ctx.beginPath(); ctx.arc(X(g[0]), Y(g[1]), 14, 0, Math.PI * 2); ctx.fill(); ctx.strokeStyle = i ? C.muted : C.c2; ctx.lineWidth = 1.5; ctx.stroke(); label(ctx, nm, X(g[0]), Y(g[1]) - 18, i ? C.muted : C.c2, 'center', 'bottom', `11px ${SANS}`); });
+    poly(ctx, 2, i => X(i ? G1[0] : S[0]), i => Y(i ? G1[1] : S[1]), C.line, 1, [3, 4]);
+    poly(ctx, pts.length, i => X(pts[i][0]), i => Y(pts[i][1]), rgba(C.c0, 0.35), 1.5);
+    poly(ctx, k + 1, i => X(pts[i][0]), i => Y(pts[i][1]), C.c0, 2.6);
+    dot(ctx, X(pts[k][0]), Y(pts[k][1]), 6, C.c0, C.panel); label(ctx, 'hand', X(pts[k][0]) + 10, Y(pts[k][1]), C.ink, 'left', 'middle', `11px ${SANS}`);
+    label(ctx, 'start', X(S[0]), Y(S[1]) + 6, C.muted, 'center', 'top', `11px ${SANS}`);
+  });
+  const PP = plot('lg-p', p => {
+    const e = +sE.value, pts = path(e), pts0 = path(0);
+    const f = frame(p, { l: 40, r: 10, t: 22, b: 34, x0: 0, x1: 1, y0: 0, y1: 1, xt: [0, 0.5, 1], xf: v => Math.round(v * 100) + '%', yt: [0.5, 0.9, 1], yf: v => Math.round(v * 100) + '%', xl: 'Progress', yl: 'Observer’s belief that the target cup is the goal' });
+    poly(p.ctx, 2, i => f.L + i * f.W, () => f.Y(0.9), C.line, 1, [3, 4]);
+    poly(p.ctx, N + 1, i => f.X(i / N), i => f.Y(belief(pts0, i)), rgba(C.muted, 0.7), 1.5, [4, 3]);
+    poly(p.ctx, N + 1, i => f.X(i / N), i => f.Y(belief(pts, i)), C.c0, 2.2);
+    vline(p.ctx, f.X(+sT.value), f.T, f.H, C.ink, [3, 3]);
+    label(p.ctx, 'dotted: shortest path, no exaggeration', f.L + f.W - 4, f.T + f.H - 6, C.muted, 'right', 'bottom', `11px ${SANS}`);
+  });
+  function update() {
+    const e = +sE.value, t = +sT.value, pts = path(e), k = Math.round(t * N);
+    $('#lg-ex-o').textContent = nf(e, 2).replace(/0$/, ''); $('#lg-t-o').textContent = Math.round(t * 100) + '%'; $('#lg-gap-o').textContent = nf(+sG.value, 2);
+    let len = 0; for (let i = 1; i <= N; i++) len += Math.hypot(pts[i][0] - pts[i - 1][0], pts[i][1] - pts[i - 1][1]);
+    const straight = Math.hypot(goals()[0][0] - S[0], goals()[0][1] - S[1]);
+    let t90 = null; for (let i = 0; i <= N; i++) if (belief(pts, i) >= 0.9) { t90 = i / N; break; }
+    $('#lg-ro').innerHTML = ro('Observer’s confidence now', `${Math.round(belief(pts, k) * 100)}<small>%</small>`) + ro('Reaches 90% confidence at', t90 == null ? 'never' : `${Math.round(t90 * 100)}<small>% of the way</small>`) + ro('Path length (vs shortest)', `${nf(len / straight, 2)}<small>×</small>`) +
+      ro('Character', e < 0.1 ? chip('Predictable: most efficient', 'info') : e < 0.5 ? chip('Trade-off between legibility and efficiency', 'ok') : chip('Highly legible: path is inefficient', 'warn'));
+    PM.render(); PP.render();
+  }
+  [sE, sT, sG].forEach(s => s.addEventListener('input', raf(update)));
+  update();
+})();
+
+/* ════════════ Chapter 6: confirmation strategy simulation ════════════ */
+(function dialogue() {
+  const sW = $('#dm-wer'), sT = $('#dm-th'); let strat = 'thresh';
+  function run(strategy, wer, th) {
+    const r = rng(101); let ok = 0, turns = 0;
+    for (let i = 0; i < 200; i++) {
+      let correct = r() > wer, conf = clamp(gauss(r) * 0.15 + (correct ? 0.82 : 0.45), 0, 1), t = 2; // request + response
+      const ask = strategy === 'always' || (strategy === 'thresh' && conf < th);
+      if (ask) { t += 2; if (!correct) { t += 2; correct = r() > wer * 0.5; } } // asking back gives a chance to rephrase; the second recognition is assumed clearer
+      if (correct) ok++; turns += t;
+    }
+    return { succ: ok / 200, turns: turns / 200 };
+  }
+  const P = plot('dm-cv', p => {
+    const wer = +sW.value, th = +sT.value, R = ['never', 'thresh', 'always'].map(s => run(s, wer, th));
+    const f = frame(p, { l: 44, r: 10, t: 22, b: 34, x0: 0, x1: 3, y0: 0, y1: 1.05, yt: [0, 0.5, 1], yf: v => Math.round(v * 100) + '%', yl: 'Order success rate (bars) · dialogue length (dots)' });
+    const { ctx } = p, bw = f.W / 3, names = ['never', 'when low', 'always'];
+    R.forEach((q, i) => { const x = f.L + i * bw + bw * 0.15; ctx.fillStyle = rgba(i === ['never', 'thresh', 'always'].indexOf(strat) ? C.c0 : C.muted, 0.7); ctx.fillRect(x, f.Y(q.succ), bw * 0.45, f.Y(0) - f.Y(q.succ)); label(ctx, Math.round(q.succ * 100) + '%', x + bw * 0.225, f.Y(q.succ) - 3, C.ink, 'center', 'bottom', `11px ${MONO}`); dot(ctx, x + bw * 0.6, f.Y(clamp(q.turns / 8, 0, 1)), 6, C.c1, C.panel); label(ctx, `${nf(q.turns, 1)} turns`, x + bw * 0.6, f.Y(clamp(q.turns / 8, 0, 1)) - 9, C.c1, 'center', 'bottom', `11px ${MONO}`); label(ctx, names[i], x + bw * 0.35, f.T + f.H + 6, C.muted, 'center', 'top', `11px ${SANS}`); });
+  });
+  function update() {
+    const wer = +sW.value, th = +sT.value, q = run(strat, wer, th);
+    $('#dm-wer-o').textContent = Math.round(wer * 100) + '%'; $('#dm-th-o').textContent = nf(th, 2);
+    $('#dm-ro').innerHTML = ro('Success rate of the chosen strategy', `${Math.round(q.succ * 100)}<small>%</small>`) + ro('Mean dialogue length per order', `${nf(q.turns, 1)}<small> turns</small>`) + ro('Wrong orders', `${Math.round((1 - q.succ) * 200)}<small> / 200</small>`);
+    $('#dm-note').textContent = strat === 'always' ? 'Always confirming catches the most errors but makes every order longer. Against a human 100 ms response, each confirmation makes an already slow conversation slower.' : strat === 'never' ? 'Never confirming keeps dialogues short, but recognition errors go straight into the order. Only usable when the error rate is low and mistakes are cheap.' : 'Using the confidence the ASR returns lets the robot confirm only when unsure. Raising the threshold moves it toward always confirming; lowering it toward never.';
+    P.render();
+  }
+  segGroup($('#dm-strat'), 's', v => { strat = v; update(); });
+  [sW, sT].forEach(s => s.addEventListener('input', raf(update)));
+  update();
+})();
+
+/* ════════════ Chapter 7: the circumplex and a robot face ════════════ */
+(function circumplex() {
+  const sV = $('#em-v'), sA = $('#em-a');
+  /* Words following Russell’s (1980) circumplex layout (angle → valence, arousal) */
+  const WORDS = [['excited', 0.55, 0.8], ['happy', 0.85, 0.35], ['content', 0.8, -0.3], ['relaxed', 0.6, -0.75], ['sleepy', -0.05, -0.95], ['bored', -0.6, -0.65], ['depressed', -0.85, -0.25], ['sad', -0.75, 0.1], ['distressed', -0.7, 0.45], ['angry', -0.55, 0.8], ['afraid', -0.4, 0.9], ['surprised', 0.1, 0.95], ['calm', 0.3, -0.85], ['tense', -0.3, 0.7]];
+  const PC = plot('em-cv', p => {
+    const v = +sV.value, a = +sA.value, { ctx, w, h } = p, cx = w / 2, cy = h / 2, R = Math.min(w, h) / 2 - 34;
+    ctx.fillStyle = C.paper; ctx.beginPath(); ctx.arc(cx, cy, R, 0, Math.PI * 2); ctx.fill(); ctx.strokeStyle = C.line; ctx.lineWidth = 1; ctx.stroke();
+    ctx.strokeStyle = C.grid; ctx.beginPath(); ctx.moveTo(cx - R, cy); ctx.lineTo(cx + R, cy); ctx.moveTo(cx, cy - R); ctx.lineTo(cx, cy + R); ctx.stroke();
+    label(ctx, 'pleasant →', cx + R + 4, cy, C.muted, 'left', 'middle', `11px ${SANS}`); label(ctx, '← unpleasant', cx - R - 4, cy, C.muted, 'right', 'middle', `11px ${SANS}`);
+    label(ctx, 'high arousal ↑', cx, cy - R - 6, C.muted, 'center', 'bottom', `11px ${SANS}`); label(ctx, 'low arousal ↓', cx, cy + R + 6, C.muted, 'center', 'top', `11px ${SANS}`);
+    WORDS.forEach(([t, x, y]) => label(ctx, t, cx + x * R, cy - y * R, C.muted, 'center', 'middle', `11px ${SANS}`));
+    dot(ctx, cx + v * R, cy - a * R, 7, C.mark, C.panel);
+  });
+  const PF = plot('em-face', p => {
+    const v = +sV.value, a = +sA.value, { ctx, w, h } = p, cx = w / 2, cy = h / 2, s = Math.min(w, h) * 0.36;
+    const col = mix(mix(C.c0, C.c1, (v + 1) / 2), C.panel, 0.55 - 0.45 * Math.abs(a));
+    ctx.fillStyle = col; ctx.beginPath(); ctx.roundRect ? ctx.roundRect(cx - s, cy - s * 0.9, 2 * s, 1.8 * s, s * 0.25) : ctx.rect(cx - s, cy - s * 0.9, 2 * s, 1.8 * s); ctx.fill();
+    const eyeR = s * (0.12 + 0.1 * (a + 1) / 2), ey = cy - s * 0.25;
+    [-1, 1].forEach(k => { dot(ctx, cx + k * s * 0.4, ey, eyeR, C.ink); dot(ctx, cx + k * s * 0.4 + eyeR * 0.3, ey - eyeR * 0.3, eyeR * 0.3, C.panel); });
+    ctx.strokeStyle = C.ink; ctx.lineWidth = Math.max(2, s * 0.06); ctx.lineCap = 'round';
+    [-1, 1].forEach(k => { const by = ey - eyeR - s * (0.12 + 0.12 * (a + 1) / 2), inner = cx + k * s * 0.18, outer = cx + k * s * 0.62, tilt = -v * s * 0.12; ctx.beginPath(); ctx.moveTo(inner, by + tilt); ctx.lineTo(outer, by - tilt * 0.4); ctx.stroke(); });
+    const my = cy + s * 0.4, mw = s * (0.35 + 0.25 * (a + 1) / 2), curve = v * s * 0.3;
+    ctx.beginPath(); ctx.moveTo(cx - mw, my); ctx.quadraticCurveTo(cx, my + curve * 1.6, cx + mw, my); ctx.stroke();
+    if (a > 0.5 && v > -0.2) { ctx.fillStyle = C.ink; ctx.beginPath(); ctx.ellipse(cx, my + curve * 0.5, mw * 0.5, s * 0.08 * (a - 0.5) * 2 + 1, 0, 0, Math.PI * 2); ctx.fill(); }
+    ctx.lineCap = 'butt';
+  });
+  function update() {
+    const v = +sV.value, a = +sA.value, s = x => (x > 0 ? '+' : x < 0 ? '−' : '') + nf(Math.abs(x), 2).replace(/0$/, '');
+    $('#em-v-o').textContent = s(v); $('#em-a-o').textContent = s(a);
+    const near = WORDS.map(([t, x, y]) => [Math.hypot(x - v, y - a), t]).sort((p, q) => p[0] - q[0]).slice(0, 3).map(q => q[1]);
+    const quad = v >= 0 ? (a >= 0 ? 'pleasant · high arousal' : 'pleasant · low arousal') : (a >= 0 ? 'unpleasant · high arousal' : 'unpleasant · low arousal');
+    $('#em-ro').innerHTML = ro('Quadrant', quad) + ro('Nearby emotion words', near.join(' · ')) + ro('Face cues', `mouth corners ${v >= 0 ? 'up' : 'down'} · eyes ${a >= 0 ? 'wide' : 'narrow'} · brows ${a >= 0 ? 'raised' : 'lowered'}`);
+    PC.render(); PF.render();
+  }
+  [sV, sA].forEach(x => x.addEventListener('input', raf(update)));
+  const cv = $('#em-cv'); let drag = false;
+  const pick = e => { const rc = cv.getBoundingClientRect(), w = rc.width, h = rc.height, R = Math.min(w, h) / 2 - 34, x = (e.clientX - rc.left - w / 2) / R, y = -(e.clientY - rc.top - h / 2) / R; const m = Math.hypot(x, y), k = m > 1 ? 1 / m : 1; sV.value = clamp(x * k, -1, 1).toFixed(2); sA.value = clamp(y * k, -1, 1).toFixed(2); update(); };
+  cv.addEventListener('pointerdown', e => { drag = true; cv.setPointerCapture(e.pointerId); pick(e); });
+  cv.addEventListener('pointermove', e => { if (drag) pick(e); });
+  cv.addEventListener('pointerup', () => { drag = false; }); cv.addEventListener('pointercancel', () => { drag = false; });
+  update();
+})();
+})();
+
+</script>
+<script>
+(() => {
+'use strict';
+const { $, $$, clamp, nf, REDUCE, MONO, SANS, rng, gauss, C, rgba, mix, plot, raf, frame, label, dot, poly, vline, segGroup, toggle, pressed, chip, ro, Phi, cardGame } = window.HR;
+const fmt = (v, d = 2) => nf(v, d).replace('-', '−');
+
+/* ════════════ Chapter 8: trust calibration (a made-up teaching model) ════════════ */
+(function trust() {
+  const sR = $('#tr-rel'), sI = $('#tr-init'); let repair = 'none', seed = 1, res;
+  const N = 60, TH = 0.6;
+  function sim() {
+    const r = rng(seed * 13), rel = +sR.value; let T = +sI.value; const hist = [], rely = [], fails = [];
+    for (let t = 0; t < N; t++) {
+      const use = T >= TH, ok = r() < rel;
+      if (use) { if (ok) T += 0.03 * (1 - T); else { T -= repair === 'explain' ? 0.12 : 0.25; fails.push(t); } }
+      else { T += 0.015 * (rel - 0.5) + 0.01; } // even without relying, trust adjusts slowly from watching the robot
+      T = clamp(T, 0, 1); hist.push(T); rely.push(use);
+    }
+    return { hist, rely, fails, rel };
+  }
+  const P = plot('tr-cv', p => {
+    const f = frame(p, { l: 40, r: 10, t: 22, b: 46, x0: 0, x1: N, y0: 0, y1: 1, xt: [0, 20, 40, 60], yt: [0, 0.5, 1], xl: 'Trial', yl: 'Trust (0–1)' });
+    const { ctx } = p;
+    ctx.fillStyle = rgba(C.c3, 0.08); ctx.fillRect(f.L, f.T, f.W, f.Y(res.rel) - f.T); label(ctx, 'overtrust: trust above the real success rate', f.L + 4, f.T + 4, C.c3, 'left', 'top', `11px ${SANS}`);
+    poly(ctx, 2, i => f.L + i * f.W, () => f.Y(res.rel), C.muted, 1.5, [5, 4]);
+    poly(ctx, 2, i => f.L + i * f.W, () => f.Y(TH), C.line, 1, [2, 3]); label(ctx, 'reliance threshold', f.L + f.W - 4, f.Y(TH) - 2, C.muted, 'right', 'bottom', `11px ${SANS}`);
+    res.fails.forEach(t => vline(ctx, f.X(t + 0.5), f.T, f.H, rgba(C.c3, 0.6), null, 1.5));
+    poly(ctx, N, i => f.X(i + 0.5), i => f.Y(res.hist[i]), C.c0, 2.2);
+    const by = f.T + f.H + 22; res.rely.forEach((u, i) => { ctx.fillStyle = u ? C.c0 : C.grid; ctx.fillRect(f.X(i) + 0.5, by, f.W / N - 1, 8); });
+    label(ctx, 'relies', f.L - 6, by + 4, C.muted, 'right', 'middle', `11px ${SANS}`);
+  });
+  function update() {
+    $('#tr-rel-o').textContent = Math.round(+sR.value * 100) + '%'; $('#tr-init-o').textContent = nf(+sI.value, 2);
+    res = sim();
+    const over = res.hist.filter(h => h > res.rel + 0.1).length, under = res.hist.filter((h, i) => h < res.rel - 0.15 && !res.rely[i]).length, used = res.rely.filter(Boolean).length;
+    const st = over > N * 0.4 ? chip('Overtrust: only failures bring it down', 'bad') : under > N * 0.4 ? chip('Distrust: a usable robot goes unused', 'warn') : chip('Mostly calibrated', 'ok');
+    $('#tr-ro').innerHTML = ro('Trials relying on the robot', `${used}<small> / ${N}</small>`) + ro('Robot failures', `${res.fails.length}`) + ro('Trials in overtrust', `${over}`) + ro('Trials unused through distrust', `${under}`) + ro('Verdict', st);
+    P.render();
+  }
+  segGroup($('#tr-repair'), 'r', v => { repair = v; update(); });
+  [sR, sI].forEach(s => s.addEventListener('input', raf(update)));
+  $('#tr-new').addEventListener('click', () => { seed++; update(); });
+  update();
+})();
+
+/* ════════════ Chapter 9: application cards ════════════ */
+cardGame('#app-cards', '#app-score', '#app-reset', ['Customer service', 'Education', 'Health and therapy', 'Service and delivery', 'Collaborative robot'], [
+  { t: 'A seal robot that older adults with dementia hold and stroke to calm down in a care home.', a: 2, why: 'This is Paro. Long-term studies reported psychological, physiological and social effects; in Europe and the US almost only institutions buy it (section 11.4.1).' },
+  { t: 'A robot sitting across from one child in a primary school, learning foreign words together.', a: 1, why: 'An educational robot exploiting the benefit of one-to-one tutoring. Physical presence helped learning more than an on-screen agent (section 11.2).' },
+  { t: 'A robot guiding museum visitors to exhibits, explaining them, and making a frustrated face at people blocking its way.', a: 0, why: 'A tour guide robot, one of the earliest HRI applications (Burgard et al. 1998; Nourbakhsh et al. 1999).' },
+  { t: 'A robot arm assembling parts with a person at the same bench, stopping on contact.', a: 4, why: 'A collaborative robot: it works in the same space as people without a fence (section 11.8).' },
+  { t: 'A robot moving along hospital corridors delivering medicines and supplies to wards.', a: 3, why: 'A delivery robot. Because people share the space, its navigation needs HRI skills (section 11.6.2).' },
+  { t: 'A small robot helping a child with autism spectrum disorder practise joint attention during therapy.', a: 2, why: 'A therapy-support robot. This group generally responds well to robots (section 11.4.2).' }
+]);
+
+/* ════════════ Chapter 10: sample size ════════════ */
+(function power() {
+  const sD = $('#pw-d'), sP = $('#pw-pow'), sR = $('#pw-r');
+  const z = p => { // inverse normal CDF (bisection)
+    let lo = -6, hi = 6; for (let i = 0; i < 60; i++) { const m = (lo + hi) / 2; if (Phi(m) < p) lo = m; else hi = m; } return (lo + hi) / 2; };
+  const za = z(0.975);
+  const powBetween = (d, nPer) => 1 - Phi(za - d * Math.sqrt(nPer / 2));
+  const powWithin = (d, n, r) => 1 - Phi(za - d * Math.sqrt(n) / Math.sqrt(2 * (1 - r)));
+  function need(fn) { for (let n = 3; n <= 2000; n++) if (fn(n) >= +sP.value) return n; return null; }
+  const P = plot('pw-cv', p => {
+    const d = +sD.value, r = +sR.value;
+    const f = frame(p, { l: 44, r: 10, t: 22, b: 34, x0: 0, x1: 200, y0: 0, y1: 1, xt: [0, 50, 100, 150, 200], yt: [0, 0.5, 0.8, 1], yf: v => Math.round(v * 100) + '%', xl: 'Total participants', yl: 'Power' });
+    poly(p.ctx, 2, i => f.L + i * f.W, () => f.Y(+sP.value), C.line, 1, [4, 4]);
+    f.clip();
+    poly(p.ctx, 200, i => f.X(i + 1), i => f.Y(powBetween(d, (i + 1) / 2)), C.c0, 2.2);
+    poly(p.ctx, 200, i => f.X(i + 1), i => f.Y(powWithin(d, i + 1, r)), C.c1, 2.2);
+    f.unclip();
+    label(p.ctx, '— between  — within', f.L + f.W - 4, f.T + f.H - 6, C.muted, 'right', 'bottom', `11px ${SANS}`);
+  });
+  function update() {
+    const d = +sD.value, r = +sR.value;
+    $('#pw-d-o').textContent = nf(d, 2); $('#pw-pow-o').textContent = Math.round(+sP.value * 100) + '%'; $('#pw-r-o').textContent = nf(r, 2).replace(/0$/, '');
+    const nb = need(n => powBetween(d, n)), nw = need(n => powWithin(d, n, r));
+    $('#pw-ro').innerHTML = ro('Between-subjects', nb ? `${nb * 2}<small> people (${nb} per condition)</small>` : 'over 2,000') + ro('Within-subjects', nw ? `${nw}<small> people</small>` : 'over 2,000') + ro('Effect', chip(d < 0.35 ? 'small' : d < 0.65 ? 'medium' : 'large', 'info'));
+    P.render();
+  }
+  [sD, sP, sR].forEach(s => s.addEventListener('input', raf(update)));
+  update();
+})();
+
+/* ════════════ Chapter 11: the distribution of p-values ════════════ */
+(function replication() {
+  const sD = $('#rp-d'), sN = $('#rp-n'), hackBtn = $('#rp-hack'); let seed = 1, res;
+  const tp = (t, df) => { // two-sided p-value of Student t (normal approximation + correction); approximate for small df
+    const x = Math.abs(t) * (1 - 1 / (4 * df)) / Math.sqrt(1 + t * t / (2 * df)); return 2 * (1 - Phi(x)); };
+  function one(r, d, n) { let m1 = 0, m2 = 0, s1 = 0, s2 = 0; const a = [], b = []; for (let i = 0; i < n; i++) { a.push(gauss(r) + d); b.push(gauss(r)); } m1 = a.reduce((x, y) => x + y, 0) / n; m2 = b.reduce((x, y) => x + y, 0) / n; a.forEach(v => { s1 += (v - m1) ** 2; }); b.forEach(v => { s2 += (v - m2) ** 2; }); const sp = Math.sqrt((s1 + s2) / (2 * n - 2)); return { p: tp((m1 - m2) / (sp * Math.sqrt(2 / n)), 2 * n - 2), dobs: (m1 - m2) / sp }; }
+  function sim() {
+    const r = rng(seed * 7), d = +sD.value, n = +sN.value, hack = pressed(hackBtn), ps = [], ds = [];
+    for (let k = 0; k < 1000; k++) { if (hack) { let best = null; for (let j = 0; j < 5; j++) { const o = one(r, d, n); if (!best || o.p < best.p) best = o; } ps.push(best.p); ds.push(best.dobs); } else { const o = one(r, d, n); ps.push(o.p); ds.push(o.dobs); } }
+    return { ps, ds };
+  }
+  const P = plot('rp-cv', p => {
+    const NB = 40, H = new Array(NB).fill(0); res.ps.forEach(v => { H[Math.min(NB - 1, Math.floor(v * NB))]++; }); const mx = Math.max(...H);
+    const f = frame(p, { l: 44, r: 10, t: 22, b: 34, x0: 0, x1: 1, y0: 0, y1: mx * 1.08, xt: [0, 0.05, 0.25, 0.5, 0.75, 1], yt: [0, mx], yf: v => String(Math.round(v)), xl: 'p-value', yl: 'Replications (of 1,000)' });
+    const { ctx } = p, bw = f.W / NB;
+    H.forEach((c, i) => { ctx.fillStyle = rgba(i < 2 ? C.c3 : C.c0, 0.85); ctx.fillRect(f.X(i / NB) + 0.5, f.Y(c), bw - 1, f.Y(0) - f.Y(c)); });
+    vline(ctx, f.X(0.05), f.T, f.H, C.c3, [4, 3], 1.5); label(ctx, 'p = 0.05', f.X(0.05) + 4, f.T + 4, C.c3, 'left', 'top', `11px ${SANS}`);
+  });
+  function update() {
+    const d = +sD.value, n = +sN.value; $('#rp-d-o').textContent = nf(d, 2); $('#rp-n-o').textContent = n; res = sim();
+    const sig = res.ps.filter(v => v < 0.05).length / 1000, sorted = res.ps.slice().sort((a, b) => a - b), lo = sorted[100], hi = sorted[900];
+    const sigD = res.ds.filter((_, i) => res.ps[i] < 0.05), mD = sigD.length ? sigD.reduce((a, b) => a + b, 0) / sigD.length : NaN;
+    $('#rp-ro').innerHTML = ro(d === 0 ? 'Share significant (false positives)' : 'Share significant (power)', `${Math.round(sig * 100)}<small>%</small>`) + ro('80% interval of p-values', `${nf(lo, 3)} – ${nf(hi, 2)}`) + ro('Mean observed effect size among significant results', isFinite(mD) ? fmt(mD) : '–') + ro('True effect size', nf(d, 2));
+    $('#rp-note').textContent = d === 0 ? (pressed(hackBtn) ? 'With no real effect, reporting only the smallest of five p-values pushes the false-positive rate well past 5%. This is p-hacking. Preregistration prevents it by fixing in advance which variables will be analysed.' : 'With no real effect, about 5% of results come out significant. That is exactly what the significance level means.')
+      : `Repeating the same experiment scatters the p-values widely. Among the significant results alone, the observed effect size exceeds the true one (${nf(d, 2)}), and the lower the power the larger this overestimate. Try adding participants.`;
+    P.render();
+  }
+  [sD, sN].forEach(s => s.addEventListener('input', raf(update)));
+  hackBtn.addEventListener('click', () => { toggle(hackBtn, !pressed(hackBtn)); update(); });
+  $('#rp-new').addEventListener('click', () => { seed++; update(); });
+  update();
+})();
+
+/* ════════════ Chapter 12: ethics issue cards ════════════ */
+cardGame('#eth-cards', '#eth-score', '#eth-reset', ['Deception in research', 'Care and dignity', 'Privacy', 'Persuasion and manipulation', 'Social impact'], [
+  { t: 'In an experiment the robot seems to converse autonomously, but a researcher in the next room is controlling it.', a: 0, why: 'The Wizard of Oz technique. Participants must be told afterwards, and it risks making people believe the technology is further along than it is (Riek 2012).' },
+  { t: 'Children living far away leave a companion robot with an older parent and hand the caring over to it.', a: 1, why: 'Sparrow and Sparrow (2006) hold that however perfect, an imitation of care must not replace a real relationship. A matter of dignity and autonomy.' },
+  { t: 'A robot roaming the house sends what its camera and microphone pick up to the manufacturer’s servers.', a: 2, why: 'A privacy violation. A robot’s sensors continuously gather information inside the home.' },
+  { t: 'A robot that mirrors the user’s posture and makes eye contact nudges them to buy a particular product.', a: 3, why: 'Robots can be used as persuasive technology; the problem is that users are influenced without knowing how (section 12.2.1).' },
+  { t: 'A warehouse brings in robots and its workers lose their jobs with no retraining.', a: 4, why: 'Robots replace some occupations and create new ones. Society’s task is to help those displaced find new work (section 12.2.3).' },
+  { t: 'After living with a robot that complies with every demand, a person starts expecting the same of human relationships.', a: 4, why: 'The concern that interacting with robots may change expectations of people. The textbook discusses this especially in sexual contexts.' }
+]);
+
+/* ════════════ Check questions and progress ════════════ */
+const QUIZ = {
+  1: [
+    { q: 'What does the textbook say sets HRI apart from robotics?', o: ['It deals with robots interacting inside the human social world and with how people respond to robots', 'It builds faster motors', 'It only builds humanlike robots', 'It only deals with computer screens'], a: 0, e: 'A warehouse robot handles only physics; a robot going to a café customer must also handle social rules (ch. 2).' },
+    { q: 'What role does a robot’s embodiment play in interaction?', o: ['It constrains sensing and action while also being an affordance that makes people treat the robot like a person', 'It has no effect', 'It only ever makes interaction harder', 'It is unrelated to the software'], a: 0, e: 'People assume a robot with eyes can see and one with a mouth can talk.' },
+    { q: 'Which early social robot was built at MIT in 1997?', o: ['Kismet', 'Nao', 'Pepper', 'Paro'], a: 0, e: 'It moved its eyes, eyebrows, lips and neck in response to people and used the baby schema.' }
+  ],
+  2: [
+    { q: 'What does the textbook call the "Frankenstein approach"?', o: ['Inside-out design that stitches existing technology together and adds the appearance later', 'Design that copies a human exactly', 'Animal-shaped design', 'Design done together with users'], a: 0, e: 'It is considered poor practice because it ignores the user and the context (ch. 4).' },
+    { q: 'Which problem does the principle "underpromise and overdeliver" target?', o: ['Disappointment when the function cannot keep the expectations raised by appearance', 'The robot’s price', 'Battery life', 'The difficulty of programming'], a: 0, e: 'The textbook even suggests considering not calling the artefact a robot (section 4.1.4).' },
+    { q: 'Why did Paro become a seal rather than a cat?', o: ['People knew real cats too well and were disappointed by the comparison', 'Seals were cheaper', 'Cat shapes were banned by law', 'Seals are faster'], a: 0, e: 'An open design that is not compared to a familiar animal widens the interaction (section 4.1.4).' }
+  ],
+  3: [
+    { q: 'Which is NOT one of Epley et al.’s (2007) three factors of anthropomorphism?', o: ['Effectance motivation', 'Sociality motivation', 'Elicited agent knowledge', 'Battery capacity'], a: 3, e: 'The three are the wish to explain an unfamiliar agent, the wish for connection, and readily available knowledge about humans.' },
+    { q: 'What was Mori’s signature example of the uncanny valley?', o: ['A realistic prosthetic hand', 'An industrial robot', 'A toy robot', 'A healthy person'], a: 0, e: 'It looks real at a glance, but a handshake reveals a boneless feel and coldness, and the result is eeriness.' },
+    { q: 'What do recent studies point to as a cause of the valley?', o: ['Mismatch in humanlikeness between features', 'The robot’s weight', 'The loudness of its voice', 'Its colour'], a: 0, e: 'Kätsyri et al. (2015): mismatches such as very humanlike skin with slightly off muscle movement.' }
+  ],
+  4: [
+    { q: 'Which of Hall’s four zones is the distance between acquaintances and colleagues?', o: ['Social distance (1.2 to about 4 m)', 'Intimate distance', 'Personal distance', 'Public distance'], a: 0, e: 'Intimate (~0.5 m), personal (0.5–1.2 m), social (1.2–4 m), public (4 m and beyond) (section 5.1.1).' },
+    { q: 'What is the problem with a navigation algorithm that treats people as mere obstacles?', o: ['It swerves only just before a collision and looks aggressive', 'It yields too early', 'It is too slow', 'It cannot see people at all'], a: 0, e: 'People signal their direction and give way much earlier (section 5.2.2).' },
+    { q: 'In the Joggobot study, what happened when the drone followed from behind?', o: ['People felt chased and enjoyed the run less', 'People ran faster', 'There was no difference', 'People lost the drone'], a: 0, e: 'People preferred to be the one doing the chasing (ch. 5 introduction).' }
+  ],
+  5: [
+    { q: 'What did Mutlu et al. (2009) show about robot gaze?', o: ['It can choose the next speaker in a multi-party conversation', 'It makes the robot move faster', 'It improves speech recognition', 'It makes people afraid of the robot'], a: 0, e: 'Gaze is a cue for managing turns in conversation (section 6.2.1).' },
+    { q: 'In Salem et al.’s (2013) ASIMO study, what did gestures that did not match the speech do?', o: ['They raised ratings of the robot but lowered task performance', 'They had no effect', 'They were worse in every respect', 'They made the speech inaudible'], a: 0, e: 'Hence gestures must be designed carefully and tested experimentally (section 6.2.2).' },
+    { q: 'What is "legible" motion in Dragan et al. (2013)?', o: ['Motion from which an observer can quickly infer the goal while watching', 'The most energy-efficient motion', 'The fastest motion', 'Motion performed when no one is watching'], a: 0, e: 'It is distinguished from predictable motion, the efficient motion expected when the goal is known.' }
+  ],
+  6: [
+    { q: 'What does automatic speech recognition (ASR) do?', o: ['Turns recorded speech into text; it is not understanding', 'Understands the meaning of speech', 'Reads emotions', 'Generates speech'], a: 0, e: 'Extracting meaning is a separate problem (sections 7.2–7.3).' },
+    { q: 'How long did a "yes" take on average in telephone conversations (Strömbergsson et al. 2013)?', o: ['About 100 ms', 'About 2 seconds', 'About 5 seconds', 'About 1 minute'], a: 0, e: 'Answers to unwelcome proposals took almost 500 ms. Robots routinely take seconds (section 7.4).' },
+    { q: 'Which technique gives the impression that a robot is listening in a noisy place, even without recognition?', o: ['Voice activity detection (VAD)', 'Text-to-speech (TTS)', 'Sentiment analysis', 'A dialogue manager'], a: 0, e: 'Telling speech from silence lets the robot hand over the turn (section 7.2.4).' }
+  ],
+  7: [
+    { q: 'What are the two axes of Russell’s (1980) circumplex model?', o: ['Valence and arousal', 'Agency and experience', 'Warmth and competence', 'Speed and size'], a: 0, e: 'Emotions are spread over a two-dimensional plane rather than treated as discrete categories (section 9.1).' },
+    { q: 'What was the original purpose of Ekman and Friesen’s (1975) six expressions?', o: ['To compile a set of facial expressions recognised across cultures', 'To fix a complete list of basic emotions', 'To design robot faces', 'To build emotion-recognition software'], a: 0, e: 'It is often mistaken for a list of basic emotions (section 9.1).' },
+    { q: 'Which action units make a smile in FACS?', o: ['AU6 (cheek raiser) and AU12 (lip corner puller)', 'AU1 and AU2', 'AU4 only', 'AU20 and AU26'], a: 0, e: 'Hashimoto et al.’s (2013) robot face implemented these AUs with actuators (section 9.3).' }
+  ],
+  8: [
+    { q: 'What did research on trust in automation identify as the key?', o: ['Calibrating trust to the system’s real ability', 'Maximising trust', 'Eliminating trust', 'Not measuring trust'], a: 0, e: 'Overtrust lets errors slip through; distrust throws away help (Lee & See 2004).' },
+    { q: 'Which factor had the largest effect on trust in Hancock et al.’s (2011) meta-analysis?', o: ['Robot performance-related factors', 'The weather', 'Participants’ height', 'The robot’s colour'], a: 0, e: 'The 2021 follow-up analysis gives more weight to human factors (section 8.4.1).' },
+    { q: 'Which two factors determine the intention to use in the technology acceptance model (TAM)?', o: ['Perceived usefulness and perceived ease of use', 'Price and size', 'Trust and enjoyment', 'Social influence and facilitating conditions'], a: 0, e: 'Adding trust and enjoyment gives the Almere model; adding social influence and facilitating conditions gives UTAUT (section 8.4.2).' }
+  ],
+  9: [
+    { q: 'Which role for an educational robot did both teachers and students prefer?', o: ['Assisting the teacher', 'Replacing the teacher', 'Exam invigilator', 'Cleaning'], a: 0, e: 'Reich-Stiebert & Eyssel (2016). Robots also often appear as peers (section 11.2).' },
+    { q: 'How do Paro’s sales differ between Japan and Europe/the United States?', o: ['Individuals buy it in Japan, but in Europe and the US almost only institutions do', 'It is sold only in Europe', 'It is not sold in Japan', 'There is no difference'], a: 0, e: 'Section 11.4.1.' },
+    { q: 'How do collaborative robots differ from traditional industrial robots?', o: ['They work in the same space as people', 'They are stronger', 'They are stiffer', 'They stay inside a fence'], a: 0, e: 'Traditional industrial robots were stiff, strong and senseless, so people could not go near them (section 11.8).' }
+  ],
+  10: [
+    { q: 'What is the Wizard of Oz (WoZ) technique?', o: ['A researcher controls the robot from behind the scenes while it appears autonomous to participants', 'The robot performs magic', 'Participants control the robot', 'Two robots are used'], a: 0, e: 'Debriefing after the experiment is required (section 10.6.1; Riek 2012).' },
+    { q: 'Why is the order of conditions counterbalanced in a within-subjects design?', o: ['Because of order effects, such as always liking the first robot better', 'To recruit more participants', 'To make the statistics easier', 'To spare the robot'], a: 0, e: 'Having the same person experience both conditions reduces noise but creates order effects (section 10.3.2).' },
+    { q: 'What does a manipulation check confirm?', o: ['That participants perceived the manipulation as intended (e.g. saw the robot as male)', 'That the robot broke down', 'That participants finished the questionnaire', 'That the statistics are significant'], a: 0, e: 'The results are valid only if the independent variable was manipulated properly (section 10.2.1).' }
+  ],
+  11: [
+    { q: 'If you replicate a significant result, what is the replication’s p-value (Cumming 2008)?', o: ['80% of the time, anywhere between 0.00008 and 0.44', 'Always about the same', 'Always smaller', 'Always near 0.05'], a: 0, e: 'A p-value does not tell you how robust a result is (section 10.8).' },
+    { q: 'How are p-values and effect sizes related?', o: ['The effect size measures how different the conditions are; the p-value adds the sample size to that', 'They are the same thing', 'A smaller p-value means a larger effect', 'The effect size is computed from the p-value'], a: 0, e: 'An improvement from 4% to 6% is trivial for athlete’s foot but important for cancer survival (section 10.8).' },
+    { q: 'Which of the things that determine power can the researcher change?', o: ['The sample size', 'The tendency of the effect', 'The variability of the data', 'The p-value'], a: 0, e: 'Of the three, only the sample size is under the researcher’s control (section 10.8).' }
+  ],
+  12: [
+    { q: 'What do Sparrow and Sparrow (2006) argue?', o: ['Even with a perfect care robot, handing care over to a machine is unethical', 'Robots care better than people', 'Care robots are impossible', 'Care robots must be humanlike'], a: 0, e: 'A relationship has meaning only between two parties who can exchange affect and concern (section 12.2.2).' },
+    { q: 'How does the textbook assess Asimov’s three laws?', o: ['Widely known, but not a practical ethical guide', 'Implemented in every robot', 'Enacted as law', 'A perfect guide'], a: 0, e: 'The stories themselves show the limits of the laws (section 12.2).' },
+    { q: 'How do recent studies describe attitudes towards robots (Stapels & Eyssel)?', o: ['Ambivalent, with positive and negative together', 'Neutral', 'Always positive', 'Always negative'], a: 0, e: 'Hope for help sits alongside fear about jobs and privacy (section 12.2.4).' }
+  ]
+};
+const KEY = 'hri-guide-progress-en-v1';
+let prog = { solved: {}, tried: {} };
+try { const s = localStorage.getItem(KEY); if (s) prog = Object.assign({ solved: {}, tried: {} }, JSON.parse(s)); } catch (e) { /* without storage, remember only for this visit */ }
+const save = () => { try { localStorage.setItem(KEY, JSON.stringify(prog)); } catch (e) { /* ignore */ } };
+function chState(ch) {
+  const qs = QUIZ[ch], solved = qs.filter((_, i) => prog.solved[ch + '-' + i]).length, tried = qs.some((_, i) => prog.tried[ch + '-' + i]);
+  return { solved, total: qs.length, done: solved === qs.length, started: solved > 0 || tried };
+}
+function paintProgress() {
+  let done = 0;
+  Object.keys(QUIZ).forEach(ch => {
+    const s = chState(ch); if (s.done) done++;
+    $$(`.dot[data-ch="${ch}"]`).forEach(d => { d.classList.toggle('done', s.done); d.classList.toggle('half', !s.done && s.started); d.title = `Check questions ${s.solved}/${s.total}`; });
+    const hd = $(`.quiz[data-ch="${ch}"] .quiz-state`); if (hd) hd.textContent = `${s.solved}/${s.total} correct`;
+  });
+  $('#prog-count').textContent = done;
+}
+function renderQuiz(box) {
+  const ch = box.dataset.ch, qs = QUIZ[ch];
+  box.innerHTML = `<div class="quiz-head"><span>Check questions · Chapter ${ch}</span><span class="quiz-state"></span></div>` + qs.map((q, i) => {
+    const id = ch + '-' + i, ok = prog.solved[id];
+    return `<div class="q" data-id="${id}"><p class="qt"><span class="qn">${i + 1}.</span>${q.q}</p><div class="opts">${q.o.map((o, j) =>
+      `<button class="opt ${ok && j === q.a ? 'right' : ''}" data-j="${j}" ${ok ? 'disabled' : ''}>${o}</button>`).join('')}</div>
+      <p class="why" ${ok ? '' : 'hidden'} aria-live="polite">${ok ? `<b>Correct.</b> ${q.e}` : ''}</p></div>`;
+  }).join('');
+  box.addEventListener('click', e => {
+    const b = e.target.closest('.opt'); if (!b || b.disabled) return;
+    const qd = b.closest('.q'), id = qd.dataset.id, i = +id.split('-')[1], q = qs[i], j = +b.dataset.j, why = $('.why', qd);
+    prog.tried[id] = true;
+    if (j === q.a) {
+      prog.solved[id] = true;
+      $$('.opt', qd).forEach(o => { o.disabled = true; o.classList.remove('wrong'); });
+      b.classList.add('right'); why.hidden = false; why.innerHTML = `<b>Correct.</b> ${q.e}`;
+    } else {
+      b.classList.add('wrong'); why.hidden = false; why.innerHTML = '<b>Not quite.</b> Try another option.';
+    }
+    save(); paintProgress();
+  });
+}
+/* Shuffle the options so the answer is not always first (a fixed order per question) */
+Object.keys(QUIZ).forEach(ch => QUIZ[ch].forEach((q, i) => {
+  const r = rng(ch * 37 + i * 11 + 5), idx = q.o.map((_, k) => k);
+  for (let k = idx.length - 1; k > 0; k--) { const j = Math.floor(r() * (k + 1)); [idx[k], idx[j]] = [idx[j], idx[k]]; }
+  q.o = idx.map(k => q.o[k]); q.a = idx.indexOf(q.a);
+}));
+$$('.quiz[data-ch]').forEach(renderQuiz);
+paintProgress();
+
+(function resetUI() {
+  const wrap = $('#reset-wrap');
+  function idle() { wrap.innerHTML = '<button class="btn quiet" id="prog-reset">Clear progress</button>'; $('#prog-reset').addEventListener('click', ask); }
+  function ask() {
+    wrap.innerHTML = '<span>Clear all recorded answers?</span> <button class="btn danger" id="prog-yes">Clear</button> <button class="btn quiet" id="prog-no">Cancel</button>';
+    $('#prog-yes').addEventListener('click', () => { prog = { solved: {}, tried: {} }; save(); $$('.quiz[data-ch]').forEach(b => { const c = b.cloneNode(false); b.replaceWith(c); renderQuiz(c); }); paintProgress(); idle(); });
+    $('#prog-no').addEventListener('click', idle);
+  }
+  idle();
+})();
+
+(function railSpy() {
+  if (!('IntersectionObserver' in window)) return;
+  const ol = $('#rail-list'), links = $$('a', ol), map = {}; links.forEach(a => { map[a.getAttribute('href').slice(1)] = a; });
+  const io = new IntersectionObserver(es => {
+    es.forEach(e => {
+      if (!e.isIntersecting) return;
+      links.forEach(a => a.classList.remove('cur'));
+      const a = map[e.target.id]; if (!a) return;
+      a.classList.add('cur');
+      if (ol.scrollWidth > ol.clientWidth) ol.scrollLeft = a.offsetLeft - ol.offsetLeft - (ol.clientWidth - a.offsetWidth) / 2;
+    });
+  }, { rootMargin: '-30% 0px -60% 0px' });
+  $$('main > section').forEach(s => io.observe(s));
+})();
+
+/* ════════════ Glossary ════════════ */
+(function glossary() {
+  const G = [
+    ['Human–robot interaction (HRI)', 'HRI', 'The field that studies how robots interact with people inside the human social world and how people respond to robots.', 1],
+    ['Embodiment', 'embodiment', 'The fact that a robot has a physical body. It constrains sensing and action and makes people treat the robot like a person.', 1],
+    ['Social robot', 'social robot', 'A robot designed to interact socially with people. First used for robots in 1978.', 1],
+    ['Kismet', 'Kismet', 'MIT’s early social robot (1997). It responded to people with its face and neck.', 1],
+    ['Outside-in design', 'outside-in design', 'Design that starts from the interaction the robot will have, fixes appearance and behaviour, and then fills in the technology.', 2],
+    ['Frankenstein approach', 'Frankenstein approach', 'Stitching existing technology together and adding the appearance later. It misses the user and the context.', 2],
+    ['Affordance', 'affordance', 'A visible relationship that tells you what actions are possible. A robot’s appearance creates expectations about its abilities.', 2],
+    ['Design pattern', 'design pattern', 'An abstract description of a recurring interaction problem and the core of its solution (Kahn et al. 2008).', 2],
+    ['Robject', 'robject', 'A robot design that starts from an object rather than a creature: a social rubbish bin, a robotic ottoman.', 2],
+    ['Minimalist robot', 'minimalist robot', 'A robot that explores the minimum needed to trigger social interaction. Keepon, Muu.', 2],
+    ['Anthropomorphization', 'anthropomorphization', 'Attributing human traits, emotions and intentions to non-human things.', 3],
+    ['Pareidolia', 'pareidolia', 'Seeing human features such as faces in random patterns or objects.', 3],
+    ['Effectance · sociality · elicited agent knowledge', 'Epley’s three factors', 'The three factors of anthropomorphism proposed by Epley et al. (2007).', 3],
+    ['Media equation', 'media equation', 'Reeves and Nass’s (1996) finding that people treat computers and media as social actors.', 3],
+    ['Mind perception', 'mind perception', 'Attributing a mind to another along two dimensions, agency (thinking, planning) and experience (feeling) (Gray et al. 2007).', 3],
+    ['Warmth · competence', 'warmth / competence', 'The two core dimensions of social judgement about people, also used to evaluate robots.', 3],
+    ['Uncanny valley', 'uncanny valley', 'Mori’s (1970) hypothesis that affinity plunges at the point where a robot is almost, but not quite, human.', 3],
+    ['Godspeed questionnaire', 'Godspeed questionnaire', 'An HRI questionnaire measuring anthropomorphism, animacy, likeability, perceived intelligence and perceived safety (Bartneck et al. 2009).', 3],
+    ['Proxemics', 'proxemics', 'The study of how people use space in relation to other people (Hall).', 4],
+    ['Personal space', 'personal space', 'Intimate plus personal distance: the space a person regards as their own (within about 1.2 m).', 4],
+    ['F-formation', 'F-formation', 'An arrangement in which two or more people focus on a shared space; made of o-, p- and r-space (Kendon 1990).', 4],
+    ['Social navigation', 'social navigation', 'Robot navigation that treats people as people rather than obstacles and follows the rules of distance and direction.', 4],
+    ['Nonverbal cue', 'nonverbal cue', 'A signal outside the content of speech: gaze, facial expression, gesture, posture, sound.', 5],
+    ['Joint attention', 'joint attention', 'Two partners looking at the same thing together. The basis of learning and collaboration.', 5],
+    ['Deictic · iconic · symbolic · beat gestures', 'gesture types', 'Pointing, depicting content, carrying meaning on their own, following the rhythm of speech.', 5],
+    ['Mimicry · chameleon effect', 'mimicry / chameleon effect', 'Unconsciously copying a partner’s posture, and the way this aids persuasion (Chartrand & Bargh 1999).', 5],
+    ['Legibility · predictability', 'legibility / predictability', 'Motion whose goal can be read quickly while watching, versus the efficient motion expected when the goal is known (Dragan et al. 2013).', 5],
+    ['Automatic speech recognition (ASR)', 'automatic speech recognition', 'Turning recorded speech into text. Not understanding.', 6],
+    ['Word error rate (WER)', 'word error rate', 'The proportion of words a speech recogniser gets wrong.', 6],
+    ['Voice activity detection (VAD)', 'voice activity detection', 'Telling speech from silence and other sounds.', 6],
+    ['Dialogue manager', 'dialogue manager', 'The component that tracks the state of a multi-turn conversation.', 6],
+    ['Back-channel', 'back-channel', 'Signals such as "uh-huh" and nods that show you are listening.', 6],
+    ['Text-to-speech (TTS)', 'text-to-speech', 'Turning text into sound.', 6],
+    ['Circumplex model', 'circumplex model', 'Russell’s (1980) model that places emotions on a two-dimensional plane of valence and arousal.', 7],
+    ['PAD model', 'pleasure–arousal–dominance', 'A three-dimensional emotion space of pleasure, arousal and dominance. Used by Kismet.', 7],
+    ['OCC model', 'OCC model', 'A model that defines 22 emotion categories through appraisal of situations (Ortony et al. 1988).', 7],
+    ['Facial Action Coding System (FACS)', 'Facial Action Coding System', 'A system that groups facial muscles into action units (AUs) and writes expressions as their combinations (Ekman & Friesen 1978).', 7],
+    ['Facial feedback hypothesis', 'facial feedback hypothesis', 'The hypothesis that facial expressions in turn influence the emotion felt.', 7],
+    ['Trust', 'trust', 'Confidence that the other party will act appropriately. In automation it determines reliance.', 8],
+    ['Trust calibration', 'trust calibration', 'Matching trust to the system’s real ability, avoiding overtrust and distrust (Lee & See 2004).', 8],
+    ['Technology acceptance model (TAM)', 'technology acceptance model', 'The model in which the intention to use depends on perceived usefulness and perceived ease of use.', 8],
+    ['UTAUT · Almere model', 'UTAUT / Almere model', 'TAM extended with social influence and facilitating conditions; and extended with trust and enjoyment for assistive technology for older adults.', 8],
+    ['Novelty effect', 'novelty effect', 'The response to a robot at first encounter differs from the long-term response.', 8],
+    ['Tour guide robot', 'tour guide robot', 'An early HRI application that moves between exhibits and explains them.', 9],
+    ['Paro', 'Paro', 'A seal robot used in care facilities. Long-term effects have been reported.', 9],
+    ['Collaborative robot', 'collaborative robot (cobot)', 'A robot that works in the same space as people without a fence.', 9],
+    ['Independent · dependent variable', 'independent / dependent variable', 'What the researcher manipulates, and what is measured.', 10],
+    ['Between- · within-subjects design', 'between- / within-subjects design', 'Splitting participants across conditions, versus having the same people experience every condition.', 10],
+    ['Counterbalancing', 'counterbalancing', 'Varying the order of conditions across participants to cancel order effects.', 10],
+    ['Manipulation check', 'manipulation check', 'A question confirming that the experimental manipulation was perceived as intended.', 10],
+    ['Likert · semantic differential scale', 'Likert / semantic differential scale', 'Scales asking how much you agree with a statement, or where you stand between two opposites.', 10],
+    ['Wizard of Oz (WoZ)', 'Wizard of Oz', 'A researcher controls the robot from behind the scenes while it appears autonomous. Requires debriefing (Riek 2012).', 10],
+    ['Saturation', 'saturation', 'The point in qualitative research where new data begin to repeat existing themes.', 10],
+    ['p-value', 'p-value', 'The probability of the present data if there were no real effect. Not the robustness or size of a result.', 11],
+    ['Effect size', 'effect size', 'How different two conditions are. Cohen’s d, η², adjusted R².', 11],
+    ['Confidence interval', 'confidence interval', 'An interval that conveys the precision of an estimate.', 11],
+    ['Statistical power', 'statistical power', 'The probability of detecting a real effect. Controlled through the sample size.', 11],
+    ['p-hacking', 'p-hacking', 'Running many tests to find a result that is significant by chance.', 11],
+    ['Preregistration', 'preregistration', 'Registering hypotheses and analyses in advance to prevent p-hacking and support replication.', 11],
+    ['Frankenstein complex', 'Frankenstein complex', 'Asimov’s name for the fear that robots will take over the world.', 12],
+    ['Asimov’s three laws', 'Three Laws of Robotics', 'Do not harm humans, obey orders, protect yourself. Not a practical guide.', 12],
+    ['Ambivalent attitude', 'ambivalent attitude', 'An attitude towards robots in which hope and fear coexist (Stapels & Eyssel).', 12],
+    ['Debriefing', 'debriefing', 'Telling participants after the experiment what the study really involved, including any deception.', 12]
+  ];
+  const list = $('#gl-list'), q = $('#gl-q'), empty = $('#gl-empty');
+  function render() {
+    const s = q.value.trim().toLowerCase();
+    const items = G.filter(g => !s || (g[0] + ' ' + g[1] + ' ' + g[2]).toLowerCase().includes(s));
+    list.innerHTML = items.map(g => `<dt>${g[0]}<small>${g[1]} · <a href="#ch${g[3]}">ch. ${g[3]}</a></small></dt><dd>${g[2]}</dd>`).join('');
+    empty.hidden = items.length > 0;
+  }
+  q.addEventListener('input', render);
+  render();
+})();
+
+/* ════════════ Math typesetting ════════════ */
+if (window.renderMathInElement) {
+  renderMathInElement(document.body, {
+    delimiters: [{ left: '\\[', right: '\\]', display: true }, { left: '\\(', right: '\\)', display: false }],
+    throwOnError: false, strict: 'ignore', ignoredClasses: ['quiz', 'gloss']
+  });
+}
+})();
+
+</script>
+</body>
+</html>
