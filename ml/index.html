@@ -259,9 +259,11 @@ footer.colophon{max-width:1200px;margin:56px auto 0;padding-top:20px;border-top:
 <meta property="og:description" content="학부 입문 수준의 머신러닝과 딥러닝 개념을 14개 장의 실험과 확인 문제로 배우는 학습서">
 <meta property="og:url" content="https://kihyeonjoo.github.io/ml/">
 <meta property="og:locale" content="ko_KR">
+<link rel="alternate" hreflang="ko" href="https://kihyeonjoo.github.io/ml/">
+<link rel="alternate" hreflang="en" href="https://kihyeonjoo.github.io/ml/en/">
 </head>
 <body>
-<nav class="homelink" aria-label="사이트"><a href="/">← Kihyeon Joo</a><a href="/bci/">BCI 개념 학습서</a></nav>
+<nav class="homelink" aria-label="사이트"><a href="/">← Kihyeon Joo</a><span><a href="/bci/">BCI 개념 학습서</a> · <a href="en/" lang="en" hreflang="en">English</a></span></nav>
 
 <header class="masthead">
   <div>
@@ -914,7 +916,7 @@ footer.colophon{max-width:1200px;margin:56px auto 0;padding-top:20px;border-top:
 
 <footer class="colophon">
   <p>이 학습서의 실험은 모두 브라우저 안에서 직접 계산하며, 데이터는 교재의 예를 바탕으로 만든 합성 데이터입니다. 확인 문제의 진도는 이 브라우저에만 저장됩니다.</p>
-  <p><a href="/">Kihyeon Joo 홈페이지로 돌아가기</a> · <a href="/bci/">BCI 개념 학습서</a></p>
+  <p><a href="/">Kihyeon Joo 홈페이지로 돌아가기</a> · <a href="/bci/">BCI 개념 학습서</a> · <a href="en/" lang="en">English version</a></p>
 </footer>
 <script>
 (() => {
@@ -2498,7 +2500,7 @@ function divColor(v) { const pan = hexRgb(C.panel), c = hexRgb(v >= 0 ? C.c1 : C
   const qb = $('#at-q');
   qb.innerHTML = '<span class="small">질의 단어</span>' + T.map((t, i) => `<button class="btn" data-i="${i}" aria-pressed="${i === qi}">${t}</button>`).join('');
   const PM = plot('at-mat', p => {
-    const { ctx, w: W, h: H } = p, L = 58, Tp = 30, side = Math.min(W - L - 8, H - Tp - 8), cs = side / n;
+    const { ctx, w: W, h: H } = p, L = 58, Tp = 44, side = Math.min(W - L - 8, H - Tp - 8), cs = side / n;
     for (let i = 0; i < n; i++) {
       const { w } = weights(i);
       for (let j = 0; j < n; j++) {
@@ -2539,7 +2541,7 @@ function divColor(v) { const pan = hexRgb(C.panel), c = hexRgb(v >= 0 ? C.c1 : C
   $('#at-scale').addEventListener('click', e => { scale = !scale; toggle(e.currentTarget, scale); update(); });
   $('#at-mask').addEventListener('click', e => { mask = !mask; toggle(e.currentTarget, mask); update(); });
   PM.cv.addEventListener('click', e => {
-    const rc = PM.cv.getBoundingClientRect(), y = e.clientY - rc.top, side = Math.min(PM.w - 66, PM.h - 38), cs = side / n, i = Math.floor((y - 30) / cs);
+    const rc = PM.cv.getBoundingClientRect(), y = e.clientY - rc.top, side = Math.min(PM.w - 66, PM.h - 52), cs = side / n, i = Math.floor((y - 44) / cs);
     if (i >= 0 && i < n) { qi = i; update(); }
   });
   update();
