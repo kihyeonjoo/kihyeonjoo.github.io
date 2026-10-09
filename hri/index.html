@@ -1,0 +1,1784 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>인간–로봇 상호작용 개념 학습서</title>
+<meta name="description" content="로봇 설계와 의인화부터 공간·비언어·말·감정 채널, 신뢰와 수용, 연구 방법과 윤리까지 인간–로봇 상호작용(HRI)의 개념을 12개 장의 실험과 확인 문제로 배우는 학습서">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Hahmlet:wght@500;700;800&family=IBM+Plex+Sans+KR:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+/* Layout: 작업대형 교재. 왼쪽에 바탕 → 상호작용 채널 → 관계 → 연구 순서로 놓인 장 목록(고정), 오른쪽에 68ch 본문과 그보다 넓은 실험대 패널. 실험대 색은 색각 이상에 안전한 Okabe–Ito 순서(파랑, 주황, 초록, 주홍)를 따른다. */
+:root{
+  --paper:#f6f3f2;      /* 바탕: 붉은 쪽으로 살짝 기운 중성색 */
+  --panel:#ffffff;
+  --line:#d5d2c7;
+  --grid:#e9e6dc;
+  --ink:#1c1e1b;
+  --muted:#5b5e57;
+  --trace:#7a3e9d;      /* 보라: 강조, 링크 */
+  --mark:#c0400a;       /* 주홍을 글자용으로 짙게: 사람, 표시 */
+  --c0:#0072b2; --c1:#e69f00; --c2:#009e73; --c3:#d55e00; --c4:#cc79a7; --c5:#56b4e9;
+  --ok:#17784f; --warn:#966300; --bad:#b3261e;
+  --f-display:"Hahmlet","Noto Serif KR","AppleMyungjo","Batang",serif;
+  --f-body:"IBM Plex Sans KR","Apple SD Gothic Neo","Malgun Gothic","Noto Sans KR",system-ui,sans-serif;
+  --f-mono:"IBM Plex Mono",ui-monospace,"SFMono-Regular",Menlo,Consolas,monospace;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --paper:#121411; --panel:#1a1d19; --line:#343830; --grid:#262a24; --ink:#e7e8e2; --muted:#a1a59b;
+    --trace:#c9a3e8; --mark:#ff8c4a;
+    --c0:#4aa3df; --c1:#f0b33a; --c2:#2fc497; --c3:#ff7a3d; --c4:#e08cbf; --c5:#86cdf2;
+    --ok:#5ccb8e; --warn:#e8b04c; --bad:#ff7a70;
+    color-scheme:dark;
+  }
+}
+:root[data-theme="dark"]{
+  --paper:#121411; --panel:#1a1d19; --line:#343830; --grid:#262a24; --ink:#e7e8e2; --muted:#a1a59b;
+    --trace:#c9a3e8; --mark:#ff8c4a;
+    --c0:#4aa3df; --c1:#f0b33a; --c2:#2fc497; --c3:#ff7a3d; --c4:#e08cbf; --c5:#86cdf2;
+    --ok:#5ccb8e; --warn:#e8b04c; --bad:#ff7a70;
+  color-scheme:dark;
+}
+*{box-sizing:border-box}
+[hidden]{display:none!important}
+html{scroll-behavior:smooth}
+body{margin:0;background:var(--paper);color:var(--ink);font-family:var(--f-body);font-size:16px;line-height:1.72;
+  padding-inline:clamp(16px,4vw,40px);padding-block:0 72px;-webkit-font-smoothing:antialiased;word-break:keep-all;overflow-wrap:anywhere}
+a{color:var(--trace);text-underline-offset:3px}
+:focus-visible{outline:2px solid var(--trace);outline-offset:2px}
+p{margin:0 0 .9em}
+sub,sup{line-height:0}
+.mono{font-family:var(--f-mono)}
+.num{font-variant-numeric:tabular-nums}
+
+/* ── 머리말 ── */
+.masthead{max-width:1200px;margin:0 auto;padding-block:44px 32px;display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.3fr);gap:36px;align-items:start}
+.eyebrow{font-family:var(--f-mono);font-size:12.5px;letter-spacing:.08em;color:var(--muted);margin:0}
+h1{font-family:var(--f-display);font-weight:800;font-size:clamp(42px,6.2vw,68px);line-height:1.04;margin:.18em 0 .32em;letter-spacing:-.015em;text-wrap:balance}
+.lead{font-size:17px;max-width:44ch;margin-bottom:1.1em}
+.srcline{font-size:13.5px;color:var(--muted);max-width:52ch}
+.monitor{background:var(--panel);border:1px solid var(--line);border-radius:6px;padding:14px;display:grid;gap:10px;min-width:0}
+.monitor-top{display:flex;flex-wrap:wrap;gap:8px 12px;align-items:center;justify-content:space-between}
+.monitor-title{font-family:var(--f-mono);font-size:12.5px;letter-spacing:.06em;color:var(--muted)}
+.rec{display:inline-block;width:8px;height:8px;border-radius:50%;background:var(--mark);margin-right:6px;vertical-align:1px}
+.paused .rec{background:var(--muted)}
+
+/* 처리 단계 지도 */
+.pipeline{max-width:1200px;margin:0 auto 8px;padding:0;list-style:none;display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:0;border:1px solid var(--line);border-radius:6px;background:var(--panel);counter-reset:none}
+.pipeline li{padding:12px 14px;border-right:1px solid var(--line);display:grid;gap:2px;align-content:start;min-width:0}
+.pipeline li:last-child{border-right:0}
+.pipeline .k{font-family:var(--f-mono);font-size:12px;color:var(--trace)}
+.pipeline .n{font-weight:600}
+.pipeline .d{font-size:13px;color:var(--muted)}
+.loopnote{max-width:1200px;margin:0 auto 40px;font-size:13.5px;color:var(--muted)}
+
+/* ── 본문 틀 ── */
+.shell{max-width:1200px;margin:0 auto;display:grid;grid-template-columns:224px minmax(0,1fr);gap:52px}
+.rail{position:sticky;top:calc(env(safe-area-inset-top,0px) + 16px);align-self:start;max-height:calc(100vh - 32px);overflow:auto;padding-block:6px 12px}
+.rail-head{font-family:var(--f-mono);font-size:12.5px;color:var(--muted);margin:0 0 8px;display:flex;justify-content:space-between;gap:8px}
+.rail ol{list-style:none;margin:0;padding:0;display:grid;gap:1px}
+.rail a{display:grid;grid-template-columns:22px minmax(0,1fr) 10px;gap:8px;align-items:center;padding:6px 8px;border-radius:4px;color:var(--ink);text-decoration:none;font-size:14px;line-height:1.35}
+.rail a:hover{background:color-mix(in srgb,var(--trace) 8%,transparent)}
+.rail a.cur{background:color-mix(in srgb,var(--trace) 12%,transparent)}
+.rail .no{font-family:var(--f-mono);font-size:12.5px;color:var(--muted)}
+.rail .ts{display:none}
+.dot{width:10px;height:10px;border-radius:50%;border:1.5px solid var(--line)}
+.dot.half{border-color:var(--warn);background:linear-gradient(90deg,var(--warn) 50%,transparent 50%)}
+.dot.done{border-color:var(--ok);background:var(--ok)}
+.rail-foot{margin-top:12px;display:flex;flex-wrap:wrap;gap:6px;align-items:center;font-size:13px;color:var(--muted)}
+main{min-width:0}
+
+.chapter{padding-block:48px 20px;border-top:1px solid var(--line);scroll-margin-top:72px}
+.chapter:first-child{border-top:0;padding-top:8px}
+.ch-no{font-family:var(--f-mono);font-size:13px;color:var(--trace);letter-spacing:.06em;margin:0}
+h2{font-family:var(--f-display);font-weight:700;font-size:clamp(28px,3.4vw,38px);line-height:1.18;margin:.12em 0 .35em;text-wrap:balance;letter-spacing:-.01em}
+h3{text-wrap:balance}
+.refs{font-size:13.5px;color:var(--muted);margin:0 0 1.4em}
+.refs b{font-weight:600;color:var(--ink)}
+.prose{max-width:68ch}
+.prose h3{font-size:19px;font-weight:600;margin:1.6em 0 .4em}
+.prose ul,.prose ol{padding-left:1.25em;margin:0 0 1em}
+.prose li{margin-bottom:.3em}
+.defn{max-width:68ch;margin:0 0 1.2em;padding:14px 16px;border:1px solid var(--line);border-radius:6px;background:color-mix(in srgb,var(--trace) 6%,var(--panel))}
+.defn .lbl{font-family:var(--f-mono);font-size:12px;color:var(--muted);display:block;margin-bottom:4px}
+.defn p{margin:0;font-family:var(--f-display);font-weight:500;font-size:18px;line-height:1.6}
+.formula{font-family:var(--f-body);font-size:15px;background:var(--panel);border:1px solid var(--line);border-radius:4px;padding:10px 14px;overflow-x:auto;margin:0 0 1em;max-width:68ch}
+.katex{font-size:1.06em}
+.formula .katex-display{margin:2px 0 6px;text-align:left;overflow-x:auto;overflow-y:hidden;padding-block:3px}
+.formula .katex-display>.katex{text-align:left;font-size:1.14em;white-space:nowrap}
+@media (max-width:640px){.formula .katex-display>.katex{font-size:1em}.formula{padding:10px}}
+.formula small{font-family:var(--f-body);color:var(--muted);font-size:12.5px;white-space:normal;display:block;margin-top:4px}
+.tbl-wrap{overflow-x:auto;margin:0 0 1.2em;max-width:100%}
+table{border-collapse:collapse;width:100%;font-size:14.5px;line-height:1.55}
+th,td{padding:8px 10px;border-bottom:1px solid var(--line);text-align:left;vertical-align:top;overflow-wrap:break-word}
+thead th{font-weight:600;color:var(--muted);font-size:13px;white-space:nowrap}
+tbody th{font-weight:600}
+
+/* ── 실험대 ── */
+.bench{margin:28px 0;background:var(--panel);border:1px solid var(--line);border-radius:6px;padding:18px;display:grid;gap:14px;min-width:0}
+.bench-head{display:grid;gap:2px}
+.bench-no{font-family:var(--f-mono);font-size:12px;letter-spacing:.06em;color:var(--trace)}
+.bench-head h3{margin:0;font-size:18.5px;font-weight:600;line-height:1.4}
+.bench-head p{margin:2px 0 0;color:var(--muted);font-size:14.5px;max-width:72ch}
+.controls{display:flex;flex-wrap:wrap;gap:12px 22px;align-items:end}
+.ctl{display:grid;gap:3px;flex:1 1 190px;min-width:0}
+.ctl label,.ctl .lab{font-size:13.5px;color:var(--muted);display:flex;justify-content:space-between;gap:8px}
+.ctl output{font-family:var(--f-mono);color:var(--ink);font-variant-numeric:tabular-nums;white-space:nowrap}
+input[type=range]{width:100%;accent-color:var(--trace);margin:4px 0}
+input[type=search],input[type=number],select{font:inherit;font-size:14.5px;color:var(--ink);background:var(--paper);border:1px solid var(--line);border-radius:4px;padding:6px 10px;max-width:100%}
+.btn{font:inherit;font-size:14px;line-height:1.3;padding:7px 12px;border:1px solid var(--line);background:var(--paper);color:var(--ink);border-radius:4px;cursor:pointer}
+.btn:hover{border-color:var(--ink)}
+.btn[aria-pressed="true"]{background:var(--ink);color:var(--paper);border-color:var(--ink)}
+.btn.quiet{border-color:transparent;background:transparent;color:var(--muted);padding-inline:6px}
+.btn.quiet:hover{color:var(--ink)}
+.btn.danger{border-color:var(--bad);color:var(--bad)}
+.btnrow{display:flex;flex-wrap:wrap;gap:6px;align-items:center}
+.seg{display:inline-flex;flex-wrap:wrap;border:1px solid var(--line);border-radius:4px;overflow:hidden;max-width:100%}
+.seg button{font:inherit;font-size:14px;line-height:1.3;padding:7px 12px;border:0;border-right:1px solid var(--line);background:var(--paper);color:var(--ink);cursor:pointer}
+.seg button:last-child{border-right:0}
+.seg button[aria-pressed="true"]{background:var(--ink);color:var(--paper)}
+.cv{display:block;width:100%;border-radius:4px;background:var(--paper);touch-action:pan-y}
+.cv.drag{touch-action:none;cursor:crosshair}
+.readouts{display:flex;flex-wrap:wrap;gap:10px 28px;align-items:end}
+.ro{display:grid;gap:1px;min-width:0}
+.ro span{font-size:12.5px;color:var(--muted)}
+.ro b{font-family:var(--f-mono);font-size:20px;font-weight:500;font-variant-numeric:tabular-nums;line-height:1.3}
+.ro b small{font-size:13px;color:var(--muted);font-weight:400}
+.chip{display:inline-flex;align-items:center;gap:6px;font-size:12.5px;line-height:1.5;padding:1px 9px;border-radius:999px;border:1px solid currentColor;white-space:nowrap}
+.chip.ok{color:var(--ok)} .chip.warn{color:var(--warn)} .chip.bad{color:var(--bad)} .chip.neutral{color:var(--muted)} .chip.info{color:var(--trace)}
+.note{font-size:13.5px;color:var(--muted);margin:0;max-width:78ch}
+.legend{display:flex;flex-wrap:wrap;gap:6px 16px;font-size:13px;color:var(--muted);align-items:center}
+.sw{display:inline-block;width:12px;height:12px;border-radius:2px;vertical-align:-1px;margin-right:5px}
+.split{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:18px;align-items:start}
+.split3{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}
+.detail{border:1px solid var(--line);border-radius:6px;padding:12px 14px;background:var(--paper);font-size:14.5px;min-width:0}
+.detail h4{margin:0 0 4px;font-size:16px}
+.detail p{margin:0 0 .5em}
+.detail p:last-child{margin:0}
+.tagrow{display:flex;flex-wrap:wrap;gap:6px;margin:6px 0}
+.small{font-size:13px;color:var(--muted)}
+
+.cards{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:10px}
+.card{border:1px solid var(--line);border-radius:6px;padding:12px;background:var(--paper);display:grid;gap:8px;align-content:start;min-width:0}
+.card p{margin:0;font-size:14.5px}
+.card .verdict{font-size:13.5px;line-height:1.55}
+.card.right{border-color:var(--ok)} .card.wrong{border-color:var(--bad)}
+
+
+
+
+/* 확인 문제 */
+.quiz{margin:30px 0 6px;display:grid;gap:12px;max-width:78ch}
+.quiz-head{display:flex;justify-content:space-between;gap:8px;align-items:baseline;font-family:var(--f-mono);font-size:12.5px;letter-spacing:.05em;color:var(--muted)}
+.q{border:1px solid var(--line);border-radius:6px;padding:14px 16px;background:var(--panel)}
+.q .qt{margin:0 0 10px;font-weight:500}
+.q .qt .qn{font-family:var(--f-mono);color:var(--muted);margin-right:6px;font-weight:400}
+.q .opts{display:grid;gap:6px}
+.q .opt{font:inherit;font-size:15px;line-height:1.5;text-align:left;padding:8px 12px;border:1px solid var(--line);border-radius:4px;background:var(--paper);color:var(--ink);cursor:pointer}
+.q .opt:hover{border-color:var(--ink)}
+.q .opt.right{border-color:var(--ok);background:color-mix(in srgb,var(--ok) 12%,var(--paper))}
+.q .opt.wrong{border-color:var(--bad);background:color-mix(in srgb,var(--bad) 9%,var(--paper))}
+.q .why{margin:10px 0 0;font-size:14.5px}
+.q .why b{font-weight:600}
+
+/* 용어집, 출처 */
+.gloss{display:grid;grid-template-columns:minmax(150px,220px) minmax(0,1fr);gap:0;margin:0;border-top:1px solid var(--line);max-width:78ch}
+.gloss dt,.gloss dd{padding:9px 0;border-bottom:1px solid var(--line);margin:0}
+.gloss dt{font-weight:600;padding-right:14px}
+.gloss dt small{display:block;font-family:var(--f-mono);font-weight:400;font-size:12px;color:var(--muted)}
+.gloss dd{font-size:15px}
+.empty{color:var(--muted);font-size:14px}
+footer.colophon{max-width:1200px;margin:56px auto 0;padding-top:20px;border-top:1px solid var(--line);font-size:13px;color:var(--muted)}
+
+@media (max-width:980px){
+  .masthead{grid-template-columns:minmax(0,1fr);gap:22px;padding-block:32px 24px}
+  .pipeline{grid-template-columns:minmax(0,1fr)}
+  .pipeline li{border-right:0;border-bottom:1px solid var(--line);grid-template-columns:auto auto minmax(0,1fr);gap:4px 10px;align-items:baseline}
+  .pipeline li:last-child{border-bottom:0}
+  .shell{grid-template-columns:minmax(0,1fr);gap:0}
+  .rail{top:env(safe-area-inset-top,0px);z-index:5;background:var(--paper);border-bottom:1px solid var(--line);max-height:none;overflow:visible;padding-block:8px}
+  .rail-head{margin-bottom:4px}
+  .rail ol{display:flex;gap:4px;overflow-x:auto;scrollbar-width:thin;padding-bottom:4px}
+  .rail a{grid-template-columns:auto auto 10px;white-space:nowrap;padding:5px 9px;border:1px solid var(--line)}
+  .rail .t{display:none}
+  .rail .ts{display:inline}
+  .rail-foot{display:none}
+  .chapter{scroll-margin-top:110px}
+}
+@media (max-width:640px){
+  .split,.split3{grid-template-columns:minmax(0,1fr)}
+  .bench{padding:14px}
+  .gloss{grid-template-columns:minmax(0,1fr)}
+  .gloss dt{border-bottom:0;padding-bottom:0}
+  .defn p{font-size:16.5px}
+}
+@media (prefers-reduced-motion: reduce){
+  html{scroll-behavior:auto}
+  *{transition:none!important;animation:none!important}
+}
+
+/* ── HRI 실험대 전용 ── */
+.scen{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:10px}
+.h1-long{font-size:clamp(36px,4.8vw,60px)}
+.homelink{max-width:1200px;margin:0 auto;padding-block:18px 0;font-family:var(--f-mono);font-size:13px;display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap}
+.homelink a{text-decoration:none}
+.homelink a:hover{text-decoration:underline}
+.pipeline{grid-template-columns:repeat(4,minmax(0,1fr))}
+.pad{display:grid;grid-template-columns:repeat(3,44px);grid-template-rows:repeat(2,40px);gap:4px}
+.pad .btn{padding:0;font-size:18px;line-height:1}
+.pad .up{grid-column:2}
+.pad .lf{grid-column:1;grid-row:2} .pad .dn{grid-column:2;grid-row:2} .pad .rt{grid-column:3;grid-row:2}
+.steplog{font-family:var(--f-mono);font-size:12.5px;width:auto;min-width:260px;font-variant-numeric:tabular-nums}
+.steplog th,.steplog td{padding:3px 10px;text-align:right;border-bottom:1px solid var(--grid)}
+.steplog thead th{font-family:var(--f-body)}
+.logwrap{max-height:188px;overflow:auto;border:1px solid var(--line);border-radius:4px;background:var(--paper)}
+.tokens{font-family:var(--f-mono);font-size:14px;line-height:1.7;background:var(--paper);border:1px solid var(--line);border-radius:4px;padding:8px 12px;overflow-x:auto;white-space:nowrap}
+.tokens b{font-weight:500;color:var(--trace)}
+.pair{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:12px}
+.pair .opt-card{border:1px solid var(--line);border-radius:6px;background:var(--paper);padding:8px;display:grid;gap:6px;min-width:0}
+.pair .opt-card .btn{justify-self:stretch}
+.rlds{font-size:13.5px}
+.rlds td,.rlds th{padding:5px 8px}
+.rlds code{font-family:var(--f-mono);font-size:12.5px}
+.mapkey{display:flex;flex-wrap:wrap;gap:6px 14px;font-size:13px;color:var(--muted)}
+.mapkey i{display:inline-block;width:14px;height:14px;border-radius:3px;vertical-align:-2px;margin-right:5px;border:1px solid var(--line)}
+.kbd{font-family:var(--f-mono);font-size:12px;border:1px solid var(--line);border-bottom-width:2px;border-radius:3px;padding:0 5px;background:var(--paper)}
+.calc-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:10px}
+@media (max-width:640px){.pair{grid-template-columns:minmax(0,1fr)}.pipeline{grid-template-columns:minmax(0,1fr)}}
+</style>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🤝</text></svg>">
+<meta property="og:title" content="인간–로봇 상호작용 개념 학습서">
+<meta property="og:description" content="로봇 설계와 의인화부터 공간·비언어·말·감정 채널, 신뢰와 수용, 연구 방법과 윤리까지 인간–로봇 상호작용(HRI)의 개념을 12개 장의 실험과 확인 문제로 배우는 학습서">
+<meta property="og:url" content="https://kihyeonjoo.github.io/hri/">
+<meta property="og:locale" content="ko_KR">
+
+</head>
+<body>
+<nav class="homelink" aria-label="사이트"><a href="/">← Kihyeon Joo</a><span><a href="/robot/">로봇 학습 개념 학습서</a> · <a href="/ml/">머신러닝·딥러닝 개념 학습서</a> · <a href="/bci/">BCI 개념 학습서</a></span></nav>
+
+<header class="masthead">
+  <div>
+    <p class="eyebrow">설계 · 의인화 · 공간 · 비언어 · 말 · 감정 · 신뢰 · 연구 방법 · 학부 입문 개념 학습서</p>
+    <h1 class="h1-long">인간–로봇 상호작용 개념 학습서</h1>
+    <p class="lead">사람이 로봇을 어떻게 보고, 로봇이 사람 곁에서 어떻게 행동해야 하는지를 12개 장으로 따라갑니다. 장마다 직접 조작하는 실험과 확인 문제가 있습니다.</p>
+    <p class="srcline">근거는 Bartneck, Belpaeme, Eyssel, Kanda, Keijsers, Šabanović의 『Human-Robot Interaction: An Introduction』 2판(Cambridge University Press, 2024, 저자 공식 무료판)과 각 장의 원 논문입니다. 각 장 머리에 해당 장과 논문을 적었습니다. 로봇이 행동을 배우는 방법은 <a href="/robot/">로봇 학습 개념 학습서</a>에 있습니다. 실험은 모두 이 페이지 안에서 직접 계산하며, 사람의 반응은 교재가 설명하는 경향을 단순화한 모형입니다. 실제 사람의 반응을 대신하지 않습니다.</p>
+  </div>
+  <figure class="monitor" id="hero" style="margin:0">
+    <div class="monitor-top">
+      <span class="monitor-title"><span class="rec"></span>복도에서 사람을 피해 가는 로봇</span>
+      <div class="btnrow">
+        <button class="btn" id="hero-social" aria-pressed="true">사회적 항법</button>
+        <button class="btn quiet" id="hero-pause" aria-pressed="false">일시정지</button>
+      </div>
+    </div>
+    <canvas class="cv" id="hero-cv" style="height:270px" role="img" aria-label="복도를 오가는 사람들과 로봇"></canvas>
+    <p class="note" id="hero-note">사람들(주홍)이 복도를 오가고 로봇(보라)이 반대편 끝으로 갑니다. 옅은 원은 각 사람의 개인 공간입니다. "사회적 항법"을 켜면 로봇은 사람을 장애물이 아니라 사람으로 보고, 미리 비키고 개인 공간을 피해 갑니다. 끄면 부딪히기 직전에야 비킵니다. 4장에서 다룹니다.</p>
+  </figure>
+</header>
+
+<ol class="pipeline" aria-label="학습서의 네 부분">
+  <li><span class="k">1부</span><a class="n" href="#ch1">바탕</a><span class="d">HRI란, 설계, 의인화 · 1–3장</span></li>
+  <li><span class="k">2부</span><a class="n" href="#ch4">상호작용 채널</a><span class="d">공간, 비언어, 말, 감정 · 4–7장</span></li>
+  <li><span class="k">3부</span><a class="n" href="#ch8">사람과 로봇의 관계</a><span class="d">신뢰와 수용, 응용 · 8–9장</span></li>
+  <li><span class="k">4부</span><a class="n" href="#ch10">연구하기</a><span class="d">연구 방법, 통계, 윤리 · 10–12장</span></li>
+</ol>
+<p class="loopnote">HRI는 로봇공학, 심리학, 디자인, 인간–컴퓨터 상호작용, 철학이 함께 만드는 분야입니다(교재 2장). 이 학습서는 먼저 사람이 로봇을 어떻게 보는지(1부)를 다루고, 로봇과 사람이 주고받는 채널을 하나씩 살핀 뒤(2부), 그 결과로 생기는 신뢰와 수용, 실제 응용(3부)을 봅니다. 마지막 4부는 이런 것을 과학적으로 연구하고 윤리적으로 다루는 방법입니다.</p>
+
+<div class="shell">
+<nav class="rail" aria-label="장 목록">
+  <p class="rail-head"><span>장 목록</span><span>완료 <b id="prog-count" class="num">0</b>/12</span></p>
+  <ol id="rail-list">
+    <li><a href="#ch1"><span class="no">1</span><span class="t">HRI란 무엇인가</span><span class="ts">HRI</span><span class="dot" data-ch="1"></span></a></li>
+    <li><a href="#ch2"><span class="no">2</span><span class="t">로봇의 설계</span><span class="ts">설계</span><span class="dot" data-ch="2"></span></a></li>
+    <li><a href="#ch3"><span class="no">3</span><span class="t">의인화와 불쾌한 골짜기</span><span class="ts">의인화</span><span class="dot" data-ch="3"></span></a></li>
+    <li><a href="#ch4"><span class="no">4</span><span class="t">공간</span><span class="ts">공간</span><span class="dot" data-ch="4"></span></a></li>
+    <li><a href="#ch5"><span class="no">5</span><span class="t">비언어: 시선, 몸짓, 동작</span><span class="ts">비언어</span><span class="dot" data-ch="5"></span></a></li>
+    <li><a href="#ch6"><span class="no">6</span><span class="t">말</span><span class="ts">말</span><span class="dot" data-ch="6"></span></a></li>
+    <li><a href="#ch7"><span class="no">7</span><span class="t">감정</span><span class="ts">감정</span><span class="dot" data-ch="7"></span></a></li>
+    <li><a href="#ch8"><span class="no">8</span><span class="t">신뢰와 수용</span><span class="ts">신뢰</span><span class="dot" data-ch="8"></span></a></li>
+    <li><a href="#ch9"><span class="no">9</span><span class="t">응용 분야</span><span class="ts">응용</span><span class="dot" data-ch="9"></span></a></li>
+    <li><a href="#ch10"><span class="no">10</span><span class="t">HRI 연구 방법</span><span class="ts">연구 방법</span><span class="dot" data-ch="10"></span></a></li>
+    <li><a href="#ch11"><span class="no">11</span><span class="t">통계와 재현성</span><span class="ts">통계</span><span class="dot" data-ch="11"></span></a></li>
+    <li><a href="#ch12"><span class="no">12</span><span class="t">윤리와 사회</span><span class="ts">윤리</span><span class="dot" data-ch="12"></span></a></li>
+    <li><a href="#glossary"><span class="no">··</span><span class="t">용어집</span><span class="ts">용어집</span><span></span></a></li>
+    <li><a href="#sources"><span class="no">··</span><span class="t">교재·논문 대응표</span><span class="ts">출처</span><span></span></a></li>
+  </ol>
+  <div class="rail-foot">
+    <span class="dot done"></span>확인 문제 모두 정답
+    <span class="dot half"></span>푸는 중
+    <span id="reset-wrap"><button class="btn quiet" id="prog-reset">진도 지우기</button></span>
+  </div>
+</nav>
+
+<main>
+
+<!-- ───────────── 1장 ───────────── -->
+<section class="chapter" id="ch1">
+  <p class="ch-no">1장</p>
+  <h2>HRI란 무엇인가</h2>
+  <p class="refs">교재: <b>Bartneck 외</b> 1장, 2장</p>
+  <div class="defn"><span class="lbl">정의 · Bartneck 외 2장</span>
+    <p>로봇공학이 로봇의 몸과 물리 세계를 다룬다면, 인간–로봇 상호작용(HRI)은 로봇이 사람의 사회 세계 안에서 사람과 어떻게 상호작용하고, 사람이 로봇의 존재에 어떻게 반응하는지를 다룬다.</p>
+  </div>
+  <div class="prose">
+    <h3>물리적 상호작용과 사회적 상호작용</h3>
+    <p>빈 창고에서 상자를 집어 옮기는 로봇은 자기 몸과 환경의 물리만 다룹니다. 그런데 그 상자를 창고 직원에게 가져다주거나 카페 손님에게 커피를 나르면, 로봇은 물리적인 동작에 더해 사회적인 것을 생각해야 합니다. 사람이 어디에 있는지, 어떻게 다가가야 안전하고 적절한지, 그리고 "고맙습니다"에 "천만에요"라고 답하는 것 같은 사회 규칙을 어떻게 따를지입니다. 사람에게는 당연한 이 규칙들이 로봇에게는 전부 알려지지 않은 것이어서 설계자가 하나하나 챙겨야 합니다. 이것이 HRI의 질문을 로봇공학만의 질문과 다르게 만듭니다.</p>
+    <h3>체현이 만드는 차이</h3>
+    <p>HRI를 다른 컴퓨팅 기술과 다르게 만드는 것은 로봇이 몸을 가진다는 점, 곧 <b>체현(embodiment)</b>입니다. 로봇의 몸은 감지하고 행동하는 방식을 제약하지만, 동시에 사람이 로봇을 사람처럼 대하게 하는 <b>행동 유도성(affordance)</b>이기도 합니다. 로봇에 눈이 있으면 사람은 로봇이 볼 수 있다고 가정하고, 입이 있으면 말할 수 있다고 가정합니다. 사람은 이렇게 사람끼리의 상호작용 경험을 그대로 가져와 로봇을 이해하는데, 로봇이 그 기대에 미치지 못하면 실망이 따라옵니다(2장, 8장).</p>
+    <h3>여러 분야가 모이는 곳</h3>
+    <p>HRI는 공학자, 심리학자, 디자이너, 인류학자, 사회학자, 철학자가 함께 일하는 다학제 분야입니다. 교재(2.2절)는 세 집단 사이의 벽을 셋으로 정리합니다. 지식의 표현(공학자와 과학자는 명시적으로 출판하고, 디자이너는 설계물 자체와 직관에 담음), 현실을 보는 눈(공학자와 디자이너는 세상을 바꾸려 하고, 과학자는 이해하려 함), 주된 관심(공학자는 기술, 디자이너와 과학자는 사람). 이 차이를 미리 알아 두면 협업이 수월해집니다.</p>
+    <h3>짧은 역사</h3>
+    <p>"사회적 로봇"이라는 말은 1978년 잡지 기사에서 처음 로봇의 뜻으로 쓰였습니다. 1990년대의 행동 기반 로봇들은 단순한 반응 규칙만으로도 살아 있는 듯한 인상을 주어, 겉으로 보이는 지능이 어떻게 만들어지는지에 대한 생각을 바꿨습니다. 1997년 MIT의 <b>Kismet</b>은 눈, 눈썹, 입술, 목을 움직이며 사람의 목소리와 움직임에 반응한 초기 사회적 로봇입니다. 적은 수의 사회적 욕구만 넣었는데도 큰 눈과 과장된 얼굴(아기 도식)을 이용해 놀랄 만큼 사회적인 존재감을 냈습니다. 이후 Nao(2006–), Pepper, Keepon, Paro 같은 상용 플랫폼이 나오면서 여러 연구실이 같은 로봇으로 연구를 반복하고 비교할 수 있게 되었습니다.</p>
+  </div>
+  <figure class="bench" id="b1-1">
+    <figcaption class="bench-head"><span class="bench-no">실험 1-1</span><h3>이 상호작용은 어떤 종류일까</h3><p>상황마다 로봇이 다뤄야 하는 것이 물리적인 것인지, 사회적인 것인지, 둘 다인지 고르세요. 고르면 이유가 나옵니다.</p></figcaption>
+    <div class="scen" id="kind-cards"></div>
+    <div class="readouts"><div class="ro"><span>맞힌 판정</span><b id="kind-score" class="num">0 / 8</b></div><button class="btn quiet" id="kind-reset">다시 풀기</button></div>
+  </figure>
+  <div class="quiz" data-ch="1"></div>
+</section>
+
+<!-- ───────────── 2장 ───────────── -->
+<section class="chapter" id="ch2">
+  <p class="ch-no">2장</p>
+  <h2>로봇의 설계</h2>
+  <p class="refs">교재: <b>Bartneck 외</b> 4.1절, 4.2절</p>
+  <div class="prose">
+    <h3>안에서 밖으로, 밖에서 안으로</h3>
+    <p>로봇은 흔히 공학자가 먼저 만들고 사회과학자가 나중에 시험합니다. TurtleBot 같은 이동 플랫폼에 센서와 팔을 붙이고, 시간이 남으면 겉을 씌우는 식입니다. 교재(4장)는 있는 기술을 모아 붙이는 이 방식을 "프랑켄슈타인 접근"이라고 부르며, 사용자와 맥락을 생각하지 않기 때문에 좋지 않다고 봅니다. 반대 방향은 로봇이 할 상호작용에서 출발해 겉모습과 행동을 정하고, 그 안에 기술을 채워 넣는 <b>밖에서 안으로</b>의 설계입니다. ASIMO는 위협적이지 않도록 작게 만들었고, Pepper는 일본 매장 손님에게 인사하려고 허리를 굽힐 수 있게 만들었습니다. 물개 로봇 Paro는 처음에 고양이 모양이었지만, 사람들이 진짜 고양이를 너무 잘 알아 비교하게 되자 물개로 바꿨습니다. 바퀴도 달았다가, 주 사용자인 노인들이 움직임이 불편해 로봇이 돌아다닐 필요가 없어서 뗐습니다.</p>
+    <h3>형태의 선택지</h3>
+    <ul>
+      <li><b>안드로이드와 휴머노이드</b>: 사람을 가장 닮았지만, 그만큼 기대에 부응해야 할 것이 많습니다.</li>
+      <li><b>동물형</b>: 고양이처럼 익숙한 동물, 또는 공룡이나 물개처럼 알지만 직접 겪어 보지 않은 동물의 모양입니다.</li>
+      <li><b>미니멀</b>: Keepon이나 Muu처럼 사회적 상호작용을 일으키는 최소 요건을 탐색합니다. 가장 극단적인 예는 상자 위의 움직이는 샌들 한 켤레와 "Naked Invisible Guy" 팻말뿐인 버스커 로봇입니다.</li>
+      <li><b>로브젝트(robject)</b>: 사회적 쓰레기통, 로봇 오토만처럼 생물이 아니라 물건에서 출발한 설계입니다.</li>
+    </ul>
+    <h3>행동 유도성과 설계 원칙</h3>
+    <p>Norman이 말한 <b>행동 유도성</b>은 어떤 행동이 가능한지를 알려 주는, 눈에 보이는 관계입니다. 로봇의 겉모습은 중요한 행동 유도성입니다. 사람은 로봇의 능력이 겉모습에 걸맞을 것이라고 가정하기 때문입니다. 교재(4.1.4절)가 정리한 원칙은 다음과 같습니다.</p>
+    <ul>
+      <li><b>형태와 기능을 맞춘다.</b> 휴머노이드면 사람처럼 말하고 생각하고 행동할 것이라고 기대합니다. 청소처럼 그럴 필요가 없는 일이라면 덜 사람 같은 설계가 낫습니다.</li>
+      <li><b>적게 약속하고 많이 준다(underpromise and overdeliver).</b> 겉모습이나 "지능적인 동반자"라는 소개로 기대를 높여 놓고 기능이 따라가지 못하면 실망이 크고, 때로는 상호작용 자체를 망칩니다. 교재는 "로봇"이라는 말 자체가 대중에게 높은 능력을 떠올리게 하므로 설계물을 로봇이라 부르지 않는 것까지 고려하라고 합니다.</li>
+      <li><b>상호작용이 기능을 넓힌다.</b> 사람은 설계가 비워 둔 곳을 자기 가치와 믿음으로 채웁니다. Paro는 반려동물을 떠올리게 하지만 아는 동물과 비교되지는 않아서, 능력이 아기 물개에 한참 못 미쳐도 반려동물 같은 존재로 받아들여집니다.</li>
+      <li><b>은유를 섞지 않는다.</b> 사람 같은 로봇의 피부가 일부만 덮여 있거나, 동물 로봇이 어른처럼 말하며 수학을 가르치면 이상합니다. 속이 드러난 필립 K. 딕 안드로이드는 사람 같으면서 기계 같아서 더 불편합니다(3장의 불쾌한 골짜기와 이어집니다).</li>
+    </ul>
+  </div>
+  <figure class="bench" id="b2-1">
+    <figcaption class="bench-head"><span class="bench-no">실험 2-1</span><h3>겉모습이 만드는 기대와 실제 능력의 격차</h3><p>위 슬라이더로 로봇의 겉모습을 정하면, 사람이 그 모습에서 기대하는 능력이 막대의 바깥선으로 나옵니다. 아래 슬라이더로 실제 능력을 정하면 채운 막대가 됩니다. 기대가 실제보다 큰 항목이 실망의 원인입니다. 교재의 원칙은 겉모습으로 하는 약속을 실제 능력보다 작게 두는 것입니다.</p></figcaption>
+    <div class="controls">
+      <div class="ctl"><label for="ex-face">얼굴과 눈 <output id="ex-face-o">0.7</output></label><input type="range" id="ex-face" min="0" max="1" step="0.05" value="0.7"></div>
+      <div class="ctl"><label for="ex-voice">말을 건다 <output id="ex-voice-o">0.8</output></label><input type="range" id="ex-voice" min="0" max="1" step="0.05" value="0.8"></div>
+      <div class="ctl"><label for="ex-arms">팔과 손 <output id="ex-arms-o">0.6</output></label><input type="range" id="ex-arms" min="0" max="1" step="0.05" value="0.6"></div>
+      <div class="ctl"><label for="ex-human">몸 전체의 사람다움 <output id="ex-human-o">0.5</output></label><input type="range" id="ex-human" min="0" max="1" step="0.05" value="0.5"></div>
+    </div>
+    <div class="controls">
+      <div class="ctl"><label for="ex-see">실제: 사람을 알아본다 <output id="ex-see-o">0.3</output></label><input type="range" id="ex-see" min="0" max="1" step="0.05" value="0.3"></div>
+      <div class="ctl"><label for="ex-talk">실제: 자유로운 대화를 이해한다 <output id="ex-talk-o">0.2</output></label><input type="range" id="ex-talk" min="0" max="1" step="0.05" value="0.2"></div>
+      <div class="ctl"><label for="ex-grasp">실제: 물건을 집고 건넨다 <output id="ex-grasp-o">0.3</output></label><input type="range" id="ex-grasp" min="0" max="1" step="0.05" value="0.3"></div>
+      <div class="ctl"><label for="ex-social">실제: 사회 규칙을 따른다 <output id="ex-social-o">0.3</output></label><input type="range" id="ex-social" min="0" max="1" step="0.05" value="0.3"></div>
+    </div>
+    <canvas class="cv" id="ex-cv" style="height:230px" role="img" aria-label="기대하는 능력과 실제 능력의 막대"></canvas>
+    <div class="readouts" id="ex-ro"></div>
+    <p class="note" id="ex-note"></p>
+  </figure>
+  <div class="quiz" data-ch="2"></div>
+</section>
+
+<!-- ───────────── 3장 ───────────── -->
+<section class="chapter" id="ch3">
+  <p class="ch-no">3장</p>
+  <h2>의인화와 불쾌한 골짜기</h2>
+  <p class="refs">교재와 논문: <b>Bartneck 외</b> 4.2절, 8.1–8.3절 · <b>Mori</b> (1970; 영역 2012) · <b>Epley 외</b> (2007) · <b>Reeves &amp; Nass</b> (1996) · <b>Kätsyri 외</b> (2015)</p>
+  <div class="prose">
+    <h3>의인화</h3>
+    <p>"내 컴퓨터가 나를 미워해." 사람은 사람이 아닌 것에 사람의 특성, 감정, 의도를 붙입니다. 이것이 <b>의인화(anthropomorphization)</b>입니다. 무작위 무늬에서 얼굴을 보는 <b>파레이돌리아</b>도 그 한 예입니다. 1976년 바이킹 1호가 찍은 화성 표면의 "얼굴"은 2001년 더 높은 해상도로 다시 찍자 그저 지형이었습니다. HRI 설계자는 이 성향을 설계 자원으로 씁니다. Keepon은 눈 두 개와 대칭인 몸만으로도 주의와 정서를 표현합니다.</p>
+    <p>초기 HRI에서 의인화는 겉모습이 얼마나 사람 같은지와 거의 같은 뜻이었습니다. Epley 등(2007)은 이를 심리 과정으로 넓혀 세 요인을 제안했습니다. 낯선 상대의 행동을 설명하고 싶은 <b>효능 동기</b>, 사회적 연결을 원하는 <b>사회성 동기</b>, 그리고 사람에 대한 지식이 쉽게 떠오르는 <b>유발된 행위자 지식</b>입니다. 사람은 자기 자신에 대한 지식 구조로 사람 아닌 것을 이해하려 하고, 그 결과 로봇에 감정과 의도를 붙입니다. 이는 로봇에 대한 인상뿐 아니라 로봇을 대하는 실제 행동도 바꿉니다.</p>
+    <h3>미디어 방정식</h3>
+    <p>Reeves와 Nass(1996)는 여러 HCI 실험으로 사람이 컴퓨터를 사회적 행위자처럼 대한다는 것을 보였습니다. 컴퓨터가 자기 성능을 물으면 다른 컴퓨터로 평가할 때보다 점수를 후하게 주는, 곧 컴퓨터에게 예의를 차리는 식입니다. 이 반응은 거의 자동으로 일어납니다. 이 "컴퓨터는 사회적 행위자(CASA)" 접근은 로봇의 성별 귀인, 로봇에 대한 심적 모형 연구로 이어졌습니다(교재 10.1절).</p>
+    <h3>마음 지각, 따뜻함과 유능함</h3>
+    <p>Gray 등(2007)은 마음 지각을 두 차원으로 나눕니다. 계획하고 생각하고 자제하는 <b>행위성(agency)</b>, 그리고 감정을 느끼고 희망을 가지는 <b>경험(experience)</b>입니다. 사람에 대한 사회적 판단의 핵심 차원인 <b>따뜻함</b>과 <b>유능함</b>도 로봇 연구에 그대로 쓰입니다. 의인화를 재는 HRI 전용 설문으로는 Godspeed 설문(Bartneck 외 2009)이 널리 쓰이고, 여러 언어로 번역되어 있습니다.</p>
+    <h3>불쾌한 골짜기</h3>
+    <p>Mori(1970)는 로봇이 사람을 닮아 갈수록 친밀감이 오르다가, 거의 사람 같지만 완전히 사람은 아닌 지점에서 친밀감이 급락하는 골짜기가 있다고 보았습니다. 그가 든 예는 의수입니다. 주름과 핏줄, 지문까지 흉내 낸 의수는 언뜻 진짜 같지만, 악수를 하면 뼈 없는 느낌과 차가움에 섬뜩함을 느낍니다. 움직임은 봉우리와 골짜기를 모두 키웁니다. 꺼진 산업용 로봇은 기름 묻은 기계일 뿐이지만 손처럼 움직이는 순간 친밀감이 생기고, 반대로 의수가 움직이면 섬뜩함이 더 커집니다. Mori는 분라쿠 인형처럼 적당한 인간다움에 머무는 것이 안전한 설계라고 제안했습니다.</p>
+    <p>최근 연구는 골짜기의 원인으로 <b>특징의 불일치</b>를 지목합니다. 아주 사람 같은 피부에 미세하게 어긋나는 얼굴 근육처럼, 특징마다 사람다움의 정도가 다를 때 섬뜩함이 커진다는 것입니다(Kätsyri 외 2015). 이 효과는 동물형 로봇과 성별 단서가 섞인 로봇에서도 반복되었습니다. 한편 섬뜩함은 짧게든 길게든 상호작용을 거듭하면 줄어드는 신기성 요인도 있습니다(교재 8.4절).</p>
+  </div>
+  <figure class="bench" id="b3-1">
+    <figcaption class="bench-head"><span class="bench-no">실험 3-1</span><h3>불쾌한 골짜기 탐색하기</h3><p>Mori의 그림 1을 본뜬 곡선입니다. 가로축은 사람다움, 세로축은 친밀감입니다. 슬라이더로 사람다움을 바꾸면 곡선 위의 위치와 Mori가 든 예가 나옵니다. 움직임을 켜면 봉우리와 골짜기가 커지고(그림 2), 특징 불일치를 올리면 골짜기가 깊어집니다.</p></figcaption>
+    <div class="controls">
+      <div class="ctl"><label for="uv-h">사람다움 <output id="uv-h-o">50%</output></label><input type="range" id="uv-h" min="0" max="100" step="1" value="50"></div>
+      <div class="ctl"><label for="uv-mm">특징 불일치 (Kätsyri 외) <output id="uv-mm-o">0.3</output></label><input type="range" id="uv-mm" min="0" max="1" step="0.05" value="0.3"></div>
+      <div class="ctl" style="flex:0 0 auto"><span class="lab">설정</span><div class="btnrow"><button class="btn" id="uv-move" aria-pressed="false">움직임</button><button class="btn" id="uv-fam" aria-pressed="false">여러 번 만남 (신기성 감소)</button></div></div>
+    </div>
+    <canvas class="cv" id="uv-cv" style="height:300px" role="img" aria-label="사람다움에 따른 친밀감 곡선"></canvas>
+    <div class="readouts" id="uv-ro"></div>
+    <p class="note">곡선의 모양은 Mori의 그림을 따라 손으로 그린 것이고 측정값이 아닙니다. Mori 자신도 이를 측정이 아니라 제안으로 내놓았습니다. 원문의 세로축 용어 신와칸(親和感)은 친숙함, 친밀감, 호감을 아우르는 말이라 영어로도 옮기기 어렵다고 교재는 적습니다.</p>
+  </figure>
+  <div class="quiz" data-ch="3"></div>
+</section>
+
+<!-- ───────────── 4장 ───────────── -->
+<section class="chapter" id="ch4">
+  <p class="ch-no">4장</p>
+  <h2>공간</h2>
+  <p class="refs">교재와 논문: <b>Bartneck 외</b> 5장 · <b>Hall</b> (1966) · <b>Kendon</b> (1990)</p>
+  <div class="prose">
+    <p>2012년의 조깅 동반 드론 Joggobot은 달리는 사람의 바로 앞에서 날았습니다. 개발자들이 위, 뒤, 앞, 옆 중 어디가 좋은지 실험했더니, 드론이 뒤에서 따라오면 사람들은 쫓기는 느낌을 받아 운동이 덜 즐거웠습니다. 사람들은 자기가 쫓는 쪽을 훨씬 좋아했습니다. 로봇을 사람에 대해 어디에 두느냐는 HRI의 중요한 설계 요소입니다.</p>
+    <h3>근접학</h3>
+    <p>문화인류학자 Hall은 사람이 다른 사람에 대해 공간을 쓰는 방식을 <b>근접학(proxemics)</b>이라 부르고 네 구역을 나눴습니다. 가까운 관계나 사적인 이야기를 위한 <b>친밀 거리</b>(몇 cm에서 약 0.5 m), <b>개인 거리</b>(약 0.5–1.2 m), 지인이나 동료 사이의 <b>사회 거리</b>(1.2–약 4 m), 연설처럼 비개인적인 자리의 <b>공적 거리</b>(약 4 m 이상)입니다. 친밀 거리와 개인 거리를 합친 것이 사람이 자기 것으로 여기는 <b>개인 공간</b>입니다. 이 거리는 나이와 문화에 따라 다릅니다. 남미처럼 접촉이 많은 문화와 미국처럼 적은 문화의 차이를 Hall은 북미 사람이 책상과 의자로 바리케이드를 치는 모습으로 그렸습니다. 거리뿐 아니라 배치도 규칙을 따릅니다. 나란히 앉은 사람은 더 협력적이고, 마주 앉은 사람은 더 경쟁적으로 행동했으며, 대화할 때 사람들은 보통 서로 비스듬히 섭니다.</p>
+    <h3>집단의 공간: F-형성</h3>
+    <p>Kendon(1990)은 둘 이상의 사람이 서로 마주 보며 공동의 공간에 집중하는 배치를 <b>F-형성(F-formation)</b>이라 불렀습니다. 가운데의 o-공간, 참가자들이 선 p-공간, 그 바깥의 r-공간으로 이루어지고, 두 사람이면 마주 보기, L자, 나란히, 여럿이면 원형이 됩니다. 칵테일파티에서 꽉 닫힌 원은 끼어들기 어렵고, 원이 열리면 초대로 읽힙니다. 로봇은 이것으로 어느 집단에 다가가도 되는지 가늠할 수 있고, 몸의 방향을 바꿔 집단의 F-형성을 바꿀 수도 있습니다(Kuzuoka 외 2010). 대화 중인 두 사람 사이는 공간이 있어도 지나가지 말아야 합니다.</p>
+    <h3>로봇의 사회적 항법</h3>
+    <p>로봇이 위치를 알고(SLAM), 사람을 찾고, 충돌을 피하는 기술(동적 창 접근, 경로 계획)은 로봇공학에서 잘 연구되어 있습니다. 문제는 장애물 사이를 잘 피하는 알고리즘이 사람 곁에서는 사회적으로 부적절하다는 것입니다. 사람을 장애물로 보는 로봇은 복도에서 마주 오는 사람과 부딪히기 몇 인치 전에야 비킵니다. 충돌은 피하지만 사람 눈에는 공격적입니다. 사람은 훨씬 일찍, 어느 쪽으로 갈지 몸으로 알리며 서로 양보하고 개인 공간을 침범하지 않습니다. 교재가 정리한 연구 결과는 다음과 같습니다.</p>
+    <ul>
+      <li>대부분의 사람은 로봇과 개인 거리나 사회 거리에서 상호작용하기를 바랍니다(Walters 외 2005). 복도에서 지나칠 때 로봇은 친밀 구역에 들어가지 않을 만큼의 거리를 두어야 합니다(Pacchierotti 외 2006).</li>
+      <li>대화를 시작하려면 앞에서 다가가는 것이 좋지만, 물건을 건네는 일에서는 앞에서의 접근이 덜 선호되고 실패가 많았습니다(Dautenhahn 외 2006; Shi 외 2013).</li>
+      <li>뒤에서 따라갈 때 사람의 궤적을 그대로 따르는 것이 지름길로 가는 것보다 자연스럽게 느껴집니다(Gockley 외 2007).</li>
+      <li>사람이 로봇에 다가올 때도 로봇이 제때 반응해야 합니다. 늦으면 어색하고, 다음에는 다가오지 않을 수 있습니다(Kato 외 2015).</li>
+    </ul>
+    <p>로봇의 궤적은 의도를 알리는 수단이기도 합니다. 방문객 몇 m 옆을 천천히 지나며 상호작용할 수 있음을 알리거나, 물건을 건넬 때 목표가 읽히는 <b>가독성 있는 동작</b>을 쓰는 것입니다(5장).</p>
+  </div>
+  <figure class="bench" id="b4-1">
+    <figcaption class="bench-head"><span class="bench-no">실험 4-1</span><h3>로봇이 다가오는 방향과 거리</h3><p>가운데 사람은 위를 보고 서 있고, Hall의 네 구역이 그려져 있습니다. 로봇이 어느 방향에서 얼마나 가까이 멈출지, 무엇을 하러 오는지 정하세요. 판정은 위에 정리한 연구 결과를 단순화한 규칙입니다.</p></figcaption>
+    <div class="controls">
+      <div class="ctl" style="flex:0 0 auto"><span class="lab">접근 방향</span><div class="seg" id="px-dir" role="group" aria-label="접근 방향"><button data-d="front" aria-pressed="true">앞</button><button data-d="side" aria-pressed="false">옆</button><button data-d="back" aria-pressed="false">뒤</button></div></div>
+      <div class="ctl" style="flex:0 0 auto"><span class="lab">하려는 일</span><div class="seg" id="px-task" role="group" aria-label="하려는 일"><button data-t="talk" aria-pressed="true">대화 시작</button><button data-t="hand" aria-pressed="false">물건 건네기</button><button data-t="pass" aria-pressed="false">그냥 지나가기</button></div></div>
+      <div class="ctl"><label for="px-d">멈추는 거리 <output id="px-d-o">1.0 m</output></label><input type="range" id="px-d" min="0.2" max="4.5" step="0.1" value="1"></div>
+    </div>
+    <canvas class="cv" id="px-cv" style="height:320px" role="img" aria-label="사람 주변의 거리 구역과 로봇의 위치"></canvas>
+    <div class="readouts" id="px-ro"></div>
+    <p class="note" id="px-note"></p>
+  </figure>
+  <figure class="bench" id="b4-2">
+    <figcaption class="bench-head"><span class="bench-no">실험 4-2</span><h3>복도에서 언제 비킬 것인가</h3><p>복도에서 사람과 로봇이 마주 옵니다. 로봇이 비키기 시작하는 거리를 정하세요. 늦게 비키는 로봇은 충돌은 피해도 사람의 친밀 구역을 침범하고, 사람은 그것을 공격적으로 느낍니다.</p></figcaption>
+    <div class="controls">
+      <div class="ctl"><label for="cr-d">비키기 시작하는 거리 <output id="cr-d-o">3.0 m</output></label><input type="range" id="cr-d" min="0.3" max="6" step="0.1" value="3"></div>
+      <div class="ctl" style="flex:0 0 auto"><div class="btnrow"><button class="btn" id="cr-run">다시 지나가기</button></div></div>
+    </div>
+    <canvas class="cv" id="cr-cv" style="height:180px" role="img" aria-label="복도에서 로봇과 사람이 지나치는 모습"></canvas>
+    <div class="readouts" id="cr-ro"></div>
+  </figure>
+  <div class="quiz" data-ch="4"></div>
+</section>
+
+<!-- ───────────── 5장 ───────────── -->
+<section class="chapter" id="ch5">
+  <p class="ch-no">5장</p>
+  <h2>비언어: 시선, 몸짓, 동작</h2>
+  <p class="refs">교재와 논문: <b>Bartneck 외</b> 6장, 5.2.4절 · <b>Mutlu 외</b> (2009) · <b>Dragan, Lee &amp; Srinivasa</b> (2013)</p>
+  <div class="prose">
+    <p>말의 내용 없이도 사람은 시선, 표정, 몸짓, 자세로 많은 것을 전합니다. 비언어 신호는 대개 자동으로, 때로는 무의식적으로 나오기 때문에 말보다 솔직하다고 여겨집니다. 좋아하지 않는 사람에게 친절하게 인사하면서도 눈을 덜 맞추고 접촉을 피하는 식입니다. HRI에서도 같습니다. 사람이 로봇에 대해 좋은 말을 하면서 몸은 긴장해 있을 수 있고, 로봇의 몸짓이 말의 리듬과 맞지 않으면 어색합니다. 로봇이 정면만 보고 우리의 말에 반응하지 않으면 상호작용은 무너집니다. 교재는 비언어 신호의 구현을 매끄러운 HRI의 전제 조건이라고 적습니다.</p>
+    <h3>시선</h3>
+    <p>시선은 관심, 이해, 주의를 알리고, 대화의 차례를 관리합니다. 한 사람에게서 다른 사람으로 눈을 옮기며 다음에 말할 사람을 정하는 식입니다. 두 사람이 같은 것을 함께 보는 <b>공동 주의</b>는 아이가 말을 배우는 발판이고, 협업에서 조율의 바탕입니다. 로봇의 시선 단서는 사람 사이에서와 비슷한 효과를 냅니다. 여러 사람과의 대화에서 로봇은 시선으로 다음 발언자를 정할 수 있고(Mutlu 외 2009), 수신자, 방관자, 비참여자의 역할을 나눌 수 있으며(Mutlu 외 2012), 이야기를 들려줄 때 눈을 맞춘 사람이 내용을 더 잘 기억했습니다(Mutlu 외 2006). 눈을 맞추다 의도적으로 피하는 행동은 로봇을 더 생각이 있는 존재로 보이게 합니다(Andrist 외 2014).</p>
+    <h3>몸짓</h3>
+    <p>몸짓은 역할로 나뉩니다. 무엇을 가리키는 <b>지시적</b> 몸짓, 큰 공을 든다며 팔을 벌리는 <b>도상적</b> 몸짓, 손을 흔드는 인사처럼 그 자체로 뜻이 있는 <b>상징적</b> 몸짓, 말의 리듬을 따라 지휘하듯 움직이는 <b>박자</b> 몸짓입니다. Salem 등(2013)의 실험에서 말과 함께 몸짓을 한 ASIMO는 더 사람 같고 호감 가는 로봇으로 평가되었고, 참가자들은 다시 상호작용하려는 의향도 높았습니다. 흥미롭게도 말과 맞지 않는 몸짓은 로봇 평가를 더 높였지만 과제 수행은 떨어뜨렸습니다. 지금은 사람이 말하는 영상 수백 시간으로 학습한 모델이 말과 어울리는 몸짓을 만듭니다. 뜻까지 늘 맞지는 않지만 움직임 자체는 사람과 구별하기 어렵습니다(Yoon 외 2022).</p>
+    <h3>모방, 접촉, 그리고 로봇만의 채널</h3>
+    <p>무의식적인 <b>모방(mimicry)</b>은 호감의 신호이고, 상대가 내 자세를 따라 하면 그 사람의 제안을 더 받아들이는 "카멜레온 효과"가 있습니다(Chartrand &amp; Bargh 1999). 다만 너무 티가 나거나 늦으면 조작으로 보여 역효과가 납니다. 사람의 표정을 따라 하고 고개를 맞춰 움직인 로봇은 기부를 더 많이 받았습니다(Wills 외 2016). 로봇은 팔다리, 귀, 꼬리 같은 몸뿐 아니라 소리, 빛, 색처럼 사람에게 없는 채널로도 신호를 보낼 수 있습니다.</p>
+    <h3>동작으로 의도 알리기</h3>
+    <p>물건을 건네줄 때 사람들은 로봇의 목표와 의도가 읽히는 동작을 선호합니다(Koay 외 2007). 가장 에너지 효율이 좋은 경로가 사람에게는 알아볼 수 없는 경로일 수 있어서, Dragan 등(2013)은 로봇 팔이 목표를 향해 <b>가독성 있는(legible)</b> 동작을 만들도록 하는 알고리즘을 제안했습니다. 그들은 두 개념을 구분합니다. <b>예측 가능한</b> 동작은 목표를 아는 관찰자가 예상하는 가장 효율적인 동작이고, <b>가독성 있는</b> 동작은 관찰자가 보면서 목표를 빨리 추론할 수 있는 동작입니다. 둘은 때로 충돌합니다. 가독성을 높이려면 다른 후보 목표에서 멀어지도록 경로를 과장해야 하는데, 그러면 효율은 떨어집니다.</p>
+  </div>
+  <figure class="bench" id="b5-1">
+    <figcaption class="bench-head"><span class="bench-no">실험 5-1</span><h3>로봇의 시선이 다음 발언자를 정한다</h3><p>로봇이 두 사람과 이야기합니다. 로봇이 말을 마칠 때 누구를 볼지 정하고 "100번 시험"을 누르세요. 관찰자 모형은 로봇이 바라본 사람이 다음에 말할 확률을 높게 둡니다. 비율은 Mutlu 등(2009)이 보고한 경향을 단순화한 가상의 값입니다.</p></figcaption>
+    <div class="controls">
+      <div class="ctl" style="flex:0 0 auto"><span class="lab">말을 마칠 때 로봇의 시선</span><div class="seg" id="gz-target" role="group" aria-label="시선"><button data-g="A" aria-pressed="true">A를 본다</button><button data-g="B" aria-pressed="false">B를 본다</button><button data-g="alt" aria-pressed="false">A와 B를 번갈아</button><button data-g="away" aria-pressed="false">아무도 안 본다</button></div></div>
+      <div class="ctl" style="flex:0 0 auto"><div class="btnrow"><button class="btn" id="gz-run">100번 시험</button><button class="btn quiet" id="gz-reset">기록 지우기</button></div></div>
+    </div>
+    <div class="split">
+      <canvas class="cv" id="gz-cv" style="height:220px" role="img" aria-label="로봇과 두 사람, 로봇의 시선"></canvas>
+      <canvas class="cv" id="gz-bar" style="height:220px" role="img" aria-label="다음 발언자 비율"></canvas>
+    </div>
+    <div class="readouts" id="gz-ro"></div>
+  </figure>
+  <figure class="bench" id="b5-2">
+    <figcaption class="bench-head"><span class="bench-no">실험 5-2</span><h3>예측 가능한 동작과 가독성 있는 동작</h3><p>로봇 손이 두 컵 중 하나로 갑니다. 관찰자는 지금까지의 경로를 보고 어느 컵이 목표인지 추론합니다(Dragan 등의 확률 모형을 단순화). 슬라이더로 경로를 다른 컵에서 멀어지게 과장할수록 관찰자는 더 빨리 확신하지만, 경로는 길어집니다.</p></figcaption>
+    <div class="controls">
+      <div class="ctl"><label for="lg-ex">경로의 과장 정도 <output id="lg-ex-o">0.0</output></label><input type="range" id="lg-ex" min="0" max="1" step="0.05" value="0"></div>
+      <div class="ctl"><label for="lg-t">진행 시간 <output id="lg-t-o">50%</output></label><input type="range" id="lg-t" min="0" max="1" step="0.01" value="0.5"></div>
+      <div class="ctl"><label for="lg-gap">두 컵 사이 거리 <output id="lg-gap-o">0.30</output></label><input type="range" id="lg-gap" min="0.1" max="0.6" step="0.05" value="0.3"></div>
+    </div>
+    <div class="split">
+      <canvas class="cv" id="lg-cv" style="height:260px" role="img" aria-label="두 목표와 로봇 손의 경로"></canvas>
+      <canvas class="cv" id="lg-p" style="height:260px" role="img" aria-label="시간에 따른 관찰자의 확신"></canvas>
+    </div>
+    <div class="readouts" id="lg-ro"></div>
+  </figure>
+  <div class="quiz" data-ch="5"></div>
+</section>
+
+<!-- ───────────── 6장 ───────────── -->
+<section class="chapter" id="ch6">
+  <p class="ch-no">6장</p>
+  <h2>말</h2>
+  <p class="refs">교재: <b>Bartneck 외</b> 7장</p>
+  <div class="prose">
+    <p>전자제품 매장의 로봇이 "안녕하세요, 무엇을 찾으세요?"라고 묻습니다. 당신이 "음, 글쎄요, 딸아이 카메라랑 건전지, 그냥 둘러보기도 하고요"라고 답하자 긴 침묵 뒤에 로봇이 같은 질문을 되풀이하며 더 천천히, 더 가까이서 말해 달라고 합니다. 로봇과의 대화는 왜 이렇게 어려울까요? 말로 하는 상호작용은 여러 단계로 이루어지고, 단계마다 어려움이 있습니다.</p>
+    <h3>음성 인식</h3>
+    <p><b>자동 음성 인식(ASR)</b>은 녹음된 말을 글로 바꿉니다. 이해가 아니라 받아쓰기입니다. 이 기술은 조용한 환경에서 지향성 마이크로 녹음한다고 가정하는데, HRI에서는 이 가정이 자주 깨집니다. 사람은 로봇에서 떨어져 있고, 주변 소음과 로봇 자신의 기계음이 함께 녹음됩니다. 그래서 핀 마이크나 헤드셋을 쓰는 일이 많습니다. 심층학습 이후 성능은 크게 올라, 교재가 인용한 한 시험에서는 단어 오류율(WER)이 1.4%로 사람의 평균 5.8%보다 낮습니다(Zhang 외 2022). 그래도 사투리, 비원어민, 아이의 말, 고유명사, 시끄럽고 울리는 공간은 여전히 어렵습니다. 인식할 범위를 숫자나 짧은 명령으로 제한하면 성능이 오릅니다. ASR 엔진은 대개 전사문과 함께 <b>신뢰도</b>를 돌려주고, 대안 전사문을 주기도 합니다. 소음이 심한 곳에서는 음성 활동 검출(VAD)만으로도 로봇이 듣고 있다는 인상을 주고 말차례를 넘길 수 있습니다.</p>
+    <h3>뜻 알아내기와 대화 관리</h3>
+    <p>글로 바뀐 말에서 뜻을 뽑는 것은 별개의 문제입니다. 감성 분석은 말이 얼마나 긍정적인지 숫자 하나로 내고, 의도 인식은 "음악 틀어 줘" 같은 요청을 알아챕니다. 여러 차례 주고받아야 하는 일에는 <b>대화 관리자(DM)</b>가 대화의 상태를 추적합니다. 피자 주문이라면 어떤 피자, 크기, 토핑이 정해졌는지가 상태입니다. 교재가 인용한 실제 기록에서, 모든 것을 글자 그대로 받아들이는 웨이터 로봇에게 참가자는 "물 한 잔 주실 수 있나요?"부터 시작해 로봇이 알아듣는 표현을 찾기까지 여러 번 고쳐 말해야 했습니다(Williams 외 2018).</p>
+    <h3>말차례</h3>
+    <p>사람은 듣는 동안 "응", "정말?" 같은 <b>백채널</b> 신호와 고개 끄덕임으로 듣고 있음을 알립니다. 로봇도 짧은 소리, 깜빡이는 빛, 끄덕임으로 이를 흉내 낼 수 있습니다. 사람의 응답은 빠릅니다. 전화 대화 분석에서 "네"라는 답은 평균 100 ms, 원치 않는 제안에 대한 답은 평균 거의 500 ms였습니다(Strömbergsson 외 2013). 사람은 질문이 끝나기 전에 답을 준비합니다. 로봇은 인식, 이해, 생성이 차례로 이어져 몇 초가 걸리기 일쑤입니다. 그 침묵을 추임새나 시각 신호로 메울 수 있지만 빠른 말차례를 대신하지는 못해서, 문장을 끝낼 계획이 서기 전에 말을 시작하는 즉시 합성, 지시가 끝나기 전에 행동을 시작하는 점진적 대화 처리가 연구됩니다.</p>
+    <h3>말 만들기</h3>
+    <p>글을 소리로 바꾸는 <b>음성 합성(TTS)</b>은 지난 10년 사이 크게 발전해 사람 목소리와 구별하기 어려운 수준입니다. 전통적인 매개변수 방식은 유연하지만 덜 자연스럽고, 녹음을 이어 붙이는 연결 방식은 자연스럽지만 녹음한 성우의 목소리에 묶입니다. 생성 모델이 이 한계를 넘었습니다. 남은 문제는 맥락 적응입니다. 조용한 방과 시끄러운 전시장에서 로봇은 같은 목소리로 말합니다.</p>
+  </div>
+  <figure class="bench" id="b6-1">
+    <figcaption class="bench-head"><span class="bench-no">실험 6-1</span><h3>잘못 들었을 때 어떻게 할 것인가</h3><p>로봇이 주문 200건을 받습니다. 인식 오류율과 신뢰도 문턱값, 확인 전략을 정하면, 모형은 주문마다 인식 결과와 신뢰도를 뽑아 대화를 흉내 냅니다. "늘 되묻기"는 안전하지만 길고, "되묻지 않기"는 짧지만 틀린 주문이 나갑니다. 신뢰도가 낮을 때만 되묻는 전략이 그 사이에 있습니다. 모형의 수치는 가상의 값입니다.</p></figcaption>
+    <div class="controls">
+      <div class="ctl"><label for="dm-wer">인식 오류율 <output id="dm-wer-o">15%</output></label><input type="range" id="dm-wer" min="0" max="0.5" step="0.01" value="0.15"></div>
+      <div class="ctl"><label for="dm-th">되묻는 신뢰도 문턱값 <output id="dm-th-o">0.70</output></label><input type="range" id="dm-th" min="0" max="1" step="0.05" value="0.7"></div>
+      <div class="ctl" style="flex:0 0 auto"><span class="lab">확인 전략</span><div class="seg" id="dm-strat" role="group" aria-label="확인 전략"><button data-s="never" aria-pressed="false">되묻지 않기</button><button data-s="thresh" aria-pressed="true">신뢰도가 낮을 때만</button><button data-s="always" aria-pressed="false">늘 되묻기</button></div></div>
+    </div>
+    <canvas class="cv" id="dm-cv" style="height:220px" role="img" aria-label="전략별 성공률과 대화 길이"></canvas>
+    <div class="readouts" id="dm-ro"></div>
+    <p class="note" id="dm-note"></p>
+  </figure>
+  <div class="quiz" data-ch="6"></div>
+</section>
+
+<!-- ───────────── 7장 ───────────── -->
+<section class="chapter" id="ch7">
+  <p class="ch-no">7장</p>
+  <h2>감정</h2>
+  <p class="refs">교재와 논문: <b>Bartneck 외</b> 9장 · <b>Russell</b> (1980) · <b>Ekman &amp; Friesen</b> (1978)</p>
+  <div class="prose">
+    <p>감정은 내 안의 상태를 밖으로 알리는 보편적 통신 채널입니다. 감정은 기분과 다릅니다. 감정은 원인과 대상이 뚜렷하고 짧게 지나가지만, 기분은 더 퍼져 있고 원인이 분명하지 않습니다.</p>
+    <h3>감정을 어떻게 나타낼 것인가</h3>
+    <p>감정의 목록은 사람마다, 문화마다 달라 하나로 정하기 어렵습니다. Ekman과 Friesen(1975)은 문화를 가로질러 알아보는 여섯 가지 <b>얼굴 표정</b>을 정리했습니다. 이것은 종종 기본 감정의 목록으로 오해되지만, 원래는 얼굴로 표현되고 여러 문화에서 알아보는 표정의 집합이었습니다. Russell(1980)은 감정이 별개의 범주가 아니라 두 독립된 신경생리 체계, 곧 <b>각성(arousal)</b>과 <b>유인가(valence)</b>의 해석이라고 보고, 감정을 2차원 평면 위에 펼친 <b>원형 모델(circumplex)</b>을 제안했습니다. 이 모델은 여러 언어와 문화에서 확인되었지만, 메타분석은 모든 정서 상태가 예상한 자리에 놓이지는 않는다고 지적합니다(Remington 외 2000). 원형 모델은 "화남"과 "두려움"을 나란히 두는 문제가 있어, 지배(dominance) 축을 더한 3차원 PAD 모델이 나왔고 Kismet을 비롯한 여러 로봇이 이를 씁니다. 22개 감정 범주를 상황 평가로 정의하는 OCC 모델도 있지만, 많은 설계자는 Ekman의 여섯 표정만 구현합니다. 믿을 만하게 알아보지만 상호작용의 폭은 좁습니다.</p>
+    <h3>로봇의 표현</h3>
+    <p>Ekman의 <b>얼굴 동작 부호화 체계(FACS)</b>는 얼굴 근육을 동작 단위(AU)로 묶고 표정을 AU의 조합으로 적습니다. 웃는 얼굴은 뺨을 올리는 AU6과 입꼬리를 올리는 AU12입니다. 고무 피부와 공압 액추에이터 19개로 만든 로봇 얼굴이 이 AU로 표정을 짓고(Hashimoto 외 2013), Kismet, iCat, eMuu처럼 단순화한 얼굴 단서를 쓰는 로봇도 많습니다. 사람 모양이 아닌 로봇도 감정을 표현합니다. 청소 로봇과 비행 로봇이 움직임의 패턴만으로 정서를 전했고(Saerbeck &amp; Bartneck 2010; Sharma 외 2013), 속도, 자세, 소리, 색, 사람을 향한 방향도 수단이 됩니다. 표정이 거꾸로 느끼는 감정에 영향을 준다는 <b>안면 피드백 가설</b>도 있습니다. 연필을 이로 물어 억지로 웃는 모양을 만들면 만화가 조금 더 재미있었습니다(Strack 외 1988).</p>
+    <h3>감정 읽기의 어려움</h3>
+    <p>정지된 얼굴 사진만으로 감정을 바로 읽기는 사람에게도 거의 불가능합니다. 테니스 선수가 방금 점수를 땄는지 잃었는지 얼굴만으로는 알기 어렵습니다. 맥락, 움직이는 표정, 몸짓이 더해져야 사람도 알고리즘도 인식률이 오릅니다. 대부분의 감정 인식 소프트웨어는 여섯 기본 표정의 확률이나 2·3차원 공간의 한 점만 내놓아, 자부심, 당혹감, 죄책감, 짜증 같은 일상의 감정을 놓칩니다. 같은 감정도 사람마다 강도와 맥락이 달라, 로봇은 개인과 문화에 민감해야 합니다.</p>
+  </div>
+  <figure class="bench" id="b7-1">
+    <figcaption class="bench-head"><span class="bench-no">실험 7-1</span><h3>원형 모델 위에서 로봇 얼굴 만들기</h3><p>왼쪽 평면이 Russell의 원형 모델입니다. 가로가 유인가(불쾌–유쾌), 세로가 각성(졸림–흥분)입니다. 평면을 누르거나 슬라이더를 움직이면 오른쪽의 단순한 로봇 얼굴이 눈썹, 눈, 입, 색으로 그 상태를 표현하고, 그 근처의 감정 단어가 나옵니다. 사람 얼굴이 아닌 로봇이 몇 가지 단서로 얼마나 많은 상태를 전할 수 있는지 보세요.</p></figcaption>
+    <div class="controls">
+      <div class="ctl"><label for="em-v">유인가 <output id="em-v-o">+0.5</output></label><input type="range" id="em-v" min="-1" max="1" step="0.05" value="0.5"></div>
+      <div class="ctl"><label for="em-a">각성 <output id="em-a-o">+0.3</output></label><input type="range" id="em-a" min="-1" max="1" step="0.05" value="0.3"></div>
+    </div>
+    <div class="split">
+      <canvas class="cv drag" id="em-cv" style="height:280px" role="img" aria-label="유인가와 각성의 평면. 눌러서 감정 상태를 고를 수 있습니다"></canvas>
+      <canvas class="cv" id="em-face" style="height:280px" role="img" aria-label="로봇 얼굴"></canvas>
+    </div>
+    <div class="readouts" id="em-ro"></div>
+    <p class="note">얼굴 규칙은 교재가 설명하는 단서를 단순화한 것입니다. 유인가는 입꼬리와 눈썹 안쪽 각도로, 각성은 눈의 크기, 눈썹 높이, 몸 색의 채도와 움직임 속도로 나타냅니다. 단어의 위치는 Russell(1980)의 원형 배치를 따랐습니다.</p>
+  </figure>
+  <div class="quiz" data-ch="7"></div>
+</section>
+
+<!-- ───────────── 8장 ───────────── -->
+<section class="chapter" id="ch8">
+  <p class="ch-no">8장</p>
+  <h2>신뢰와 수용</h2>
+  <p class="refs">교재와 논문: <b>Bartneck 외</b> 8.4절 · <b>Lee &amp; See</b> (2004) · <b>Hancock 외</b> (2011, 2021) · <b>Heerink 외</b> (2010)</p>
+  <div class="prose">
+    <h3>신뢰란</h3>
+    <p>신뢰의 정의는 심리학, 사회학, 경제학, 철학마다 다르지만, 상대가 적절한 행동을 할 것이라는 확신을 담는다는 점은 같습니다. 교재가 인용하는 Sabel(1993)의 정의는 "어느 쪽도 상대의 취약함을 이용하지 않을 것이라는 상호 확신"입니다. 상대의 선의, 성실성, 능력을 믿는다는 뜻이 들어 있습니다(Lee &amp; See 2004). 자동화 연구에서 신뢰는 시스템을 얼마나 <b>의존</b>할지를 정하는 요인이고, 핵심은 신뢰의 양이 아니라 <b>보정(calibration)</b>입니다. 시스템의 실제 능력보다 더 믿으면 <b>과신</b>으로 오류를 놓치고, 덜 믿으면 <b>불신</b>으로 유용한 도움을 버립니다. Hancock 등(2011)의 메타분석은 HRI의 신뢰 요인을 로봇 요인, 사람 요인, 환경 요인으로 나눴고, 그중 로봇의 성능 관련 요인이 가장 컸습니다. 2021년의 후속 메타분석은 사람 요인의 역할을 더 강조합니다. 신뢰를 재는 척도는 여럿 있지만 정의에 대한 합의는 아직 없습니다.</p>
+    <h3>수용</h3>
+    <p>사회적 로봇은 사용자에게 받아들여져야 합니다. 로봇 수용 연구는 대개 고전적인 <b>기술 수용 모델(TAM)</b>에 기댑니다. 쓰려는 의향은 <b>지각된 유용성</b>과 <b>지각된 사용 용이성</b>에 달려 있다는 모델입니다. 로봇을 도구로 보는 관점이라 맥락이 빠진다는 비판이 있어, 성과 기대, 노력 기대에 사회적 영향과 촉진 조건을 더한 <b>UTAUT</b>, 노인의 보조 기술 수용을 위해 신뢰, 즐거움, 태도 같은 정서 요인을 더한 <b>Almere 모델</b>(Heerink 외 2010)이 나왔습니다. de Graaf 등(2019)은 쾌락적 요인, 사회 규범, 통제 신념까지 넣는 사용자 경험(UX) 관점을 제안합니다.</p>
+    <h3>호감과 신기성</h3>
+    <p>정서 단서, 사용자와 동기화된 움직임은 로봇의 호감도를 높였습니다. 다만 첫 만남의 반응은 <b>신기성 효과</b> 때문에 장기 반응과 다릅니다. 사람들은 로봇에 익숙하지 않아 처음에는 더 열광하거나 더 불안해하고, 시간이 지나면 가라앉습니다. 그래서 짧은 연구는 첫 만남에 대해서는 알려 주지만 오래 함께 지내는 상호작용은 알려 주지 못합니다(10장).</p>
+  </div>
+  <figure class="bench" id="b8-1">
+    <figcaption class="bench-head"><span class="bench-no">실험 8-1</span><h3>신뢰의 보정</h3><p>사람이 로봇과 60번 과제를 합니다. 매번 로봇의 제안을 따를지(의존) 스스로 할지 정합니다. 모형에서 신뢰는 성공하면 조금 오르고 실패하면 많이 떨어지며, 신뢰가 문턱을 넘을 때만 로봇에 의존합니다. 로봇의 실제 신뢰도와 사람의 첫 신뢰를 바꿔 보고, 과신과 불신이 어디서 생기는지 보세요. 신뢰의 변화 규칙은 교육용 가상 모형입니다.</p></figcaption>
+    <div class="controls">
+      <div class="ctl"><label for="tr-rel">로봇의 실제 성공률 <output id="tr-rel-o">80%</output></label><input type="range" id="tr-rel" min="0.3" max="1" step="0.05" value="0.8"></div>
+      <div class="ctl"><label for="tr-init">사람의 첫 신뢰 <output id="tr-init-o">0.9</output></label><input type="range" id="tr-init" min="0" max="1" step="0.05" value="0.9"></div>
+      <div class="ctl" style="flex:0 0 auto"><span class="lab">실패했을 때 로봇이</span><div class="seg" id="tr-repair" role="group" aria-label="실패 뒤 행동"><button data-r="none" aria-pressed="true">아무 말 없음</button><button data-r="explain" aria-pressed="false">실수를 알리고 이유를 설명</button></div></div>
+      <div class="ctl" style="flex:0 0 auto"><button class="btn quiet" id="tr-new">다시 뽑기</button></div>
+    </div>
+    <canvas class="cv" id="tr-cv" style="height:260px" role="img" aria-label="시간에 따른 신뢰와 의존"></canvas>
+    <div class="legend"><span><i class="sw" style="background:var(--c0)"></i>사람의 신뢰</span><span><i class="sw" style="background:var(--muted)"></i>로봇의 실제 성공률</span><span><i class="sw" style="background:var(--c3)"></i>로봇의 실수</span><span>아래 띠: 로봇에 의존한 시행</span></div>
+    <div class="readouts" id="tr-ro"></div>
+  </figure>
+  <div class="quiz" data-ch="8"></div>
+</section>
+
+<!-- ───────────── 9장 ───────────── -->
+<section class="chapter" id="ch9">
+  <p class="ch-no">9장</p>
+  <h2>응용 분야</h2>
+  <p class="refs">교재: <b>Bartneck 외</b> 11장</p>
+  <div class="prose">
+    <p>창고 로봇과 배송 로봇처럼 닫힌 환경의 로봇은 이미 상업적으로 성공했습니다. 다음 물결은 사람이 있는 열린 환경, 곧 고객 서비스, 동반, 사회적·신체적 보조입니다. 여기서 HRI의 이해가 성패를 가릅니다(교재 11장).</p>
+    <ul>
+      <li><b>고객 응대</b>: 쇼핑몰과 매장의 로봇은 적어도 신기성이 남아 있는 동안 사람을 끌어모읍니다. 박물관 안내 로봇은 초기 HRI 응용의 하나로, 전시물 사이를 자율 주행하며 설명합니다(Burgard 외 1998). 길을 비켜 달라는 좌절 표정처럼 감정 표현이 안내를 돕기도 했습니다. 호텔 접수, 매장 판촉도 있습니다.</li>
+      <li><b>교육</b>: 교사의 보조 역할이 교사와 학생 모두에게 선호되었습니다(Reich-Stiebert &amp; Eyssel 2016). 로봇은 또래로 등장하기도 합니다. 일대일 지도는 효과가 큰데(Bloom 1984의 2 표준편차 주장은 이후 축소되었지만 이점은 분명합니다), 로봇의 물리적 존재는 화면 속 에이전트보다 학습을 더 돕는 것으로 나타났습니다(Kennedy 외 2015; Leyzberg 외 2012). 이유는 아직 분명하지 않습니다.</li>
+      <li><b>오락</b>: 반려·장난감 로봇, 전시, 공연 예술.</li>
+      <li><b>건강과 치료</b>: 물개 로봇 Paro는 요양 시설에서 노인의 심리적, 생리적, 사회적 효과가 장기 연구로 보고되었습니다(Wada &amp; Shibata 2007). 일본에서는 개인이, 유럽과 미국에서는 거의 기관만 삽니다. 자폐 스펙트럼 장애가 있는 아이와 어른은 대체로 로봇에 잘 반응해, 치료 보조 연구가 많습니다. 재활 로봇도 있습니다.</li>
+      <li><b>서비스</b>: 청소 로봇, 병원·호텔·식당의 배송 로봇. 식당 로봇은 손님을 가로막지 않거나 손님이 짜증 없이 피할 수 있게 설계되어야 합니다.</li>
+      <li><b>협동 로봇(cobot)</b>: 전통적인 산업용 로봇은 뻣뻣하고 강하며 감각이 없어 사람이 곁에 갈 수 없었습니다. 협동 로봇은 사람과 같은 공간에서 일합니다.</li>
+      <li><b>자율주행차</b>: 보행자와 다른 운전자에게 의도를 알리는 문제가 HRI의 질문입니다.</li>
+    </ul>
+    <p>어느 응용이든 돌봄 로봇의 윤리처럼 각 영역 고유의 질문이 따라옵니다(12장).</p>
+  </div>
+  <figure class="bench" id="b9-1">
+    <figcaption class="bench-head"><span class="bench-no">실험 9-1</span><h3>상황에 맞는 역할 고르기</h3><p>상황마다 교재의 응용 분류에서 가장 가까운 로봇의 역할을 고르세요. 고르면 그 분야에서 알려진 점이 나옵니다.</p></figcaption>
+    <div class="scen" id="app-cards"></div>
+    <div class="readouts"><div class="ro"><span>맞힌 판정</span><b id="app-score" class="num">0 / 6</b></div><button class="btn quiet" id="app-reset">다시 풀기</button></div>
+  </figure>
+  <div class="quiz" data-ch="9"></div>
+</section>
+
+<!-- ───────────── 10장 ───────────── -->
+<section class="chapter" id="ch10">
+  <p class="ch-no">10장</p>
+  <h2>HRI 연구 방법</h2>
+  <p class="refs">교재와 논문: <b>Bartneck 외</b> 10.1–10.7절 · <b>Riek</b> (2012) · <b>Baxter 외</b> (2016)</p>
+  <div class="prose">
+    <p>실험 접근은 HRI의 표준이 되었습니다(Hoffman &amp; Zhao 2020). 초기 HRI 연구에는 지금 기준으로는 부끄러운 방법이 많았고, 심리학 같은 경험 과학의 기준을 따르자는 흐름이 강합니다(Baxter 외 2016).</p>
+    <h3>연구 질문</h3>
+    <p>좋은 연구 질문은 선행 연구를 반복하거나 확장합니다. 사람 사이의 상호작용 연구는 HRI의 청사진이 됩니다. Reeves와 Nass의 CASA 접근이 심리학의 고전 결과를 HCI에서, 다시 HRI에서 반복한 것이 그 예입니다.</p>
+    <h3>방법의 종류</h3>
+    <ul>
+      <li><b>질적 방법</b>은 숫자로 담기 어려운 상호작용의 질을 해석합니다. 상관이나 인과를 세울 수는 없지만, 풍부한 자료로 새 가설을 만듭니다. 종료 기준은 특정 인원이 아니라 새 자료가 기존 주제를 되풀이하는 <b>포화</b>입니다.</li>
+      <li><b>양적 방법</b>은 설문과 통제 실험으로 숫자를 얻어 상관과 인과를 검정합니다.</li>
+      <li><b>혼합 방법</b>은 면담과 관찰로 요인을 찾고 실험으로 확인합니다. 면담에서 룸바의 자율성이 사회적으로 보이게 한다는 생각이 들면, 자율 룸바와 게임패드로 조종하는 룸바를 비교하는 식입니다.</li>
+      <li>그 밖에 사용자 연구, 설문, 시스템 연구, 관찰 연구, 민족지, 대화 분석, 크라우드소싱, 사례 연구가 있습니다.</li>
+    </ul>
+    <h3>실험 설계</h3>
+    <p>연구자가 조작하는 것이 <b>독립변수</b>이고 그 값이 <b>수준</b>입니다. 남성형과 여성형 로봇 둘이면 수준이 둘이고 조건이 둘입니다. 조작할 수 없는 참가자 성별 같은 요인은 준실험 요인입니다. 측정하는 것이 <b>종속변수</b>입니다. 조작이 통했는지 확인하는 <b>조작 점검</b>도 필요합니다. 참가자가 로봇의 성별을 실제로 그렇게 보았는지 묻는 것입니다. <b>집단 간 설계</b>는 참가자를 조건에 무작위로 배정하고, <b>집단 내 설계</b>는 같은 사람이 모든 조건을 겪어 잡음이 줄고 인원이 덜 듭니다. 다만 다리가 부러진 뒤 로봇 보조로 회복하는 연구처럼 집단 내 설계가 불가능한 질문도 있고, 첫 로봇을 늘 더 좋아하는 <b>순서 효과</b>가 있어 조건 순서를 <b>상쇄 균형</b>해야 합니다.</p>
+    <h3>측정</h3>
+    <p>설문에는 진술에 얼마나 동의하는지 묻는 <b>리커트 척도</b>와, 무섭다–친근하다처럼 반대말 사이에서 고르는 <b>의미 분별 척도</b>가 흔합니다. 직접 만들기보다 검증된 척도를 쓰는 것이 좋습니다. 의인화, 활기, 호감, 지각된 지능, 지각된 안전을 재는 Godspeed 설문(Bartneck 외 2009), RoSAS, 수정 Godspeed, HRIES가 있습니다. 설문은 자기 보고라서, 행동 지표, 언어 사용, 생리 신호 같은 암묵적 측정으로 보완합니다.</p>
+    <h3>오즈의 마법사</h3>
+    <p>자율 기능 개발이 연구의 초점이 아닐 때, 연구팀이 뒤에서 로봇을 조종하면서 참가자에게는 자율인 것처럼 보이게 하는 <b>오즈의 마법사(WoZ)</b> 기법을 씁니다. 음성 인식처럼 거의 쓸 만하지만 아직 불안한 기술에 알맞습니다. 참가자에게는 실험 뒤 반드시 알려야 하고(디브리핑), 긴 대화를 완전히 꾸며 내는 것처럼 비현실적인 능력을 가장하는 것은 문제가 됩니다. Riek(2012)은 WoZ 연구의 보고 기준을 제안했습니다.</p>
+    <h3>참가자, 장소, 기간</h3>
+    <p>표본 크기는 설계와 대상 집단에 달려 있고 G*Power 같은 도구로 미리 계산합니다(11장). 실험실 연구는 통제가 쉽고, 현장 연구는 실제 맥락을 봅니다. 첫 만남은 신기성 효과 때문에 장기 상호작용과 다르므로, 며칠에서 몇 달, 드물게 몇 년에 걸친 장기 연구가 필요합니다.</p>
+  </div>
+  <figure class="bench" id="b10-1">
+    <figcaption class="bench-head"><span class="bench-no">실험 10-1</span><h3>참가자가 몇 명 필요한가</h3><p>두 조건을 비교하는 연구에서 기대하는 효과 크기(Cohen의 d), 원하는 검정력, 설계에 따라 필요한 인원을 계산합니다. 집단 내 설계에서는 같은 사람의 두 측정이 상관될수록 인원이 줄어듭니다. 정규 근사로 계산한 값이라 G*Power의 값과 조금 다를 수 있습니다.</p></figcaption>
+    <div class="controls">
+      <div class="ctl"><label for="pw-d">효과 크기 d <output id="pw-d-o">0.50</output></label><input type="range" id="pw-d" min="0.1" max="1.5" step="0.05" value="0.5"></div>
+      <div class="ctl"><label for="pw-pow">원하는 검정력 <output id="pw-pow-o">80%</output></label><input type="range" id="pw-pow" min="0.5" max="0.99" step="0.01" value="0.8"></div>
+      <div class="ctl"><label for="pw-r">집단 내 설계: 두 측정의 상관 r <output id="pw-r-o">0.5</output></label><input type="range" id="pw-r" min="0" max="0.9" step="0.05" value="0.5"></div>
+    </div>
+    <canvas class="cv" id="pw-cv" style="height:250px" role="img" aria-label="인원에 따른 검정력 곡선"></canvas>
+    <div class="readouts" id="pw-ro"></div>
+    <p class="note">유의수준은 양측 0.05로 고정했습니다. d = 0.2, 0.5, 0.8이 흔히 작은, 중간, 큰 효과의 기준으로 쓰입니다. 집단 간 설계의 인원은 두 집단을 합친 수입니다.</p>
+  </figure>
+  <div class="quiz" data-ch="10"></div>
+</section>
+
+<!-- ───────────── 11장 ───────────── -->
+<section class="chapter" id="ch11">
+  <p class="ch-no">11장</p>
+  <h2>통계와 재현성</h2>
+  <p class="refs">교재와 논문: <b>Bartneck 외</b> 10.8절 · <b>Cumming</b> (2008)</p>
+  <div class="prose">
+    <h3>기술 통계부터</h3>
+    <p>자료의 경향(평균), 표본 크기, 변산(표준편차)이 <b>기술 통계</b>입니다. 늘 평균, 표준편차(정규가 아니면 범위), 참가자 수, 인구 통계, 그리고 제외한 자료와 그 이유를 보고해야 합니다.</p>
+    <h3>p값이 말하는 것과 말하지 않는 것</h3>
+    <p>대부분의 고전적 검정은 경향, 표본 크기, 변산을 검정 통계량 하나로 합쳐 <b>p값</b>을 냅니다. p값은 실제 효과가 없을 때 지금 자료가 나올 확률입니다. 두 식당이 똑같이 좋은데 이런 평점 차이가 나올 확률이라고 교재는 비유합니다. 이것이 영가설 유의성 검정(NHST)의 논리입니다. 흔한 오해 두 가지가 있습니다.</p>
+    <ul>
+      <li><b>p값은 결과의 견고함이 아닙니다.</b> 유의한 결과를 반복하면 반복 연구의 p값은 80%의 경우 0.00008에서 0.44 사이 어디든 나올 수 있습니다(Cumming 2008). p값은 반복 실험에서 매우 불안정합니다.</li>
+      <li><b>p값은 효과의 크기나 중요성이 아닙니다.</b> 유의성, 크기, 중요성은 서로 다른 것입니다. <b>효과 크기</b>(t검정의 Cohen의 d, 분산분석의 η², 회귀의 조정 R²)는 두 조건이 얼마나 다른지를 재고, p값은 거기에 표본 크기를 더한 것입니다. 회복률이 4%에서 6%로 오르는 효과는 발 무좀이면 무시해도 되지만 공격적인 암의 생존율이면 중요합니다.</li>
+    </ul>
+    <p>95% <b>신뢰구간</b>을 보고하면 효과의 크기와 추정의 정밀도가 함께 전해집니다. 반복 연구의 평균이 원래 연구의 신뢰구간 안에 들 확률은 약 83%입니다.</p>
+    <h3>오류, 검정력, p-해킹</h3>
+    <p>효과가 없는데 있다고 하는 것이 <b>1종 오류</b>, 있는데 없다고 하는 것이 <b>2종 오류</b>입니다. 둘 다 충분한 <b>검정력</b>으로 줄입니다. 검정력을 정하는 셋(경향, 변산, 표본 크기) 중 연구자가 손댈 수 있는 것은 표본 크기뿐입니다. p ≤ 0.05를 기준으로 쓰면 효과가 없어도 20번에 1번은 유의하게 나오므로, 검정을 많이 돌리면 결국 무언가는 "발견"됩니다. 이것이 <b>p-해킹</b>입니다. 심리학은 확립된 효과들이 반복되지 않는 <b>재현성 위기</b>를 겪었고, HRI도 같은 질문을 받고 있습니다(Irfan 외 2018). Nao나 Baxter처럼 널리 쓰이는 플랫폼은 반복 연구를 전보다 쉽게 만듭니다. 연구를 미리 등록하는 <b>사전 등록</b>은 p-해킹을 막고 반복을 돕습니다.</p>
+  </div>
+  <figure class="bench" id="b11-1">
+    <figcaption class="bench-head"><span class="bench-no">실험 11-1</span><h3>같은 실험을 1,000번 반복하면</h3><p>실제 효과 크기와 한 집단의 인원을 정하면, 두 집단을 비교하는 실험을 1,000번 시뮬레이션해 p값의 분포를 그립니다. 실제 효과가 0일 때 "여러 종속변수 중 유의한 것만 보고"를 켜면 거짓 양성이 얼마나 늘어나는지 보세요.</p></figcaption>
+    <div class="controls">
+      <div class="ctl"><label for="rp-d">실제 효과 크기 d <output id="rp-d-o">0.50</output></label><input type="range" id="rp-d" min="0" max="1.2" step="0.05" value="0.5"></div>
+      <div class="ctl"><label for="rp-n">한 집단의 인원 <output id="rp-n-o">20</output></label><input type="range" id="rp-n" min="5" max="150" step="5" value="20"></div>
+      <div class="ctl" style="flex:0 0 auto"><span class="lab">분석</span><div class="btnrow"><button class="btn" id="rp-hack" aria-pressed="false">종속변수 5개 중 유의한 것만 보고</button><button class="btn quiet" id="rp-new">다시 뽑기</button></div></div>
+    </div>
+    <canvas class="cv" id="rp-cv" style="height:240px" role="img" aria-label="1,000번 반복의 p값 히스토그램"></canvas>
+    <div class="readouts" id="rp-ro"></div>
+    <p class="note" id="rp-note"></p>
+  </figure>
+  <div class="quiz" data-ch="11"></div>
+</section>
+
+<!-- ───────────── 12장 ───────────── -->
+<section class="chapter" id="ch12">
+  <p class="ch-no">12장</p>
+  <h2>윤리와 사회</h2>
+  <p class="refs">교재와 논문: <b>Bartneck 외</b> 4.6절, 10.9절, 12장 · <b>Sparrow &amp; Sparrow</b> (2006) · <b>Sharkey &amp; Sharkey</b> (2012)</p>
+  <div class="prose">
+    <h3>미디어 속 로봇</h3>
+    <p>사람들은 로봇을 직접 만나기 전에 이야기로 먼저 만납니다. 서구의 서사는 로봇의 반란(Čapek의 R.U.R., 터미네이터, 매트릭스)이 많고, Asimov는 로봇이 세상을 차지할 것이라는 생각을 "프랑켄슈타인 콤플렉스"라 불렀습니다. 일본의 철완 아톰과 도라에몽은 사람을 돕는 선한 로봇이고, 이 차이가 일본의 가정용 로봇 개발과 수용에 한몫했다고 흔히 이야기됩니다. 어느 쪽이든 이야기 속 로봇은 사람들의 기대와 반응에 색을 입힙니다. 최근 연구는 로봇에 대한 태도가 중립이나 약한 긍정이 아니라 <b>양가적</b>이라고 봅니다(Stapels &amp; Eyssel 2021, 2022). 도움이 되리라는 기대와 일자리나 사생활을 잃을까 하는 두려움이 함께 있습니다.</p>
+    <h3>Asimov의 세 법칙</h3>
+    <p>로봇은 사람을 해치거나 방관으로 해를 입게 해서는 안 되고, 그에 어긋나지 않는 한 사람의 명령에 따라야 하며, 앞의 두 법칙에 어긋나지 않는 한 자신을 지켜야 한다. 뒤에 인류 전체를 보호하는 0법칙이 더해졌습니다. 널리 알려졌지만 철학자들의 비판을 받았고, Asimov의 이야기 자체가 이 법칙이 실용적인 지침이 아님을 보여 줍니다.</p>
+    <h3>연구 윤리</h3>
+    <p>WoZ 기법은 참가자를 속입니다. 로봇의 능력에 대한 기대를 부풀려 기술이 실제보다 앞서 있다고 믿게 할 수 있습니다(Riek 2012). 로봇은 설득 기술로도 쓰여 태도뿐 아니라 행동을 바꿀 수 있는데, 사용자가 어떻게 영향받는지 모른 채 영향을 받는 것이 문제입니다. 사람 대상 연구는 윤리위원회(IRB)의 승인, 사전 동의, 디브리핑이 필요합니다.</p>
+    <h3>돌봄, 기만, 존엄</h3>
+    <p>할머니에게 반려 로봇을 드린다고 합시다. Sparrow와 Sparrow(2006)는 설령 완벽한 정서적·신체적 돌봄을 하는 로봇이 나와도 돌봄을 기계에 맡기는 것은 비윤리적이라고 주장합니다. 관계는 서로 정서와 관심을 주고받을 수 있는 둘 사이에서만 의미가 있고, 아무리 완벽해도 돌봄의 모방이 진짜를 대신해서는 안 된다는 것입니다. Sharkey와 Sharkey(2012)는 돌봄 로봇이 노인의 자율성과 독립을 어떻게 해치거나 도울지 묻습니다. 다른 쪽에는 로봇을 도구로, 사회적 능력이 있는 도구로, 관계의 상대로 보는 관점이 나란히 있습니다.</p>
+    <h3>그 밖의 쟁점</h3>
+    <ul>
+      <li><b>사생활</b>: 집 안의 로봇은 카메라와 마이크를 달고 돌아다닙니다.</li>
+      <li><b>일자리</b>: 로봇은 일부 직업을 대체하고 새 직업을 만듭니다. 문제는 대체된 사람이 새 일을 찾도록 돕는 것입니다.</li>
+      <li><b>로봇 학대</b>: 사람 같은 로봇을 함부로 대하는 행동이 사람에게 옮겨 갈 수 있다는 우려가 있고, 더 연구가 필요합니다.</li>
+      <li><b>관계의 기대</b>: 어떤 요구에도 응하는 로봇은 사람 사이의 관계에 대한 기대를 바꿀 수 있습니다.</li>
+      <li><b>자율 무기</b>: 살상 로봇 반대 운동처럼 분명한 반대 흐름이 있습니다.</li>
+    </ul>
+    <p>교재의 결론은 로봇, 사람, 그 상호작용이 더 큰 사회의 일부라는 것입니다. 문화마다 이야기와 가치가 다르고, 그것이 사람들이 로봇을 어떻게 보고 로봇이 사회를 어떻게 바꿀지를 정합니다.</p>
+  </div>
+  <figure class="bench" id="b12-1">
+    <figcaption class="bench-head"><span class="bench-no">실험 12-1</span><h3>어떤 윤리 쟁점일까</h3><p>상황마다 가장 가까운 쟁점을 고르세요. 정답이 하나뿐인 문제는 아니지만, 교재가 그 상황을 어떤 쟁점으로 다루는지 비교해 볼 수 있습니다.</p></figcaption>
+    <div class="scen" id="eth-cards"></div>
+    <div class="readouts"><div class="ro"><span>맞힌 판정</span><b id="eth-score" class="num">0 / 6</b></div><button class="btn quiet" id="eth-reset">다시 풀기</button></div>
+  </figure>
+  <div class="prose">
+    <h3>더 읽을 거리</h3>
+    <ul>
+      <li>교재의 나머지 장: 로봇이 어떻게 작동하는가(3장), 미래(13장)</li>
+      <li>로봇이 행동을 배우는 방법, 사람의 선호로 배우기: <a href="/robot/">로봇 학습 개념 학습서</a></li>
+      <li>뇌 신호로 로봇을 제어하기: <a href="/bci/">BCI 개념 학습서</a></li>
+    </ul>
+  </div>
+  <div class="quiz" data-ch="12"></div>
+</section>
+
+<!-- ───────────── 부록 ───────────── -->
+<section class="chapter" id="glossary">
+  <p class="ch-no">부록 A</p>
+  <h2>용어집</h2>
+  <div class="ctl" style="max-width:380px;margin-bottom:14px"><label for="gl-q">용어 찾기</label><input type="search" id="gl-q" placeholder="예: 근접학, Wizard of Oz, 의인화" autocomplete="off"></div>
+  <dl class="gloss" id="gl-list"></dl>
+  <p class="empty" id="gl-empty" hidden>찾는 용어가 없습니다. 영어 이름이나 약어로도 찾아보세요.</p>
+</section>
+
+<section class="chapter" id="sources">
+  <p class="ch-no">부록 B</p>
+  <h2>교재·논문 대응표</h2>
+  <div class="prose"><p>이 학습서의 장과 Bartneck 외(2024) 2판의 장, 그리고 각 장이 근거로 삼은 논문을 맞춰 적었습니다. 교재는 저자 공식 사이트에서 장별로 무료로 볼 수 있습니다.</p></div>
+  <div class="tbl-wrap">
+    <table>
+      <thead><tr><th>장</th><th>Bartneck 외 (2024)</th><th>원 논문</th></tr></thead>
+      <tbody>
+        <tr><th>1 HRI란 무엇인가</th><td>1, 2</td><td>–</td></tr>
+        <tr><th>2 로봇의 설계</th><td>4.1, 4.2</td><td>Kahn 외 2008 (설계 패턴)</td></tr>
+        <tr><th>3 의인화와 불쾌한 골짜기</th><td>4.2, 8.1–8.3</td><td>Mori 1970/2012, Epley 외 2007, Reeves &amp; Nass 1996, Gray 외 2007, Bartneck 외 2009, Kätsyri 외 2015</td></tr>
+        <tr><th>4 공간</th><td>5</td><td>Hall 1966, Kendon 1990, Walters 외 2005, Dautenhahn 외 2006</td></tr>
+        <tr><th>5 비언어</th><td>6, 5.2.4</td><td>Mutlu 외 2006, 2009, 2012, Salem 외 2013, Chartrand &amp; Bargh 1999, Dragan 외 2013</td></tr>
+        <tr><th>6 말</th><td>7</td><td>Zhang 외 2022, Strömbergsson 외 2013, Williams 외 2018</td></tr>
+        <tr><th>7 감정</th><td>9</td><td>Russell 1980, Ekman &amp; Friesen 1975, 1978, Mehrabian &amp; Russell 1974, Ortony 외 1988</td></tr>
+        <tr><th>8 신뢰와 수용</th><td>8.4</td><td>Lee &amp; See 2004, Hancock 외 2011, 2021, Davis 1989, Heerink 외 2010</td></tr>
+        <tr><th>9 응용 분야</th><td>11</td><td>Burgard 외 1998, Wada &amp; Shibata 2007, Kennedy 외 2015</td></tr>
+        <tr><th>10 HRI 연구 방법</th><td>10.1–10.7, 10.9</td><td>Riek 2012, Baxter 외 2016, Bartneck 외 2009</td></tr>
+        <tr><th>11 통계와 재현성</th><td>10.8</td><td>Cumming 2008, Irfan 외 2018</td></tr>
+        <tr><th>12 윤리와 사회</th><td>4.6, 10.9, 12</td><td>Sparrow &amp; Sparrow 2006, Sharkey &amp; Sharkey 2012, Riek 2012</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="prose">
+    <h3>교재</h3>
+    <ul>
+      <li>Bartneck, C., Belpaeme, T., Eyssel, F., Kanda, T., Keijsers, M., &amp; Šabanović, S. (2024). <i>Human-Robot Interaction: An Introduction</i> (2nd ed.). Cambridge University Press. <a href="https://www.human-robot-interaction.org/">저자 공식 무료판</a></li>
+    </ul>
+    <h3>논문</h3>
+    <ul>
+      <li>Bartneck, C., Kulić, D., Croft, E., &amp; Zoghbi, S. (2009). Measurement instruments for the anthropomorphism, animacy, likeability, perceived intelligence, and perceived safety of robots. <i>International Journal of Social Robotics</i>, 1(1), 71–81.</li>
+      <li>Baxter, P., Kennedy, J., Senft, E., Lemaignan, S., &amp; Belpaeme, T. (2016). From characterising three years of HRI to methodology and reporting recommendations. <i>HRI 2016</i>, 391–398.</li>
+      <li>Chartrand, T. L., &amp; Bargh, J. A. (1999). The chameleon effect: The perception–behavior link and social interaction. <i>Journal of Personality and Social Psychology</i>, 76(6), 893–910.</li>
+      <li>Cumming, G. (2008). Replication and p intervals: p values predict the future only vaguely, but confidence intervals do much better. <i>Perspectives on Psychological Science</i>, 3(4), 286–300.</li>
+      <li>Davis, F. D. (1989). Perceived usefulness, perceived ease of use, and user acceptance of information technology. <i>MIS Quarterly</i>, 13(3), 319–340.</li>
+      <li>Dragan, A. D., Lee, K. C. T., &amp; Srinivasa, S. S. (2013). Legibility and predictability of robot motion. <i>HRI 2013</i>, 301–308.</li>
+      <li>Ekman, P., &amp; Friesen, W. V. (1978). <i>Facial Action Coding System</i>. Consulting Psychologists Press.</li>
+      <li>Epley, N., Waytz, A., &amp; Cacioppo, J. T. (2007). On seeing human: A three-factor theory of anthropomorphism. <i>Psychological Review</i>, 114(4), 864–886.</li>
+      <li>Gray, H. M., Gray, K., &amp; Wegner, D. M. (2007). Dimensions of mind perception. <i>Science</i>, 315(5812), 619.</li>
+      <li>Hall, E. T. (1966). <i>The Hidden Dimension</i>. Doubleday.</li>
+      <li>Hancock, P. A., Billings, D. R., Schaefer, K. E., Chen, J. Y. C., de Visser, E. J., &amp; Parasuraman, R. (2011). A meta-analysis of factors affecting trust in human-robot interaction. <i>Human Factors</i>, 53(5), 517–527.</li>
+      <li>Hancock, P. A., Kessler, T. T., Kaplan, A. D., Brill, J. C., &amp; Szalma, J. L. (2021). Evolving trust in robots: Specification through sequential and comparative meta-analyses. <i>Human Factors</i>, 63(7), 1196–1229.</li>
+      <li>Heerink, M., Kröse, B., Evers, V., &amp; Wielinga, B. (2010). Assessing acceptance of assistive social agent technology by older adults: The Almere model. <i>International Journal of Social Robotics</i>, 2(4), 361–375.</li>
+      <li>Kätsyri, J., Förger, K., Mäkäräinen, M., &amp; Takala, T. (2015). A review of empirical evidence on different uncanny valley hypotheses: Support for perceptual mismatch as one road to the valley of eeriness. <i>Frontiers in Psychology</i>, 6, 390.</li>
+      <li>Kendon, A. (1990). <i>Conducting Interaction: Patterns of Behavior in Focused Encounters</i>. Cambridge University Press.</li>
+      <li>Lee, J. D., &amp; See, K. A. (2004). Trust in automation: Designing for appropriate reliance. <i>Human Factors</i>, 46(1), 50–80.</li>
+      <li>Mori, M. (1970/2012). The uncanny valley (K. F. MacDorman &amp; N. Kageki, Trans.). <i>IEEE Robotics &amp; Automation Magazine</i>, 19(2), 98–100. (원문: <i>Energy</i>, 7(4), 33–35, 1970)</li>
+      <li>Mutlu, B., Shiwa, T., Kanda, T., Ishiguro, H., &amp; Hagita, N. (2009). Footing in human-robot conversations: How robots might shape participant roles using gaze cues. <i>HRI 2009</i>, 61–68.</li>
+      <li>Reeves, B., &amp; Nass, C. (1996). <i>The Media Equation: How People Treat Computers, Television, and New Media Like Real People and Places</i>. Cambridge University Press.</li>
+      <li>Riek, L. D. (2012). Wizard of Oz studies in HRI: A systematic review and new reporting guidelines. <i>Journal of Human-Robot Interaction</i>, 1(1), 119–136.</li>
+      <li>Russell, J. A. (1980). A circumplex model of affect. <i>Journal of Personality and Social Psychology</i>, 39(6), 1161–1178.</li>
+      <li>Salem, M., Eyssel, F., Rohlfing, K., Kopp, S., &amp; Joublin, F. (2013). To err is human(-like): Effects of robot gesture on perceived anthropomorphism and likability. <i>International Journal of Social Robotics</i>, 5(3), 313–323.</li>
+      <li>Sharkey, A., &amp; Sharkey, N. (2012). Granny and the robots: Ethical issues in robot care for the elderly. <i>Ethics and Information Technology</i>, 14(1), 27–40.</li>
+      <li>Sparrow, R., &amp; Sparrow, L. (2006). In the hands of machines? The future of aged care. <i>Minds and Machines</i>, 16(2), 141–161.</li>
+    </ul>
+  </div>
+</section>
+
+</main>
+</div>
+
+<footer class="colophon">
+  <p>이 학습서의 실험은 모두 브라우저 안에서 직접 계산하며, 사람의 반응은 교재가 설명하는 경향을 단순화한 교육용 모형입니다. 확인 문제의 진도는 이 브라우저에만 저장됩니다.</p>
+  <p><a href="/">Kihyeon Joo 홈페이지로 돌아가기</a> · <a href="/robot/">로봇 학습 개념 학습서</a> · <a href="/ml/">머신러닝·딥러닝 개념 학습서</a> · <a href="/bci/">BCI 개념 학습서</a></p>
+</footer>
+<script>
+(() => {
+'use strict';
+
+/* ════════════ 공통 도구 ════════════ */
+const $ = (s, r = document) => r.querySelector(s);
+const $$ = (s, r = document) => Array.from(r.querySelectorAll(s));
+const TAU = Math.PI * 2;
+const clamp = (v, a, b) => Math.min(b, Math.max(a, v));
+const nf = (v, d = 1) => Number(v).toLocaleString('ko-KR', { minimumFractionDigits: d, maximumFractionDigits: d });
+const REDUCE = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+const MONO = '"IBM Plex Mono", ui-monospace, Menlo, monospace';
+const SANS = '"IBM Plex Sans KR", "Apple SD Gothic Neo", "Malgun Gothic", sans-serif';
+
+function rng(seed) {
+  let a = seed >>> 0;
+  return () => {
+    a = (a + 0x6D2B79F5) | 0;
+    let t = Math.imul(a ^ (a >>> 15), 1 | a);
+    t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t;
+    return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
+  };
+}
+function gauss(r) { let u = 0; while (u === 0) u = r(); return Math.sqrt(-2 * Math.log(u)) * Math.cos(TAU * r()); }
+
+/* 테마 색 */
+const C = {};
+const TOK = ['paper', 'panel', 'line', 'grid', 'ink', 'muted', 'trace', 'mark', 'c0', 'c1', 'c2', 'c3', 'c4', 'c5', 'ok', 'warn', 'bad'];
+function readColors() {
+  const cs = getComputedStyle(document.documentElement);
+  TOK.forEach(k => { C[k] = cs.getPropertyValue('--' + k).trim() || '#888888'; });
+}
+function hexRgb(hex) {
+  let h = hex.replace('#', '');
+  if (h.length === 3) h = h.split('').map(c => c + c).join('');
+  const n = parseInt(h, 16);
+  return [(n >> 16) & 255, (n >> 8) & 255, n & 255];
+}
+function rgba(hex, a) { const [r, g, b] = hexRgb(hex); return `rgba(${r},${g},${b},${a})`; }
+readColors();
+
+/* 캔버스 등록: 크기 변화와 테마 변화에 다시 그림 */
+const plots = [];
+function plot(id, draw) {
+  const cv = document.getElementById(id);
+  if (!cv) return null;
+  const p = { cv, ctx: cv.getContext('2d'), w: 0, h: 0, draw };
+  p.fit = () => {
+    const r = cv.getBoundingClientRect();
+    const dpr = Math.min(window.devicePixelRatio || 1, 2);
+    const w = Math.max(1, Math.round(r.width)), h = Math.max(1, Math.round(r.height));
+    if (w !== p.w || h !== p.h || cv.width !== Math.round(w * dpr)) {
+      p.w = w; p.h = h; cv.width = Math.round(w * dpr); cv.height = Math.round(h * dpr);
+      p.ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    }
+  };
+  p.render = () => { p.fit(); p.ctx.clearRect(0, 0, p.w, p.h); try { draw(p); } catch (e) { console.error(e); } };
+  if ('ResizeObserver' in window) new ResizeObserver(() => p.render()).observe(cv);
+  plots.push(p);
+  return p;
+}
+function redrawAll() { readColors(); plots.forEach(p => p.render()); }
+window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', redrawAll);
+new MutationObserver(redrawAll).observe(document.documentElement, { attributes: true, attributeFilter: ['data-theme'] });
+
+function raf(fn) { let q = false; return () => { if (q) return; q = true; requestAnimationFrame(() => { q = false; fn(); }); }; }
+
+/* 축과 격자 */
+function frame(p, o) {
+  const ctx = p.ctx;
+  const L = o.l ?? 46, R = o.r ?? 12, T = o.t ?? (o.yl ? 22 : 10), B = o.b ?? (o.xl ? 34 : 22);
+  const W = Math.max(10, p.w - L - R), H = Math.max(10, p.h - T - B);
+  const tx = o.xlog ? Math.log10 : v => v, ty = o.ylog ? Math.log10 : v => v;
+  const ax0 = tx(o.x0), ax1 = tx(o.x1), ay0 = ty(o.y0), ay1 = ty(o.y1);
+  const X = v => L + (tx(v) - ax0) / (ax1 - ax0) * W;
+  const Y = v => T + H - (ty(v) - ay0) / (ay1 - ay0) * H;
+  ctx.save();
+  ctx.font = `11px ${MONO}`; ctx.lineWidth = 1;
+  ctx.fillStyle = C.panel; ctx.fillRect(L, T, W, H);
+  ctx.strokeStyle = C.grid; ctx.fillStyle = C.muted;
+  ctx.textAlign = 'center'; ctx.textBaseline = 'top';
+  (o.xt || []).forEach(v => {
+    const x = Math.round(X(v)) + 0.5;
+    ctx.beginPath(); ctx.moveTo(x, T); ctx.lineTo(x, T + H); ctx.stroke();
+    ctx.fillText(o.xf ? o.xf(v) : String(v), x, T + H + 5);
+  });
+  ctx.textAlign = 'right'; ctx.textBaseline = 'middle';
+  (o.yt || []).forEach(v => {
+    const y = Math.round(Y(v)) + 0.5;
+    ctx.beginPath(); ctx.moveTo(L, y); ctx.lineTo(L + W, y); ctx.stroke();
+    ctx.fillText(o.yf ? o.yf(v) : String(v), L - 6, y);
+  });
+  ctx.strokeStyle = C.line; ctx.strokeRect(L + 0.5, T + 0.5, W - 1, H - 1);
+  if (o.yl) { ctx.textAlign = 'left'; ctx.textBaseline = 'top'; ctx.fillText(o.yl, 4, 4); }
+  if (o.xl) { ctx.textAlign = 'right'; ctx.textBaseline = 'bottom'; ctx.fillText(o.xl, L + W, p.h - 2); }
+  ctx.restore();
+  return {
+    X, Y, L, T, W, H,
+    clip() { ctx.save(); ctx.beginPath(); ctx.rect(L, T, W, H); ctx.clip(); },
+    unclip() { ctx.restore(); }
+  };
+}
+/* 가로세로 같은 축척의 정사각 영역 */
+function square(p, lo, hi, pad = 8) {
+  const side = Math.max(10, Math.min(p.w, p.h) - 2 * pad), ox = (p.w - side) / 2, oy = (p.h - side) / 2;
+  const X = v => ox + (v - lo[0]) / (hi[0] - lo[0]) * side, Y = v => oy + (hi[1] - v) / (hi[1] - lo[1]) * side;
+  const ix = px => lo[0] + (px - ox) / side * (hi[0] - lo[0]), iy = py => hi[1] - (py - oy) / side * (hi[1] - lo[1]);
+  return { ox, oy, side, X, Y, ix, iy };
+}
+function poly(ctx, n, fx, fy, col, lw = 1.5, dash) {
+  ctx.beginPath();
+  for (let i = 0; i < n; i++) { const x = fx(i), y = fy(i); if (i) ctx.lineTo(x, y); else ctx.moveTo(x, y); }
+  ctx.strokeStyle = col; ctx.lineWidth = lw; ctx.lineJoin = 'round';
+  ctx.setLineDash(dash || []); ctx.stroke(); ctx.setLineDash([]);
+}
+function vline(ctx, x, T, H, col, dash, lw = 1.2) {
+  ctx.beginPath(); ctx.moveTo(Math.round(x) + 0.5, T); ctx.lineTo(Math.round(x) + 0.5, T + H);
+  ctx.strokeStyle = col; ctx.lineWidth = lw; ctx.setLineDash(dash || []); ctx.stroke(); ctx.setLineDash([]);
+}
+function niceMax(v, steps = [0.1, 0.2, 0.5, 1, 2, 5, 10, 20, 50, 100]) {
+  for (const s of steps) if (v <= s) return s;
+  return steps[steps.length - 1];
+}
+function label(ctx, txt, x, y, col, align = 'left', base = 'top', font = `12px ${MONO}`) {
+  ctx.save(); ctx.font = font; ctx.fillStyle = col; ctx.textAlign = align; ctx.textBaseline = base; ctx.fillText(txt, x, y); ctx.restore();
+}
+function dot(ctx, x, y, r, fill, stroke) {
+  ctx.beginPath(); ctx.arc(x, y, r, 0, TAU);
+  if (fill) { ctx.fillStyle = fill; ctx.fill(); }
+  if (stroke) { ctx.strokeStyle = stroke; ctx.lineWidth = 1.2; ctx.stroke(); }
+}
+/* 격자 함수 f(i, j)를 화면 영역에 그림: f는 [r, g, b, a(0–255)]를 돌려준다 */
+const heatCv = document.createElement('canvas');
+function heat(ctx, x, y, w, h, gw, gh, f) {
+  heatCv.width = gw; heatCv.height = gh;
+  const hc = heatCv.getContext('2d'), img = hc.createImageData(gw, gh), d = img.data;
+  for (let j = 0; j < gh; j++) for (let i = 0; i < gw; i++) {
+    const c = f(i, j), k = (j * gw + i) * 4;
+    d[k] = c[0]; d[k + 1] = c[1]; d[k + 2] = c[2]; d[k + 3] = c[3] ?? 255;
+  }
+  hc.putImageData(img, 0, 0);
+  ctx.save(); ctx.imageSmoothingEnabled = true; ctx.drawImage(heatCv, x, y, w, h); ctx.restore();
+}
+/* 변하지 않는 배경은 한 번만 계산해 캔버스로 보관 */
+function heatCanvas(gw, gh, f) {
+  const cv = document.createElement('canvas'); cv.width = gw; cv.height = gh;
+  const hc = cv.getContext('2d'), img = hc.createImageData(gw, gh), d = img.data;
+  for (let j = 0; j < gh; j++) for (let i = 0; i < gw; i++) {
+    const c = f(i, j), k = (j * gw + i) * 4;
+    d[k] = c[0]; d[k + 1] = c[1]; d[k + 2] = c[2]; d[k + 3] = c[3] ?? 255;
+  }
+  hc.putImageData(img, 0, 0);
+  return cv;
+}
+/* 값 t(−1…1)를 바탕색에서 파랑(+)·주홍(−) 쪽으로 섞은 색 */
+function divColor(t, strength = 0.85) {
+  const base = hexRgb(C.panel), c = hexRgb(t >= 0 ? C.c0 : C.c3), k = Math.min(1, Math.abs(t)) * strength;
+  return [base[0] + (c[0] - base[0]) * k, base[1] + (c[1] - base[1]) * k, base[2] + (c[2] - base[2]) * k, 255];
+}
+const css = a => `rgb(${a[0] | 0},${a[1] | 0},${a[2] | 0})`;
+function mix(h1, h2, t) { const a = hexRgb(h1), b = hexRgb(h2); return css([a[0] + (b[0] - a[0]) * t, a[1] + (b[1] - a[1]) * t, a[2] + (b[2] - a[2]) * t]); }
+
+/* 표준정규 누적분포 */
+function erf(x) {
+  const s = Math.sign(x); x = Math.abs(x);
+  const t = 1 / (1 + 0.3275911 * x);
+  const y = 1 - (((((1.061405429 * t - 1.453152027) * t) + 1.421413741) * t - 0.284496736) * t + 0.254829592) * t * Math.exp(-x * x);
+  return s * y;
+}
+const Phi = z => 0.5 * (1 + erf(z / Math.SQRT2));
+const sigmoid = z => 1 / (1 + Math.exp(-z));
+
+/* 연립방정식 Ax = b (부분 피벗 가우스 소거) */
+function solve(A, b) {
+  const n = b.length, M = A.map((row, i) => [...row, b[i]]);
+  for (let c = 0; c < n; c++) {
+    let piv = c; for (let r = c + 1; r < n; r++) if (Math.abs(M[r][c]) > Math.abs(M[piv][c])) piv = r;
+    [M[c], M[piv]] = [M[piv], M[c]];
+    const d = M[c][c] || 1e-300;
+    for (let r = c + 1; r < n; r++) { const f = M[r][c] / d; if (!f) continue; for (let k = c; k <= n; k++) M[r][k] -= f * M[c][k]; }
+  }
+  const x = new Array(n).fill(0);
+  for (let r = n - 1; r >= 0; r--) { let s = M[r][n]; for (let k = r + 1; k < n; k++) s -= M[r][k] * x[k]; x[r] = s / (M[r][r] || 1e-300); }
+  return x;
+}
+/* 2×2 대칭 행렬 [[a,b],[b,c]]의 고유값·고유벡터 */
+function eig2(a, b, c) {
+  const tr = a + c, det = a * c - b * b, disc = Math.sqrt(Math.max(0, tr * tr / 4 - det));
+  const l1 = tr / 2 + disc, l2 = tr / 2 - disc;
+  let v = Math.abs(b) > 1e-12 ? [l1 - c, b] : (a >= c ? [1, 0] : [0, 1]);
+  const n = Math.hypot(v[0], v[1]); v = [v[0] / n, v[1] / n];
+  return { l: [l1, l2], v: [v, [-v[1], v[0]]] };
+}
+
+
+/* 수식을 KaTeX로 그린다. small은 식 아래 설명 */
+function tex(el, latex, small = '') {
+  let html;
+  try { html = window.katex ? katex.renderToString(latex, { displayMode: true, throwOnError: false, strict: 'ignore' }) : null; } catch (e) { html = null; }
+  el.innerHTML = (html || `<span class="mono">${latex}</span>`) + (small ? `<small>${small}</small>` : '');
+}
+/* 버튼 묶음: aria-pressed 하나만 켜기 */
+function segGroup(root, attr, onPick) {
+  const btns = $$('button', root);
+  btns.forEach(b => b.addEventListener('click', () => {
+    btns.forEach(o => o.setAttribute('aria-pressed', o === b ? 'true' : 'false'));
+    onPick(b.dataset[attr], b);
+  }));
+  return btns;
+}
+function toggle(btn, on) { btn.setAttribute('aria-pressed', on ? 'true' : 'false'); }
+const pressed = btn => btn.getAttribute('aria-pressed') === 'true';
+function chip(text, kind) { return `<span class="chip ${kind}">${text}</span>`; }
+function ro(lab, val) { return `<div class="ro"><span>${lab}</span><b>${val}</b></div>`; }
+/* 화면에 보일 때만 돌아가는 애니메이션 고리 */
+function animator(el, tick) {
+  let on = false, vis = true, running = false;
+  const loop = () => { if (!on || !vis || document.hidden) { running = false; return; } const go = tick(); if (go === false) { on = false; running = false; return; } requestAnimationFrame(loop); };
+  const kick = () => { if (on && vis && !document.hidden && !running) { running = true; requestAnimationFrame(loop); } };
+  if ('IntersectionObserver' in window) new IntersectionObserver(es => { vis = es[0].isIntersecting; kick(); }).observe(el);
+  document.addEventListener('visibilitychange', kick);
+  return { start() { on = true; kick(); }, stop() { on = false; }, get on() { return on; } };
+}
+
+window.HR = { $, $$, TAU, clamp, nf, REDUCE, MONO, SANS, rng, gauss, C, rgba, hexRgb, divColor, mix, plot, raf, frame, square, poly, vline, niceMax, label, dot,
+  heat, heatCanvas, Phi, sigmoid, solve, segGroup, toggle, pressed, chip, ro, animator, tex };
+})();
+
+</script>
+<script>
+(() => {
+'use strict';
+const { $, $$, clamp, nf, REDUCE, MONO, SANS, rng, gauss, C, rgba, mix, plot, raf, frame, label, dot, poly, vline, segGroup, toggle, pressed, chip, ro, animator } = window.HR;
+const fmt = (v, d = 2) => nf(v, d).replace('-', '−');
+/* 카드 묶음: 상황마다 보기 하나를 고르면 판정과 이유를 보여 준다 */
+function cardGame(rootId, scoreId, resetId, OPT, D) {
+  const root = $(rootId), score = $(scoreId); let ans = {};
+  function render() {
+    root.innerHTML = D.map((d, i) => {
+      const got = ans[i], done = got !== undefined, ok = done && got === d.a;
+      return `<div class="card ${done ? (ok ? 'right' : 'wrong') : ''}"><p>${d.t}</p>
+        <div class="btnrow">${OPT.map((o, j) => `<button class="btn" data-i="${i}" data-v="${j}" ${done ? 'disabled' : ''} aria-pressed="${got === j}">${o}</button>`).join('')}</div>
+        ${done ? `<div class="verdict"><div class="tagrow">${chip(ok ? '맞음' : '틀림', ok ? 'ok' : 'bad')}${chip('정답: ' + OPT[d.a], 'info')}</div>${d.why}</div>` : ''}</div>`;
+    }).join('');
+    score.textContent = `${Object.keys(ans).filter(i => ans[i] === D[i].a).length} / ${D.length}`;
+  }
+  root.addEventListener('click', e => { const b = e.target.closest('button[data-i]'); if (!b) return; ans[b.dataset.i] = +b.dataset.v; render(); });
+  $(resetId).addEventListener('click', () => { ans = {}; render(); });
+  render();
+}
+window.HR.cardGame = cardGame;
+
+/* ════════════ 머리말: 복도의 사회적 항법 ════════════ */
+(function hero() {
+  const W = 10, H = 3.2, PS = 0.6; // 복도 10 m × 3.2 m, 개인 공간 반지름 0.6 m
+  let people, robot, t, social = true, r, bumps, intrusions;
+  function reset() {
+    r = rng(31 + Math.floor(Math.random() * 1000));
+    people = Array.from({ length: 5 }, (_, i) => ({ x: 1 + r() * 8, y: 0.5 + r() * (H - 1), vx: (r() < 0.5 ? -1 : 1) * (0.5 + r() * 0.5), vy: 0, ph: r() * 6 }));
+    robot = { x: 0.4, y: H / 2, dir: 1 }; t = 0; bumps = 0; intrusions = 0;
+  }
+  function step(dt) {
+    t += dt;
+    people.forEach(p => {
+      p.x += p.vx * dt; p.y += Math.sin(t * 0.7 + p.ph) * 0.15 * dt;
+      if (p.x < 0.3) { p.x = 0.3; p.vx = Math.abs(p.vx); } if (p.x > W - 0.3) { p.x = W - 0.3; p.vx = -Math.abs(p.vx); }
+      p.y = clamp(p.y, 0.4, H - 0.4);
+    });
+    // 로봇: 목표는 복도 끝. 사회적 항법이면 멀리서부터 개인 공간을 피해 옆으로 비킨다. 아니면 0.35 m 안에서만 급히 비킨다
+    const goalX = robot.dir > 0 ? W - 0.4 : 0.4; let fx = Math.sign(goalX - robot.x) * 0.9, fy = (H / 2 - robot.y) * 0.4;
+    people.forEach(p => {
+      const dx = robot.x - p.x, dy = robot.y - p.y, d = Math.hypot(dx, dy);
+      const reach = social ? 2.2 : 0.35, k = social ? 1.6 : 6;
+      if (d < reach) { const f = k * (reach - d) / reach; fx += dx / (d + 1e-6) * f * 0.3; fy += dy / (d + 1e-6) * f; }
+      if (d < PS) intrusions += dt; if (d < 0.3) bumps += dt;
+    });
+    const sp = Math.hypot(fx, fy) || 1, v = Math.min(0.9, sp);
+    robot.x += fx / sp * v * dt; robot.y = clamp(robot.y + fy / sp * v * dt, 0.35, H - 0.35);
+    if (Math.abs(robot.x - goalX) < 0.2) robot.dir *= -1;
+  }
+  reset();
+  const P = plot('hero-cv', p => {
+    const { ctx, w, h } = p, sc = Math.min(w / W, h / H), ox = (w - W * sc) / 2, oy = (h - H * sc) / 2, X = x => ox + x * sc, Y = y => oy + y * sc;
+    ctx.fillStyle = C.paper; ctx.fillRect(X(0), Y(0), W * sc, H * sc);
+    ctx.strokeStyle = C.line; ctx.lineWidth = 2; ctx.strokeRect(X(0) + 1, Y(0) + 1, W * sc - 2, H * sc - 2);
+    people.forEach(pp => { ctx.fillStyle = rgba(C.c3, 0.12); ctx.beginPath(); ctx.arc(X(pp.x), Y(pp.y), PS * sc, 0, Math.PI * 2); ctx.fill(); });
+    people.forEach(pp => { dot(ctx, X(pp.x), Y(pp.y), 0.17 * sc, C.c3, C.panel); });
+    ctx.fillStyle = C.trace; ctx.fillRect(X(robot.x) - 0.17 * sc, Y(robot.y) - 0.15 * sc, 0.34 * sc, 0.3 * sc);
+    dot(ctx, X(robot.x) - 0.06 * sc, Y(robot.y) - 0.04 * sc, 2, C.panel); dot(ctx, X(robot.x) + 0.06 * sc, Y(robot.y) - 0.04 * sc, 2, C.panel);
+    const txt = `${social ? '사회적 항법' : '장애물 회피만'} · 개인 공간 침범 ${nf(intrusions, 1)}초 · 충돌 ${nf(bumps, 1)}초`;
+    ctx.font = `12px ${MONO}`; const tw = ctx.measureText(txt).width; ctx.fillStyle = rgba(C.panel, 0.92); ctx.fillRect(X(0) + 6, Y(0) + 6, tw + 12, 22);
+    label(ctx, txt, X(0) + 12, Y(0) + 17, C.ink, 'left', 'middle', `12px ${MONO}`);
+  });
+  const mon = $('#hero'), pauseBtn = $('#hero-pause'), socBtn = $('#hero-social');
+  const anim = animator(mon, () => { for (let i = 0; i < 3; i++) step(1 / 90); P.render(); });
+  function setPaused(v) { toggle(pauseBtn, v); pauseBtn.textContent = v ? '재생' : '일시정지'; mon.classList.toggle('paused', v); if (v) anim.stop(); else anim.start(); }
+  pauseBtn.addEventListener('click', () => setPaused(!pressed(pauseBtn)));
+  socBtn.addEventListener('click', () => { social = !social; toggle(socBtn, social); bumps = 0; intrusions = 0; P.render(); });
+  if (REDUCE) { for (let i = 0; i < 600; i++) step(1 / 30); P.render(); setPaused(true); } else setPaused(false);
+})();
+
+/* ════════════ 1장: 물리적·사회적 상호작용 카드 ════════════ */
+cardGame('#kind-cards', '#kind-score', '#kind-reset', ['물리적인 것만', '사회적인 것이 핵심', '둘 다'], [
+  { t: '밤에 아무도 없는 사무실을 청소하는 로봇.', a: 0, why: '사람이 없으므로 자기 몸과 환경의 물리만 다룹니다(교재 2장의 창고 예).' },
+  { t: '카페에서 손님 테이블까지 커피를 나르는 로봇.', a: 2, why: '물리적인 이동과 함께, 어디에 사람이 있는지, 어떻게 다가가야 적절한지 같은 사회 규칙을 다뤄야 합니다.' },
+  { t: '화면 속 아바타로만 대화하는 챗봇.', a: 1, why: '사회적 상호작용이지만 몸이 없습니다. 체현이 없다는 점이 HRI와 HCI의 차이입니다.' },
+  { t: '요양원에서 노인이 안고 쓰다듬는 물개 로봇 Paro.', a: 1, why: '거의 움직이지 않지만 반려동물 같은 사회적 상호작용이 핵심입니다.' },
+  { t: '사람이 손으로 잡고 함께 무거운 패널을 드는 협동 로봇.', a: 2, why: '힘과 접촉이라는 물리와, 누가 이끄는지 같은 조율이 함께 있습니다.' },
+  { t: '박물관에서 관람객을 전시물로 이끄는 안내 로봇.', a: 2, why: '사람 사이를 항법하는 물리적 문제와 얼굴을 맞댄 상호작용이 함께 있습니다(교재 11.1.1절).' },
+  { t: '공장의 울타리 안에서 용접하는 산업용 로봇.', a: 0, why: '사람이 가까이 갈 수 없으므로 사회적 상호작용이 없습니다.' },
+  { t: '복도에서 마주 오는 직원을 피해 가는 배송 로봇.', a: 2, why: '충돌 회피는 물리 문제지만, 언제 어느 쪽으로 비킬지는 사회 규칙입니다(4장).' }
+]);
+
+/* ════════════ 2장: 기대와 실제 능력의 격차 ════════════ */
+(function expectation() {
+  const ids = ['face', 'voice', 'arms', 'human', 'see', 'talk', 'grasp', 'social'];
+  const S = {}; ids.forEach(k => { S[k] = $('#ex-' + k); });
+  const CAP = [['사람을 알아본다', 'see'], ['자유로운 대화를 이해한다', 'talk'], ['물건을 집고 건넨다', 'grasp'], ['사회 규칙을 따른다', 'social']];
+  /* 겉모습이 각 능력에 대해 만드는 기대 (교재 4.1.2절: 눈이 있으면 본다고, 말하면 알아듣는다고, 팔이 있으면 집는다고 기대한다) */
+  function expected() {
+    const f = +S.face.value, v = +S.voice.value, a = +S.arms.value, h = +S.human.value;
+    return [clamp(0.75 * f + 0.25 * h, 0, 1), clamp(0.7 * v + 0.2 * f + 0.1 * h, 0, 1), clamp(0.75 * a + 0.25 * h, 0, 1), clamp(0.5 * h + 0.25 * f + 0.25 * v, 0, 1)];
+  }
+  const actual = () => CAP.map(c => +S[c[1]].value);
+  const P = plot('ex-cv', p => {
+    const E = expected(), A = actual();
+    const f = frame(p, { l: 150, r: 14, t: 22, b: 26, x0: 0, x1: 1, y0: 0, y1: 4, xt: [0, 0.5, 1], xf: v => Math.round(v * 100) + '%', yt: [], yl: '바깥선: 겉모습이 만드는 기대 · 채움: 실제 능력' });
+    const { ctx } = p, bh = f.H / 4;
+    CAP.forEach(([nm], i) => {
+      const y = f.T + i * bh + bh * 0.2, h = bh * 0.6, gap = E[i] - A[i];
+      label(ctx, nm, f.L - 8, y + h / 2, C.ink, 'right', 'middle', `12px ${SANS}`);
+      ctx.fillStyle = rgba(gap > 0.15 ? C.c3 : C.c0, 0.8); ctx.fillRect(f.L, y, f.X(A[i]) - f.L, h);
+      ctx.strokeStyle = C.ink; ctx.lineWidth = 1.5; ctx.strokeRect(f.L + 0.5, y + 0.5, f.X(E[i]) - f.L - 1, h - 1);
+      if (gap > 0.15) label(ctx, `실망 ${Math.round(gap * 100)}%p`, f.X(E[i]) + 6, y + h / 2, C.c3, 'left', 'middle', `11px ${MONO}`);
+    });
+  });
+  function update() {
+    ids.forEach(k => { $('#ex-' + k + '-o').textContent = nf(+S[k].value, 2).replace(/0$/, ''); });
+    const E = expected(), A = actual(), gaps = E.map((e, i) => e - A[i]), worst = gaps.indexOf(Math.max(...gaps)), mean = gaps.reduce((a, b) => a + b, 0) / 4;
+    const st = Math.max(...gaps) > 0.3 ? chip('기대가 실제를 크게 앞섬', 'bad') : Math.max(...gaps) > 0.15 ? chip('일부 실망', 'warn') : mean < -0.1 ? chip('적게 약속하고 많이 줌', 'ok') : chip('기대와 실제가 비슷함', 'ok');
+    $('#ex-ro').innerHTML = ro('가장 큰 격차', `${CAP[worst][0]} <small>${fmt(gaps[worst] * 100, 0)}%p</small>`) + ro('평균 격차 (기대 − 실제)', fmt(mean * 100, 0) + '<small>%p</small>') + ro('판정', st);
+    $('#ex-note').textContent = Math.max(...gaps) > 0.3
+      ? '겉모습이 약속한 것을 기능이 지키지 못합니다. 겉모습을 낮추거나(눈과 입을 빼거나, 로봇이라 부르지 않거나) 기능을 높여야 합니다. 교재는 실망이 상호작용 자체를 망칠 수 있다고 경고합니다.'
+      : mean < -0.1 ? '겉모습보다 능력이 큽니다. 사람은 비어 있는 부분을 자기 기대로 채우므로 기분 좋은 놀람이 됩니다(Paro의 예).'
+      : '기대와 능력이 대체로 맞습니다. 형태와 기능이 맞는 설계입니다.';
+    P.render();
+  }
+  ids.forEach(k => S[k].addEventListener('input', raf(update)));
+  update();
+})();
+
+/* ════════════ 3장: 불쾌한 골짜기 ════════════ */
+(function uncanny() {
+  const sH = $('#uv-h'), sM = $('#uv-mm'), mvBtn = $('#uv-move'), famBtn = $('#uv-fam');
+  const EX = [[8, '산업용 로봇'], [28, '장난감 로봇'], [50, '인형'], [72, '분라쿠 인형'], [84, '의수'], [90, '시체 (움직임: 좀비)'], [100, '건강한 사람']];
+  /* Mori의 그림을 본뜬 곡선: 봉우리(약 70%)까지 오르다 85% 부근에서 골짜기, 100%에서 최고 */
+  function affinity(h, move, mm, fam) {
+    const x = h / 100, rise = Math.sin(Math.PI * Math.min(x / 0.7, 1) / 2) * 0.6;
+    const valley = Math.exp(-((x - 0.85) ** 2) / 0.006) * (0.9 + 1.4 * mm) * (fam ? 0.6 : 1);
+    const top = x > 0.85 ? (x - 0.85) / 0.15 : 0;
+    let y = rise - valley + top * 1.0;
+    if (move) y *= 1.35;
+    return y;
+  }
+  const P = plot('uv-cv', p => {
+    const move = pressed(mvBtn), mm = +sM.value, fam = pressed(famBtn), h = +sH.value;
+    const f = frame(p, { l: 48, r: 14, t: 22, b: 34, x0: 0, x1: 100, y0: -1.4, y1: 1.5, xt: [0, 50, 100], xf: v => v + '%', yt: [-1, 0, 1], yf: v => (v === 0 ? '0' : v > 0 ? '+' : '−'), xl: '사람다움', yl: '친밀감 (Mori의 신와칸)' });
+    const { ctx } = p;
+    ctx.fillStyle = rgba(C.c3, 0.08); ctx.fillRect(f.X(76), f.T, f.X(95) - f.X(76), f.H);
+    label(ctx, '불쾌한 골짜기', f.X(85.5), f.T + 4, C.c3, 'center', 'top', `11px ${SANS}`);
+    poly(ctx, 2, i => f.L + i * f.W, () => f.Y(0), C.line, 1, [4, 4]);
+    f.clip();
+    poly(ctx, 201, i => f.X(i / 2), i => f.Y(affinity(i / 2, false, mm, fam)), rgba(C.c0, move ? 0.35 : 1), 2.2);
+    if (move) poly(ctx, 201, i => f.X(i / 2), i => f.Y(affinity(i / 2, true, mm, fam)), C.c0, 2.4);
+    f.unclip();
+    EX.forEach(([x, nm]) => { const y = affinity(x, move, mm, fam); dot(ctx, f.X(x), f.Y(y), 3.5, C.muted, C.panel); });
+    const y = affinity(h, move, mm, fam); dot(ctx, f.X(h), f.Y(y), 6, C.mark, C.panel);
+  });
+  function update() {
+    const h = +sH.value, move = pressed(mvBtn), mm = +sM.value, fam = pressed(famBtn), y = affinity(h, move, mm, fam);
+    $('#uv-h-o').textContent = h + '%'; $('#uv-mm-o').textContent = nf(mm, 2);
+    let near = EX[0]; EX.forEach(e => { if (Math.abs(e[0] - h) < Math.abs(near[0] - h)) near = e; });
+    const zone = h >= 76 && h <= 95 ? chip('골짜기 안', 'bad') : h > 95 ? chip('골짜기 너머', 'ok') : h >= 55 ? chip('첫 봉우리 근처: Mori가 권한 자리', 'ok') : chip('기계에 가까움', 'neutral');
+    $('#uv-ro').innerHTML = ro('친밀감', fmt(y)) + ro('Mori의 가장 가까운 예', near[1]) + ro('위치', zone);
+    P.render();
+  }
+  [sH, sM].forEach(s => s.addEventListener('input', raf(update)));
+  [mvBtn, famBtn].forEach(b => b.addEventListener('click', () => { toggle(b, !pressed(b)); update(); }));
+  update();
+})();
+})();
+
+</script>
+<script>
+(() => {
+'use strict';
+const { $, $$, clamp, nf, REDUCE, MONO, SANS, rng, gauss, C, rgba, mix, plot, raf, frame, label, dot, poly, vline, segGroup, toggle, pressed, chip, ro, animator, Phi } = window.HR;
+const fmt = (v, d = 2) => nf(v, d).replace('-', '−');
+function drawPerson(ctx, x, y, r, col, heading) { // 위에서 본 사람: 원 + 코(방향)
+  dot(ctx, x, y, r, col, C.panel);
+  ctx.strokeStyle = C.panel; ctx.lineWidth = 2; ctx.beginPath(); ctx.moveTo(x, y); ctx.lineTo(x + Math.cos(heading) * r * 0.9, y + Math.sin(heading) * r * 0.9); ctx.stroke();
+}
+function drawBot(ctx, x, y, s, col) { ctx.fillStyle = col; ctx.fillRect(x - s / 2, y - s / 2, s, s); dot(ctx, x - s * 0.2, y - s * 0.12, Math.max(1.5, s * 0.08), C.panel); dot(ctx, x + s * 0.2, y - s * 0.12, Math.max(1.5, s * 0.08), C.panel); }
+
+/* ════════════ 4장: 접근 방향과 거리 ════════════ */
+(function proxemics() {
+  let dir = 'front', task = 'talk'; const sD = $('#px-d');
+  const ZONES = [[0.45, '친밀', C.c3], [1.2, '개인', C.c1], [4, '사회', C.c2], [6, '공적', C.c0]];
+  const zoneOf = d => (d < 0.45 ? 0 : d < 1.2 ? 1 : d < 4 ? 2 : 3);
+  const P = plot('px-cv', p => {
+    const d = +sD.value, { ctx, w, h } = p, cx = w / 2, cy = h * 0.52, sc = Math.min(w, h) / 9.6;
+    ZONES.slice().reverse().forEach(([rad, nm, col]) => { ctx.fillStyle = rgba(col, 0.1); ctx.beginPath(); ctx.arc(cx, cy, rad * sc, 0, Math.PI * 2); ctx.fill(); ctx.strokeStyle = rgba(col, 0.6); ctx.lineWidth = 1; ctx.stroke(); const la = Math.PI * 0.75; label(ctx, `${nm}${rad < 6 ? ' < ' + rad + ' m' : ''}`, cx + Math.cos(la) * (rad * sc - 6), cy + Math.sin(la) * (rad * sc - 6), col, 'right', 'bottom', `11px ${SANS}`); });
+    const ang = dir === 'front' ? -Math.PI / 2 : dir === 'side' ? 0 : Math.PI / 2, rx = cx + Math.cos(ang) * d * sc, ry = cy + Math.sin(ang) * d * sc;
+    ctx.setLineDash([4, 4]); ctx.strokeStyle = C.muted; ctx.beginPath(); ctx.moveTo(cx + Math.cos(ang) * 4.6 * sc, cy + Math.sin(ang) * 4.6 * sc); ctx.lineTo(rx, ry); ctx.stroke(); ctx.setLineDash([]);
+    drawPerson(ctx, cx, cy, 0.25 * sc, C.c3, -Math.PI / 2);
+    drawBot(ctx, rx, ry, 0.5 * sc, C.trace);
+    label(ctx, `${nf(d, 1)} m`, rx + 0.35 * sc, ry + (dir === 'side' ? 0.4 * sc : 0), C.ink, 'left', 'middle', `12px ${MONO}`);
+    label(ctx, '사람의 시선 ↑', cx + 0.5 * sc, cy, C.muted, 'left', 'middle', `11px ${SANS}`);
+  });
+  function update() {
+    const d = +sD.value, z = zoneOf(d); $('#px-d-o').textContent = `${nf(d, 1)} m`;
+    const notes = [], tags = [];
+    if (z === 0) { tags.push(chip('친밀 구역 침범', 'bad')); notes.push('처음 만나는 로봇이 친밀 거리까지 오면 대부분의 사람은 불편해합니다. 대부분은 개인 거리나 사회 거리를 바랍니다(Walters 외 2005).'); }
+    else if (z === 1) { tags.push(chip('개인 거리', task === 'pass' ? 'warn' : 'ok')); }
+    else if (z === 2) { tags.push(chip('사회 거리', task === 'hand' ? 'warn' : 'ok')); }
+    else { tags.push(chip('공적 거리', 'warn')); notes.push('너무 멀어서 상호작용을 시작하려는 신호로 읽히지 않습니다.'); }
+    if (task === 'talk') { if (dir === 'front') notes.push('대화를 시작하려면 앞에서 다가가는 것이 선호됩니다.'); else if (dir === 'back') { tags.push(chip('뒤에서 접근', 'bad')); notes.push('뒤에서 오면 놀라게 하고, 쫓기는 느낌을 줍니다(Joggobot의 교훈).'); } else notes.push('옆에서의 접근은 대화 시작으로는 앞보다 덜 분명하지만 위협적이지 않습니다.'); if (z === 2 && d > 2.5) notes.push('대화라면 조금 더 다가와 개인 거리 가까이에 서는 것이 자연스럽습니다.'); }
+    if (task === 'hand') { if (dir === 'front') { tags.push(chip('정면 전달', 'warn')); notes.push('물건을 건넬 때 정면 접근은 덜 선호되었고 실패가 더 많았습니다(Dautenhahn 외 2006; Shi 외 2013). 비스듬히 옆에서가 낫습니다.'); } else if (dir === 'side') notes.push('물건 전달에는 옆에서의 접근이 선호됩니다.'); else { tags.push(chip('뒤에서 접근', 'bad')); notes.push('뒤에서 물건을 내밀면 사람이 볼 수 없습니다.'); } if (z >= 2) notes.push('팔이 닿으려면 개인 거리 안으로 들어와야 합니다. 그때 손의 경로가 읽혀야 합니다(5장).'); }
+    if (task === 'pass') { if (z <= 1) { tags.push(chip('너무 가까이 지나감', z === 0 ? 'bad' : 'warn')); notes.push('그냥 지나갈 때는 개인 공간을 피해 사회 거리로 돌아가는 것이 좋습니다(Pacchierotti 외 2006).'); } else notes.push('개인 공간을 피해 지나갑니다. 미리 방향을 보이면 더 좋습니다(실험 4-2).'); }
+    $('#px-ro').innerHTML = ro('구역', ZONES[z][1]) + ro('판정', tags.join(' '));
+    $('#px-note').textContent = notes.join(' ');
+    P.render();
+  }
+  segGroup($('#px-dir'), 'd', v => { dir = v; update(); });
+  segGroup($('#px-task'), 't', v => { task = v; update(); });
+  sD.addEventListener('input', raf(update));
+  update();
+})();
+
+/* ════════════ 4장: 복도에서 비키기 ════════════ */
+(function corridor() {
+  const sD = $('#cr-d'), L = 8, Wd = 2.2; let t0 = 0, playing = false, hist = [];
+  function sim(dStart) { // 사람은 y=1.1에서 왼쪽으로, 로봇은 오른쪽으로. dStart 안에서 로봇이 옆으로 비킨다
+    const pts = []; let minD = 9, intimate = 0, rx = 0.3, ry = Wd / 2, px = L - 0.3, py = Wd / 2;
+    for (let t = 0; t < 12; t += 0.02) {
+      const d = Math.hypot(px - rx, py - ry);
+      const targetY = (px - rx > 0 && d < dStart) || (px - rx < 0 && rx - px < 1.0) ? Wd - 0.45 : Wd / 2;
+      ry += clamp(targetY - ry, -0.9 * 0.02, 0.9 * 0.02) * 2.5; rx += 0.8 * 0.02; px -= 0.8 * 0.02;
+      minD = Math.min(minD, d); if (d < 0.45) intimate += 0.02;
+      pts.push([rx, ry, px, py, d]);
+      if (rx > L - 0.3 || px < 0.3) break;
+    }
+    return { pts, minD, intimate };
+  }
+  let res;
+  const P = plot('cr-cv', p => {
+    const { ctx, w, h } = p, sc = Math.min(w / L, h / Wd), ox = (w - L * sc) / 2, oy = (h - Wd * sc) / 2, X = x => ox + x * sc, Y = y => oy + y * sc;
+    ctx.fillStyle = C.paper; ctx.fillRect(X(0), Y(0), L * sc, Wd * sc); ctx.strokeStyle = C.line; ctx.lineWidth = 2; ctx.strokeRect(X(0) + 1, Y(0) + 1, L * sc - 2, Wd * sc - 2);
+    const k = playing ? Math.min(res.pts.length - 1, Math.floor((performance.now() - t0) / 20)) : res.pts.length - 1, [rx, ry, px, py] = res.pts[k];
+    poly(ctx, k + 1, i => X(res.pts[i][0]), i => Y(res.pts[i][1]), rgba(C.trace, 0.5), 1.5);
+    ctx.fillStyle = rgba(C.c3, 0.12); ctx.beginPath(); ctx.arc(X(px), Y(py), 0.45 * sc, 0, Math.PI * 2); ctx.fill();
+    drawPerson(ctx, X(px), Y(py), 0.2 * sc, C.c3, Math.PI); drawBot(ctx, X(rx), Y(ry), 0.4 * sc, C.trace);
+  });
+  const anim = animator($('#b4-2'), () => { P.render(); if ((performance.now() - t0) / 20 >= res.pts.length) { playing = false; P.render(); return false; } });
+  function update() {
+    const d = +sD.value; $('#cr-d-o').textContent = `${nf(d, 1)} m`; res = sim(d);
+    const st = res.intimate > 0 ? chip('친밀 구역 침범: 공격적으로 보임', 'bad') : res.minD < 1.2 ? chip('개인 공간에 들어감', 'warn') : chip('사람이 하듯 미리 비킴', 'ok');
+    $('#cr-ro').innerHTML = ro('가장 가까웠던 거리', `${nf(res.minD, 2)}<small> m</small>`) + ro('친밀 구역(0.45 m) 안에 있던 시간', `${nf(res.intimate, 1)}<small>초</small>`) + ro('판정', st);
+    P.render();
+  }
+  sD.addEventListener('input', raf(update));
+  $('#cr-run').addEventListener('click', () => { update(); playing = true; t0 = performance.now(); anim.start(); });
+  update();
+})();
+
+/* ════════════ 5장: 시선과 다음 발언자 ════════════ */
+(function gaze() {
+  let target = 'A', count = { A: 0, B: 0, none: 0 }, r = rng(7);
+  const PROB = { A: [0.7, 0.15, 0.15], B: [0.15, 0.7, 0.15], alt: [0.42, 0.42, 0.16], away: [0.3, 0.3, 0.4] }; // 가상의 값
+  const PC = plot('gz-cv', p => {
+    const { ctx, w, h } = p, bx = w / 2, by = h * 0.72, ax = w * 0.25, ay = h * 0.3, cx2 = w * 0.75;
+    drawBot(ctx, bx, by, 34, C.trace); dot(ctx, ax, ay, 15, C.c1, C.panel); dot(ctx, cx2, ay, 15, C.c2, C.panel);
+    label(ctx, 'A', ax, ay - 22, C.ink, 'center', 'bottom', `600 13px ${SANS}`); label(ctx, 'B', cx2, ay - 22, C.ink, 'center', 'bottom', `600 13px ${SANS}`);
+    const to = target === 'A' ? [ax, ay] : target === 'B' ? [cx2, ay] : target === 'alt' ? [bx, ay] : [bx + 80, by + 40];
+    ctx.strokeStyle = C.mark; ctx.lineWidth = 2; ctx.setLineDash([5, 4]); ctx.beginPath(); ctx.moveTo(bx, by - 8); ctx.lineTo(to[0], to[1]); ctx.stroke(); ctx.setLineDash([]);
+    label(ctx, target === 'alt' ? '번갈아 본다' : target === 'away' ? '시선을 돌린다' : `${target}를 본다`, bx, by + 26, C.muted, 'center', 'top', `11px ${SANS}`);
+  });
+  const PB = plot('gz-bar', p => {
+    const tot = count.A + count.B + count.none || 1;
+    const f = frame(p, { l: 40, r: 10, t: 22, b: 30, x0: 0, x1: 3, y0: 0, y1: 1, yt: [0, 0.5, 1], yf: v => Math.round(v * 100) + '%', yl: '다음에 말한 사람의 비율' });
+    const { ctx } = p, bw = f.W / 3;
+    [['A', C.c1], ['B', C.c2], ['none', C.muted]].forEach(([k, col], i) => { const v = count[k] / tot, x = f.L + i * bw + bw * 0.2; ctx.fillStyle = col; ctx.fillRect(x, f.Y(v), bw * 0.6, f.Y(0) - f.Y(v)); label(ctx, k === 'none' ? '아무도 (침묵)' : k, x + bw * 0.3, f.T + f.H + 6, C.muted, 'center', 'top', `11px ${SANS}`); if (tot > 1) label(ctx, Math.round(v * 100) + '%', x + bw * 0.3, f.Y(v) - 3, C.ink, 'center', 'bottom', `11px ${MONO}`); });
+  });
+  function trials(n) { const pr = PROB[target]; for (let i = 0; i < n; i++) { const u = r(); if (u < pr[0]) count.A++; else if (u < pr[0] + pr[1]) count.B++; else count.none++; } }
+  function update() { const tot = count.A + count.B + count.none; $('#gz-ro').innerHTML = ro('시험 횟수', `${tot}`) + ro('A가 받은 말차례', tot ? `${Math.round(count.A / tot * 100)}<small>%</small>` : '–') + ro('B가 받은 말차례', tot ? `${Math.round(count.B / tot * 100)}<small>%</small>` : '–'); PC.render(); PB.render(); }
+  segGroup($('#gz-target'), 'g', v => { target = v; update(); });
+  $('#gz-run').addEventListener('click', () => { trials(100); update(); });
+  $('#gz-reset').addEventListener('click', () => { count = { A: 0, B: 0, none: 0 }; update(); });
+  update();
+})();
+
+/* ════════════ 5장: 예측 가능성과 가독성 (Dragan 외 2013을 단순화) ════════════ */
+(function legibility() {
+  const sE = $('#lg-ex'), sT = $('#lg-t'), sG = $('#lg-gap');
+  const S = [0, 0], N = 60;
+  function goals() { const g = +sG.value; return [[0.5 - g / 2, 1], [0.5 + g / 2, 1]]; }
+  /* 경로: 시작 S에서 목표 G1(왼쪽)로. 과장 e만큼 G2의 반대쪽으로 휘어진 뒤 들어간다 */
+  function path(e) { const [G1, G2] = goals(); return Array.from({ length: N + 1 }, (_, i) => { const u = i / N, bulge = Math.sin(Math.PI * u) * e * 0.6 * Math.sign(G1[0] - G2[0]); return [S[0] + (G1[0] - S[0]) * u + bulge, S[1] + (G1[1] - S[1]) * u]; }); }
+  /* 관찰자: 지금까지의 경로 길이 + 남은 직선거리가 목표별 최단 거리에 비해 얼마나 비효율적인지로 확률을 매긴다 */
+  function belief(pts, k) {
+    const [G1, G2] = goals(); let len = 0; for (let i = 1; i <= k; i++) len += Math.hypot(pts[i][0] - pts[i - 1][0], pts[i][1] - pts[i - 1][1]);
+    const q = pts[k], cost = G => len + Math.hypot(G[0] - q[0], G[1] - q[1]) - Math.hypot(G[0] - S[0], G[1] - S[1]);
+    const a = Math.exp(-22 * cost(G1)), b = Math.exp(-22 * cost(G2)); return a / (a + b);
+  }
+  const PM = plot('lg-cv', p => {
+    const e = +sE.value, t = +sT.value, pts = path(e), k = Math.round(t * N), [G1, G2] = goals();
+    const { ctx, w, h } = p, sc = Math.min(w / 1.3, h / 1.3), X = x => w / 2 + (x - 0.5) * sc, Y = y => h - 20 - y * sc * 0.9;
+    [[G1, '목표 컵'], [G2, '다른 컵']].forEach(([g, nm], i) => { ctx.fillStyle = rgba(i ? C.muted : C.c2, 0.25); ctx.beginPath(); ctx.arc(X(g[0]), Y(g[1]), 14, 0, Math.PI * 2); ctx.fill(); ctx.strokeStyle = i ? C.muted : C.c2; ctx.lineWidth = 1.5; ctx.stroke(); label(ctx, nm, X(g[0]), Y(g[1]) - 18, i ? C.muted : C.c2, 'center', 'bottom', `11px ${SANS}`); });
+    poly(ctx, 2, i => X(i ? G1[0] : S[0]), i => Y(i ? G1[1] : S[1]), C.line, 1, [3, 4]);
+    poly(ctx, pts.length, i => X(pts[i][0]), i => Y(pts[i][1]), rgba(C.c0, 0.35), 1.5);
+    poly(ctx, k + 1, i => X(pts[i][0]), i => Y(pts[i][1]), C.c0, 2.6);
+    dot(ctx, X(pts[k][0]), Y(pts[k][1]), 6, C.c0, C.panel); label(ctx, '손', X(pts[k][0]) + 10, Y(pts[k][1]), C.ink, 'left', 'middle', `11px ${SANS}`);
+    label(ctx, '출발', X(S[0]), Y(S[1]) + 6, C.muted, 'center', 'top', `11px ${SANS}`);
+  });
+  const PP = plot('lg-p', p => {
+    const e = +sE.value, pts = path(e), pts0 = path(0);
+    const f = frame(p, { l: 40, r: 10, t: 22, b: 34, x0: 0, x1: 1, y0: 0, y1: 1, xt: [0, 0.5, 1], xf: v => Math.round(v * 100) + '%', yt: [0.5, 0.9, 1], yf: v => Math.round(v * 100) + '%', xl: '진행', yl: '관찰자가 목표 컵이라고 믿는 확률' });
+    poly(p.ctx, 2, i => f.L + i * f.W, () => f.Y(0.9), C.line, 1, [3, 4]);
+    poly(p.ctx, N + 1, i => f.X(i / N), i => f.Y(belief(pts0, i)), rgba(C.muted, 0.7), 1.5, [4, 3]);
+    poly(p.ctx, N + 1, i => f.X(i / N), i => f.Y(belief(pts, i)), C.c0, 2.2);
+    vline(p.ctx, f.X(+sT.value), f.T, f.H, C.ink, [3, 3]);
+    label(p.ctx, '점선: 과장 없는 최단 경로', f.L + f.W - 4, f.T + f.H - 6, C.muted, 'right', 'bottom', `11px ${SANS}`);
+  });
+  function update() {
+    const e = +sE.value, t = +sT.value, pts = path(e), k = Math.round(t * N);
+    $('#lg-ex-o').textContent = nf(e, 2).replace(/0$/, ''); $('#lg-t-o').textContent = Math.round(t * 100) + '%'; $('#lg-gap-o').textContent = nf(+sG.value, 2);
+    let len = 0; for (let i = 1; i <= N; i++) len += Math.hypot(pts[i][0] - pts[i - 1][0], pts[i][1] - pts[i - 1][1]);
+    const straight = Math.hypot(goals()[0][0] - S[0], goals()[0][1] - S[1]);
+    let t90 = null; for (let i = 0; i <= N; i++) if (belief(pts, i) >= 0.9) { t90 = i / N; break; }
+    $('#lg-ro').innerHTML = ro('지금 관찰자의 확신', `${Math.round(belief(pts, k) * 100)}<small>%</small>`) + ro('90% 확신에 이르는 시점', t90 == null ? '끝까지 못 미침' : `${Math.round(t90 * 100)}<small>% 지점</small>`) + ro('경로 길이 (최단 대비)', `${nf(len / straight, 2)}<small>배</small>`) +
+      ro('성질', e < 0.1 ? chip('예측 가능: 가장 효율적', 'info') : e < 0.5 ? chip('가독성과 효율의 절충', 'ok') : chip('가독성 높음: 경로는 비효율적', 'warn'));
+    PM.render(); PP.render();
+  }
+  [sE, sT, sG].forEach(s => s.addEventListener('input', raf(update)));
+  update();
+})();
+
+/* ════════════ 6장: 확인 전략 시뮬레이션 ════════════ */
+(function dialogue() {
+  const sW = $('#dm-wer'), sT = $('#dm-th'); let strat = 'thresh';
+  function run(strategy, wer, th) {
+    const r = rng(101); let ok = 0, turns = 0;
+    for (let i = 0; i < 200; i++) {
+      let correct = r() > wer, conf = clamp(gauss(r) * 0.15 + (correct ? 0.82 : 0.45), 0, 1), t = 2; // 요청 + 응답
+      const ask = strategy === 'always' || (strategy === 'thresh' && conf < th);
+      if (ask) { t += 2; if (!correct) { t += 2; correct = r() > wer * 0.5; } } // 되물으면 고쳐 말할 기회; 두 번째 인식은 더 또렷하다고 둔다
+      if (correct) ok++; turns += t;
+    }
+    return { succ: ok / 200, turns: turns / 200 };
+  }
+  const P = plot('dm-cv', p => {
+    const wer = +sW.value, th = +sT.value, R = ['never', 'thresh', 'always'].map(s => run(s, wer, th));
+    const f = frame(p, { l: 44, r: 10, t: 22, b: 34, x0: 0, x1: 3, y0: 0, y1: 1.05, yt: [0, 0.5, 1], yf: v => Math.round(v * 100) + '%', yl: '주문 성공률 (막대) · 대화 길이 (점)' });
+    const { ctx } = p, bw = f.W / 3, names = ['되묻지 않기', '낮을 때만', '늘 되묻기'];
+    R.forEach((q, i) => { const x = f.L + i * bw + bw * 0.15; ctx.fillStyle = rgba(i === ['never', 'thresh', 'always'].indexOf(strat) ? C.c0 : C.muted, 0.7); ctx.fillRect(x, f.Y(q.succ), bw * 0.45, f.Y(0) - f.Y(q.succ)); label(ctx, Math.round(q.succ * 100) + '%', x + bw * 0.225, f.Y(q.succ) - 3, C.ink, 'center', 'bottom', `11px ${MONO}`); dot(ctx, x + bw * 0.6, f.Y(clamp(q.turns / 8, 0, 1)), 6, C.c1, C.panel); label(ctx, `${nf(q.turns, 1)}턴`, x + bw * 0.6, f.Y(clamp(q.turns / 8, 0, 1)) - 9, C.c1, 'center', 'bottom', `11px ${MONO}`); label(ctx, names[i], x + bw * 0.35, f.T + f.H + 6, C.muted, 'center', 'top', `11px ${SANS}`); });
+  });
+  function update() {
+    const wer = +sW.value, th = +sT.value, q = run(strat, wer, th);
+    $('#dm-wer-o').textContent = Math.round(wer * 100) + '%'; $('#dm-th-o').textContent = nf(th, 2);
+    $('#dm-ro').innerHTML = ro('고른 전략의 성공률', `${Math.round(q.succ * 100)}<small>%</small>`) + ro('주문당 평균 대화 길이', `${nf(q.turns, 1)}<small>턴</small>`) + ro('틀린 주문', `${Math.round((1 - q.succ) * 200)}<small> / 200건</small>`);
+    $('#dm-note').textContent = strat === 'always' ? '늘 되물으면 오류를 가장 많이 잡지만 모든 주문이 길어집니다. 사람의 100 ms 응답에 견주면 로봇의 되묻기는 이미 느린 대화를 더 느리게 만듭니다.' : strat === 'never' ? '되묻지 않으면 대화는 짧지만 인식 오류가 그대로 주문이 됩니다. 오류율이 낮고 실수의 비용이 작을 때만 쓸 만합니다.' : 'ASR이 돌려주는 신뢰도를 쓰면 확신이 없을 때만 되물을 수 있습니다. 문턱값을 올리면 늘 되묻기에, 내리면 되묻지 않기에 가까워집니다.';
+    P.render();
+  }
+  segGroup($('#dm-strat'), 's', v => { strat = v; update(); });
+  [sW, sT].forEach(s => s.addEventListener('input', raf(update)));
+  update();
+})();
+
+/* ════════════ 7장: 원형 모델과 로봇 얼굴 ════════════ */
+(function circumplex() {
+  const sV = $('#em-v'), sA = $('#em-a');
+  /* Russell (1980)의 원형 배치를 따른 단어 (각도 → 유인가, 각성) */
+  const WORDS = [['흥분', 0.55, 0.8], ['기쁨', 0.85, 0.35], ['만족', 0.8, -0.3], ['느긋함', 0.6, -0.75], ['졸림', -0.05, -0.95], ['지루함', -0.6, -0.65], ['우울', -0.85, -0.25], ['슬픔', -0.75, 0.1], ['불쾌', -0.7, 0.45], ['화남', -0.55, 0.8], ['두려움', -0.4, 0.9], ['놀람', 0.1, 0.95], ['차분', 0.3, -0.85], ['긴장', -0.3, 0.7]];
+  const PC = plot('em-cv', p => {
+    const v = +sV.value, a = +sA.value, { ctx, w, h } = p, cx = w / 2, cy = h / 2, R = Math.min(w, h) / 2 - 34;
+    ctx.fillStyle = C.paper; ctx.beginPath(); ctx.arc(cx, cy, R, 0, Math.PI * 2); ctx.fill(); ctx.strokeStyle = C.line; ctx.lineWidth = 1; ctx.stroke();
+    ctx.strokeStyle = C.grid; ctx.beginPath(); ctx.moveTo(cx - R, cy); ctx.lineTo(cx + R, cy); ctx.moveTo(cx, cy - R); ctx.lineTo(cx, cy + R); ctx.stroke();
+    label(ctx, '유쾌 →', cx + R + 4, cy, C.muted, 'left', 'middle', `11px ${SANS}`); label(ctx, '← 불쾌', cx - R - 4, cy, C.muted, 'right', 'middle', `11px ${SANS}`);
+    label(ctx, '각성 높음 ↑', cx, cy - R - 6, C.muted, 'center', 'bottom', `11px ${SANS}`); label(ctx, '각성 낮음 ↓', cx, cy + R + 6, C.muted, 'center', 'top', `11px ${SANS}`);
+    WORDS.forEach(([t, x, y]) => label(ctx, t, cx + x * R, cy - y * R, C.muted, 'center', 'middle', `11px ${SANS}`));
+    dot(ctx, cx + v * R, cy - a * R, 7, C.mark, C.panel);
+  });
+  const PF = plot('em-face', p => {
+    const v = +sV.value, a = +sA.value, { ctx, w, h } = p, cx = w / 2, cy = h / 2, s = Math.min(w, h) * 0.36;
+    const col = mix(mix(C.c0, C.c1, (v + 1) / 2), C.panel, 0.55 - 0.45 * Math.abs(a));
+    ctx.fillStyle = col; ctx.beginPath(); ctx.roundRect ? ctx.roundRect(cx - s, cy - s * 0.9, 2 * s, 1.8 * s, s * 0.25) : ctx.rect(cx - s, cy - s * 0.9, 2 * s, 1.8 * s); ctx.fill();
+    const eyeR = s * (0.12 + 0.1 * (a + 1) / 2), ey = cy - s * 0.25;
+    [-1, 1].forEach(k => { dot(ctx, cx + k * s * 0.4, ey, eyeR, C.ink); dot(ctx, cx + k * s * 0.4 + eyeR * 0.3, ey - eyeR * 0.3, eyeR * 0.3, C.panel); });
+    ctx.strokeStyle = C.ink; ctx.lineWidth = Math.max(2, s * 0.06); ctx.lineCap = 'round';
+    [-1, 1].forEach(k => { const by = ey - eyeR - s * (0.12 + 0.12 * (a + 1) / 2), inner = cx + k * s * 0.18, outer = cx + k * s * 0.62, tilt = -v * s * 0.12; ctx.beginPath(); ctx.moveTo(inner, by + tilt); ctx.lineTo(outer, by - tilt * 0.4); ctx.stroke(); });
+    const my = cy + s * 0.4, mw = s * (0.35 + 0.25 * (a + 1) / 2), curve = v * s * 0.3;
+    ctx.beginPath(); ctx.moveTo(cx - mw, my); ctx.quadraticCurveTo(cx, my + curve * 1.6, cx + mw, my); ctx.stroke();
+    if (a > 0.5 && v > -0.2) { ctx.fillStyle = C.ink; ctx.beginPath(); ctx.ellipse(cx, my + curve * 0.5, mw * 0.5, s * 0.08 * (a - 0.5) * 2 + 1, 0, 0, Math.PI * 2); ctx.fill(); }
+    ctx.lineCap = 'butt';
+  });
+  function update() {
+    const v = +sV.value, a = +sA.value, s = x => (x > 0 ? '+' : x < 0 ? '−' : '') + nf(Math.abs(x), 2).replace(/0$/, '');
+    $('#em-v-o').textContent = s(v); $('#em-a-o').textContent = s(a);
+    const near = WORDS.map(([t, x, y]) => [Math.hypot(x - v, y - a), t]).sort((p, q) => p[0] - q[0]).slice(0, 3).map(q => q[1]);
+    const quad = v >= 0 ? (a >= 0 ? '유쾌·높은 각성' : '유쾌·낮은 각성') : (a >= 0 ? '불쾌·높은 각성' : '불쾌·낮은 각성');
+    $('#em-ro').innerHTML = ro('사분면', quad) + ro('가까운 감정 단어', near.join(' · ')) + ro('얼굴 단서', `입꼬리 ${v >= 0 ? '위' : '아래'} · 눈 ${a >= 0 ? '크게' : '작게'} · 눈썹 ${a >= 0 ? '올림' : '내림'}`);
+    PC.render(); PF.render();
+  }
+  [sV, sA].forEach(x => x.addEventListener('input', raf(update)));
+  const cv = $('#em-cv'); let drag = false;
+  const pick = e => { const rc = cv.getBoundingClientRect(), w = rc.width, h = rc.height, R = Math.min(w, h) / 2 - 34, x = (e.clientX - rc.left - w / 2) / R, y = -(e.clientY - rc.top - h / 2) / R; const m = Math.hypot(x, y), k = m > 1 ? 1 / m : 1; sV.value = clamp(x * k, -1, 1).toFixed(2); sA.value = clamp(y * k, -1, 1).toFixed(2); update(); };
+  cv.addEventListener('pointerdown', e => { drag = true; cv.setPointerCapture(e.pointerId); pick(e); });
+  cv.addEventListener('pointermove', e => { if (drag) pick(e); });
+  cv.addEventListener('pointerup', () => { drag = false; }); cv.addEventListener('pointercancel', () => { drag = false; });
+  update();
+})();
+})();
+
+</script>
+<script>
+(() => {
+'use strict';
+const { $, $$, clamp, nf, REDUCE, MONO, SANS, rng, gauss, C, rgba, mix, plot, raf, frame, label, dot, poly, vline, segGroup, toggle, pressed, chip, ro, Phi, cardGame } = window.HR;
+const fmt = (v, d = 2) => nf(v, d).replace('-', '−');
+
+/* ════════════ 8장: 신뢰의 보정 (교육용 가상 모형) ════════════ */
+(function trust() {
+  const sR = $('#tr-rel'), sI = $('#tr-init'); let repair = 'none', seed = 1, res;
+  const N = 60, TH = 0.6;
+  function sim() {
+    const r = rng(seed * 13), rel = +sR.value; let T = +sI.value; const hist = [], rely = [], fails = [];
+    for (let t = 0; t < N; t++) {
+      const use = T >= TH, ok = r() < rel;
+      if (use) { if (ok) T += 0.03 * (1 - T); else { T -= repair === 'explain' ? 0.12 : 0.25; fails.push(t); } }
+      else { T += 0.015 * (rel - 0.5) + 0.01; } // 쓰지 않아도 로봇이 하는 것을 보며 조금씩 조정된다
+      T = clamp(T, 0, 1); hist.push(T); rely.push(use);
+    }
+    return { hist, rely, fails, rel };
+  }
+  const P = plot('tr-cv', p => {
+    const f = frame(p, { l: 40, r: 10, t: 22, b: 46, x0: 0, x1: N, y0: 0, y1: 1, xt: [0, 20, 40, 60], yt: [0, 0.5, 1], xl: '시행', yl: '신뢰 (0–1)' });
+    const { ctx } = p;
+    ctx.fillStyle = rgba(C.c3, 0.08); ctx.fillRect(f.L, f.T, f.W, f.Y(res.rel) - f.T); label(ctx, '과신 영역: 실제 성공률보다 높은 신뢰', f.L + 4, f.T + 4, C.c3, 'left', 'top', `11px ${SANS}`);
+    poly(ctx, 2, i => f.L + i * f.W, () => f.Y(res.rel), C.muted, 1.5, [5, 4]);
+    poly(ctx, 2, i => f.L + i * f.W, () => f.Y(TH), C.line, 1, [2, 3]); label(ctx, '의존 문턱', f.L + f.W - 4, f.Y(TH) - 2, C.muted, 'right', 'bottom', `11px ${SANS}`);
+    res.fails.forEach(t => vline(ctx, f.X(t + 0.5), f.T, f.H, rgba(C.c3, 0.6), null, 1.5));
+    poly(ctx, N, i => f.X(i + 0.5), i => f.Y(res.hist[i]), C.c0, 2.2);
+    const by = f.T + f.H + 22; res.rely.forEach((u, i) => { ctx.fillStyle = u ? C.c0 : C.grid; ctx.fillRect(f.X(i) + 0.5, by, f.W / N - 1, 8); });
+    label(ctx, '의존', f.L - 6, by + 4, C.muted, 'right', 'middle', `11px ${SANS}`);
+  });
+  function update() {
+    $('#tr-rel-o').textContent = Math.round(+sR.value * 100) + '%'; $('#tr-init-o').textContent = nf(+sI.value, 2);
+    res = sim();
+    const over = res.hist.filter(h => h > res.rel + 0.1).length, under = res.hist.filter((h, i) => h < res.rel - 0.15 && !res.rely[i]).length, used = res.rely.filter(Boolean).length;
+    const st = over > N * 0.4 ? chip('과신: 실패를 겪고서야 내려감', 'bad') : under > N * 0.4 ? chip('불신: 쓸 만한 로봇을 쓰지 않음', 'warn') : chip('대체로 보정됨', 'ok');
+    $('#tr-ro').innerHTML = ro('로봇에 의존한 시행', `${used}<small> / ${N}</small>`) + ro('실수한 시행', `${res.fails.length}`) + ro('과신 상태였던 시행', `${over}`) + ro('불신으로 쓰지 않은 시행', `${under}`) + ro('판정', st);
+    P.render();
+  }
+  segGroup($('#tr-repair'), 'r', v => { repair = v; update(); });
+  [sR, sI].forEach(s => s.addEventListener('input', raf(update)));
+  $('#tr-new').addEventListener('click', () => { seed++; update(); });
+  update();
+})();
+
+/* ════════════ 9장: 응용 카드 ════════════ */
+cardGame('#app-cards', '#app-score', '#app-reset', ['고객 응대', '교육', '건강·치료', '서비스·배송', '협동 로봇'], [
+  { t: '요양원에서 치매 노인이 안고 쓰다듬으며 안정을 찾는 물개 로봇.', a: 2, why: 'Paro입니다. 장기 연구에서 심리·생리·사회적 효과가 보고되었고, 유럽과 미국에서는 거의 기관만 삽니다(11.4.1절).' },
+  { t: '초등학교에서 아이 한 명과 마주 앉아 외국어 단어를 함께 익히는 로봇.', a: 1, why: '일대일 지도의 이점을 살린 교육 로봇입니다. 물리적 존재가 화면 속 에이전트보다 학습을 더 도왔습니다(11.2절).' },
+  { t: '박물관에서 관람객을 전시물로 안내하며 설명하고, 길을 막은 사람에게 좌절 표정을 짓는 로봇.', a: 0, why: '초기 HRI 응용인 안내 로봇입니다(Burgard 외 1998; Nourbakhsh 외 1999).' },
+  { t: '사람과 같은 작업대에서 부품을 함께 조립하는, 부딪히면 멈추는 로봇 팔.', a: 4, why: '협동 로봇입니다. 울타리 없이 사람과 같은 공간에서 일합니다(11.8절).' },
+  { t: '병원 복도를 오가며 약과 물품을 병동에 나르는 로봇.', a: 3, why: '배송 로봇입니다. 사람이 함께 있는 공간이라 항법에 HRI 능력이 필요합니다(11.6.2절).' },
+  { t: '자폐 스펙트럼 장애가 있는 아이의 치료 시간에 공동 주의 연습을 돕는 작은 로봇.', a: 2, why: '치료 보조 로봇입니다. 이 집단은 대체로 로봇에 잘 반응합니다(11.4.2절).' }
+]);
+
+/* ════════════ 10장: 표본 크기 ════════════ */
+(function power() {
+  const sD = $('#pw-d'), sP = $('#pw-pow'), sR = $('#pw-r');
+  const z = p => { // 역 정규 누적분포 (이분법)
+    let lo = -6, hi = 6; for (let i = 0; i < 60; i++) { const m = (lo + hi) / 2; if (Phi(m) < p) lo = m; else hi = m; } return (lo + hi) / 2; };
+  const za = z(0.975);
+  const powBetween = (d, nPer) => 1 - Phi(za - d * Math.sqrt(nPer / 2));
+  const powWithin = (d, n, r) => 1 - Phi(za - d * Math.sqrt(n) / Math.sqrt(2 * (1 - r)));
+  function need(fn) { for (let n = 3; n <= 2000; n++) if (fn(n) >= +sP.value) return n; return null; }
+  const P = plot('pw-cv', p => {
+    const d = +sD.value, r = +sR.value;
+    const f = frame(p, { l: 44, r: 10, t: 22, b: 34, x0: 0, x1: 200, y0: 0, y1: 1, xt: [0, 50, 100, 150, 200], yt: [0, 0.5, 0.8, 1], yf: v => Math.round(v * 100) + '%', xl: '전체 참가자 수', yl: '검정력' });
+    poly(p.ctx, 2, i => f.L + i * f.W, () => f.Y(+sP.value), C.line, 1, [4, 4]);
+    f.clip();
+    poly(p.ctx, 200, i => f.X(i + 1), i => f.Y(powBetween(d, (i + 1) / 2)), C.c0, 2.2);
+    poly(p.ctx, 200, i => f.X(i + 1), i => f.Y(powWithin(d, i + 1, r)), C.c1, 2.2);
+    f.unclip();
+    label(p.ctx, '— 집단 간  — 집단 내', f.L + f.W - 4, f.T + f.H - 6, C.muted, 'right', 'bottom', `11px ${SANS}`);
+  });
+  function update() {
+    const d = +sD.value, r = +sR.value;
+    $('#pw-d-o').textContent = nf(d, 2); $('#pw-pow-o').textContent = Math.round(+sP.value * 100) + '%'; $('#pw-r-o').textContent = nf(r, 2).replace(/0$/, '');
+    const nb = need(n => powBetween(d, n)), nw = need(n => powWithin(d, n, r));
+    $('#pw-ro').innerHTML = ro('집단 간 설계', nb ? `${nb * 2}<small>명 (조건당 ${nb})</small>` : '2,000명 넘음') + ro('집단 내 설계', nw ? `${nw}<small>명</small>` : '2,000명 넘음') + ro('효과의 크기', chip(d < 0.35 ? '작음' : d < 0.65 ? '중간' : '큼', 'info'));
+    P.render();
+  }
+  [sD, sP, sR].forEach(s => s.addEventListener('input', raf(update)));
+  update();
+})();
+
+/* ════════════ 11장: p값의 분포 ════════════ */
+(function replication() {
+  const sD = $('#rp-d'), sN = $('#rp-n'), hackBtn = $('#rp-hack'); let seed = 1, res;
+  const tp = (t, df) => { // Student t의 양측 p값 (정규 근사 + 보정) — df가 작으면 근사
+    const x = Math.abs(t) * (1 - 1 / (4 * df)) / Math.sqrt(1 + t * t / (2 * df)); return 2 * (1 - Phi(x)); };
+  function one(r, d, n) { let m1 = 0, m2 = 0, s1 = 0, s2 = 0; const a = [], b = []; for (let i = 0; i < n; i++) { a.push(gauss(r) + d); b.push(gauss(r)); } m1 = a.reduce((x, y) => x + y, 0) / n; m2 = b.reduce((x, y) => x + y, 0) / n; a.forEach(v => { s1 += (v - m1) ** 2; }); b.forEach(v => { s2 += (v - m2) ** 2; }); const sp = Math.sqrt((s1 + s2) / (2 * n - 2)); return { p: tp((m1 - m2) / (sp * Math.sqrt(2 / n)), 2 * n - 2), dobs: (m1 - m2) / sp }; }
+  function sim() {
+    const r = rng(seed * 7), d = +sD.value, n = +sN.value, hack = pressed(hackBtn), ps = [], ds = [];
+    for (let k = 0; k < 1000; k++) { if (hack) { let best = null; for (let j = 0; j < 5; j++) { const o = one(r, d, n); if (!best || o.p < best.p) best = o; } ps.push(best.p); ds.push(best.dobs); } else { const o = one(r, d, n); ps.push(o.p); ds.push(o.dobs); } }
+    return { ps, ds };
+  }
+  const P = plot('rp-cv', p => {
+    const NB = 40, H = new Array(NB).fill(0); res.ps.forEach(v => { H[Math.min(NB - 1, Math.floor(v * NB))]++; }); const mx = Math.max(...H);
+    const f = frame(p, { l: 44, r: 10, t: 22, b: 34, x0: 0, x1: 1, y0: 0, y1: mx * 1.08, xt: [0, 0.05, 0.25, 0.5, 0.75, 1], yt: [0, mx], yf: v => String(Math.round(v)), xl: 'p값', yl: '반복 횟수 (1,000번 중)' });
+    const { ctx } = p, bw = f.W / NB;
+    H.forEach((c, i) => { ctx.fillStyle = rgba(i < 2 ? C.c3 : C.c0, 0.85); ctx.fillRect(f.X(i / NB) + 0.5, f.Y(c), bw - 1, f.Y(0) - f.Y(c)); });
+    vline(ctx, f.X(0.05), f.T, f.H, C.c3, [4, 3], 1.5); label(ctx, 'p = 0.05', f.X(0.05) + 4, f.T + 4, C.c3, 'left', 'top', `11px ${SANS}`);
+  });
+  function update() {
+    const d = +sD.value, n = +sN.value; $('#rp-d-o').textContent = nf(d, 2); $('#rp-n-o').textContent = n; res = sim();
+    const sig = res.ps.filter(v => v < 0.05).length / 1000, sorted = res.ps.slice().sort((a, b) => a - b), lo = sorted[100], hi = sorted[900];
+    const sigD = res.ds.filter((_, i) => res.ps[i] < 0.05), mD = sigD.length ? sigD.reduce((a, b) => a + b, 0) / sigD.length : NaN;
+    $('#rp-ro').innerHTML = ro(d === 0 ? '유의하게 나온 비율 (거짓 양성)' : '유의하게 나온 비율 (검정력)', `${Math.round(sig * 100)}<small>%</small>`) + ro('p값의 80% 구간', `${nf(lo, 3)} – ${nf(hi, 2)}`) + ro('유의한 결과들의 평균 관측 효과 크기', isFinite(mD) ? fmt(mD) : '–') + ro('실제 효과 크기', nf(d, 2));
+    $('#rp-note').textContent = d === 0 ? (pressed(hackBtn) ? '효과가 없는데도 종속변수 5개 중 가장 작은 p값만 보고하면 거짓 양성이 5%를 훌쩍 넘습니다. 이것이 p-해킹입니다. 사전 등록은 어떤 변수를 볼지 미리 정해 이를 막습니다.' : '효과가 없을 때 유의하게 나오는 비율은 약 5%입니다. 바로 유의수준의 뜻입니다.')
+      : `같은 실험을 되풀이해도 p값은 넓게 흩어집니다. 유의한 결과만 모아 보면 관측된 효과 크기가 실제(${nf(d, 2)})보다 큽니다. 검정력이 낮을수록 이 과대추정이 커집니다. 인원을 늘려 보세요.`;
+    P.render();
+  }
+  [sD, sN].forEach(s => s.addEventListener('input', raf(update)));
+  hackBtn.addEventListener('click', () => { toggle(hackBtn, !pressed(hackBtn)); update(); });
+  $('#rp-new').addEventListener('click', () => { seed++; update(); });
+  update();
+})();
+
+/* ════════════ 12장: 윤리 쟁점 카드 ════════════ */
+cardGame('#eth-cards', '#eth-score', '#eth-reset', ['연구에서의 기만', '돌봄과 존엄', '사생활', '설득과 조작', '사회적 영향'], [
+  { t: '실험에서 로봇이 자율로 대화하는 것처럼 보이지만 실은 옆방에서 연구자가 조종한다.', a: 0, why: '오즈의 마법사 기법입니다. 실험 뒤 반드시 알려야 하고, 기술이 실제보다 앞서 있다고 믿게 하는 문제가 있습니다(Riek 2012).' },
+  { t: '자녀가 멀리 사는 노인에게 가족 대신 반려 로봇을 두고 돌봄을 맡긴다.', a: 1, why: 'Sparrow와 Sparrow(2006)는 아무리 완벽해도 돌봄의 모방이 진짜 관계를 대신해서는 안 된다고 봅니다. 존엄과 자율성의 문제입니다.' },
+  { t: '집 안을 돌아다니는 로봇이 카메라와 마이크로 본 것을 제조사 서버로 보낸다.', a: 2, why: '사생활 침해입니다. 로봇의 센서는 가정 안의 정보를 끊임없이 모읍니다.' },
+  { t: '사용자의 자세를 따라 하고 눈을 맞추는 로봇이 특정 상품을 사도록 유도한다.', a: 3, why: '로봇은 설득 기술로 쓰일 수 있고, 사용자가 어떻게 영향받는지 모른 채 영향을 받는 것이 문제입니다(12.2.1절).' },
+  { t: '물류 창고가 로봇을 들이면서 직원들이 재교육 없이 일자리를 잃는다.', a: 4, why: '로봇은 일부 직업을 대체하고 새 직업을 만듭니다. 사회의 과제는 대체된 사람이 새 일을 찾도록 돕는 것입니다(12.2.3절).' },
+  { t: '어떤 요구에도 응하는 로봇과 지내다 보니 사람 사이의 관계에서도 같은 것을 기대하게 된다.', a: 4, why: '로봇과의 상호작용이 사람에 대한 기대를 바꿀 수 있다는 우려입니다. 교재는 특히 성적 맥락에서 이를 논의합니다.' }
+]);
+
+/* ════════════ 확인 문제와 진도 ════════════ */
+const QUIZ = {
+  1: [
+    { q: 'HRI가 로봇공학과 다른 점으로 교재가 꼽는 것은?', o: ['로봇이 사람의 사회 세계 안에서 상호작용하고, 사람이 로봇에 어떻게 반응하는지를 다룬다', '더 빠른 모터를 만든다', '로봇을 사람 모양으로만 만든다', '컴퓨터 화면만 다룬다'], a: 0, e: '창고의 로봇은 물리만, 카페 손님에게 가는 로봇은 사회 규칙까지 다룹니다(2장).' },
+    { q: '로봇의 체현(embodiment)이 상호작용에서 하는 일은?', o: ['감지와 행동을 제약하면서 동시에 사람이 로봇을 사람처럼 대하게 하는 행동 유도성이 된다', '아무 영향이 없다', '항상 상호작용을 어렵게만 한다', '소프트웨어와 무관하다'], a: 0, e: '눈이 있으면 본다고, 입이 있으면 말한다고 가정합니다(2장).' },
+    { q: '1997년 MIT에서 만든 초기 사회적 로봇은?', o: ['Kismet', 'Nao', 'Pepper', 'Paro'], a: 0, e: '눈, 눈썹, 입술, 목을 움직이며 사람에게 반응했고, 아기 도식을 이용했습니다.' }
+  ],
+  2: [
+    { q: '교재가 "프랑켄슈타인 접근"이라 부르는 것은?', o: ['있는 기술을 모아 붙이고 겉모습은 나중에 씌우는, 안에서 밖으로의 설계', '사람을 똑같이 복제하는 설계', '동물 모양 설계', '사용자와 함께 하는 설계'], a: 0, e: '사용자와 맥락을 생각하지 않기 때문에 좋지 않다고 봅니다(4장).' },
+    { q: '"적게 약속하고 많이 준다"는 원칙이 겨냥하는 문제는?', o: ['겉모습이 높인 기대를 기능이 지키지 못할 때의 실망', '로봇의 가격', '배터리 수명', '프로그래밍의 어려움'], a: 0, e: '교재는 설계물을 로봇이라 부르지 않는 것까지 고려하라고 합니다(4.1.4절).' },
+    { q: 'Paro가 고양이가 아니라 물개 모양이 된 이유는?', o: ['사람들이 진짜 고양이를 너무 잘 알아 비교하며 실망했기 때문', '물개가 더 싸서', '고양이 모양이 법으로 금지되어서', '물개가 더 빨라서'], a: 0, e: '아는 동물과 비교되지 않는 열린 설계가 상호작용을 넓힙니다(4.1.4절).' }
+  ],
+  3: [
+    { q: 'Epley 등(2007)의 의인화 세 요인이 아닌 것은?', o: ['효능 동기', '사회성 동기', '유발된 행위자 지식', '배터리 용량'], a: 3, e: '낯선 상대를 설명하려는 동기, 연결을 바라는 동기, 쉽게 떠오르는 사람에 대한 지식입니다.' },
+    { q: 'Mori가 든 불쾌한 골짜기의 대표 예는?', o: ['진짜 같은 의수', '산업용 로봇', '장난감 로봇', '건강한 사람'], a: 0, e: '언뜻 진짜 같지만 악수하면 뼈 없는 느낌과 차가움에 섬뜩함을 느낍니다.' },
+    { q: '최근 연구가 골짜기의 원인으로 지목하는 것은?', o: ['특징들 사이의 사람다움 불일치', '로봇의 무게', '목소리의 크기', '색깔'], a: 0, e: 'Kätsyri 외(2015). 아주 사람 같은 피부에 살짝 어긋나는 근육 움직임 같은 불일치입니다.' }
+  ],
+  4: [
+    { q: 'Hall의 네 구역 중 지인이나 동료 사이의 거리는?', o: ['사회 거리 (1.2–약 4 m)', '친밀 거리', '개인 거리', '공적 거리'], a: 0, e: '친밀(~0.5 m), 개인(0.5–1.2 m), 사회(1.2–4 m), 공적(4 m 이상)입니다(5.1.1절).' },
+    { q: '사람을 장애물로만 보는 항법 알고리즘의 문제는?', o: ['부딪히기 직전에야 비켜 공격적으로 보인다', '너무 일찍 비킨다', '너무 느리다', '사람을 전혀 못 본다'], a: 0, e: '사람은 훨씬 일찍 방향을 알리며 양보합니다(5.2.2절).' },
+    { q: 'Joggobot 실험에서 드론이 뒤에서 따라오면?', o: ['쫓기는 느낌이 들어 즐거움이 줄었다', '더 빨리 달렸다', '아무 차이가 없었다', '드론을 잃어버렸다'], a: 0, e: '사람들은 자기가 쫓는 쪽을 좋아했습니다(5장 도입).' }
+  ],
+  5: [
+    { q: 'Mutlu 등(2009)이 로봇의 시선으로 보인 것은?', o: ['여러 사람과의 대화에서 다음 발언자를 정할 수 있다', '로봇이 더 빨리 움직인다', '음성 인식이 좋아진다', '사람이 로봇을 무서워한다'], a: 0, e: '시선은 대화의 차례를 관리하는 단서입니다(6.2.1절).' },
+    { q: 'Salem 등(2013)의 ASIMO 실험에서 말과 맞지 않는 몸짓은?', o: ['로봇 평가는 더 높였지만 과제 수행은 떨어뜨렸다', '아무 효과가 없었다', '모든 면에서 나빴다', '음성이 안 들리게 했다'], a: 0, e: '그래서 몸짓은 신중히 설계하고 실험으로 확인해야 합니다(6.2.2절).' },
+    { q: 'Dragan 등(2013)의 "가독성 있는" 동작이란?', o: ['관찰자가 보면서 목표를 빨리 추론할 수 있는 동작', '가장 에너지 효율이 좋은 동작', '가장 빠른 동작', '아무도 보지 않을 때의 동작'], a: 0, e: '예측 가능한 동작(목표를 알 때 예상되는 효율적 동작)과 구분됩니다.' }
+  ],
+  6: [
+    { q: '음성 인식(ASR)이 하는 일은?', o: ['녹음된 말을 글로 바꾸는 것. 이해는 아니다', '말의 뜻을 이해하는 것', '감정을 읽는 것', '말을 만드는 것'], a: 0, e: '뜻을 뽑는 것은 별개의 문제입니다(7.2–7.3절).' },
+    { q: '전화 대화에서 "네"라는 답은 평균 얼마나 걸렸나(Strömbergsson 외 2013)?', o: ['약 100 ms', '약 2초', '약 5초', '약 1분'], a: 0, e: '원치 않는 제안에 대한 답은 거의 500 ms였습니다. 로봇은 몇 초가 걸리기 일쑤입니다(7.4절).' },
+    { q: '시끄러운 곳에서 인식 없이도 로봇이 듣는 인상을 주는 기술은?', o: ['음성 활동 검출(VAD)', '음성 합성(TTS)', '감성 분석', '대화 관리자'], a: 0, e: '말과 침묵을 구분해 말차례를 넘길 수 있습니다(7.2.4절).' }
+  ],
+  7: [
+    { q: 'Russell(1980)의 원형 모델의 두 축은?', o: ['유인가와 각성', '행위성과 경험', '따뜻함과 유능함', '속도와 크기'], a: 0, e: '감정을 별개 범주가 아니라 2차원 평면 위에 펼칩니다(9.1절).' },
+    { q: 'Ekman과 Friesen(1975)의 여섯 표정의 원래 목적은?', o: ['여러 문화에서 알아보는 얼굴 표정의 집합을 정리하는 것', '기본 감정의 완전한 목록을 정하는 것', '로봇 얼굴을 설계하는 것', '감정 인식 소프트웨어를 만드는 것'], a: 0, e: '기본 감정 목록으로 자주 오해됩니다(9.1절).' },
+    { q: 'FACS에서 웃는 얼굴을 만드는 동작 단위는?', o: ['AU6 (뺨 올림)과 AU12 (입꼬리 올림)', 'AU1과 AU2', 'AU4만', 'AU20과 AU26'], a: 0, e: 'Hashimoto 외(2013)의 로봇 얼굴이 이 AU를 액추에이터로 구현했습니다(9.3절).' }
+  ],
+  8: [
+    { q: '자동화 신뢰 연구에서 핵심이라고 한 것은?', o: ['신뢰를 시스템의 실제 능력에 맞추는 보정', '신뢰를 최대로 높이는 것', '신뢰를 없애는 것', '신뢰를 측정하지 않는 것'], a: 0, e: '과신은 오류를 놓치고 불신은 도움을 버립니다(Lee & See 2004).' },
+    { q: 'Hancock 등(2011)의 메타분석에서 신뢰에 가장 큰 영향을 준 요인은?', o: ['로봇의 성능 관련 요인', '날씨', '참가자의 키', '로봇의 색'], a: 0, e: '2021년의 후속 분석은 사람 요인의 역할을 더 강조합니다(8.4.1절).' },
+    { q: '기술 수용 모델(TAM)에서 쓰려는 의향을 정하는 두 요인은?', o: ['지각된 유용성과 지각된 사용 용이성', '가격과 크기', '신뢰와 즐거움', '사회적 영향과 촉진 조건'], a: 0, e: '신뢰와 즐거움을 더한 것이 Almere 모델, 사회적 영향과 촉진 조건을 더한 것이 UTAUT입니다(8.4.2절).' }
+  ],
+  9: [
+    { q: '교육용 로봇의 역할로 교사와 학생 모두가 선호한 것은?', o: ['교사를 보조하는 역할', '교사를 대체하는 역할', '시험 감독', '청소'], a: 0, e: 'Reich-Stiebert & Eyssel (2016). 또래 역할로도 자주 등장합니다(11.2절).' },
+    { q: 'Paro의 판매에서 일본과 유럽·미국의 차이는?', o: ['일본에서는 개인도 사지만 유럽·미국에서는 거의 기관만 산다', '유럽에서만 판다', '일본에서는 팔지 않는다', '차이가 없다'], a: 0, e: '11.4.1절.' },
+    { q: '협동 로봇이 전통적인 산업용 로봇과 다른 점은?', o: ['사람과 같은 공간에서 일한다', '더 강하다', '더 뻣뻣하다', '울타리 안에 있다'], a: 0, e: '전통적인 산업용 로봇은 뻣뻣하고 강하며 감각이 없어 사람이 곁에 갈 수 없었습니다(11.8절).' }
+  ],
+  10: [
+    { q: '오즈의 마법사(WoZ) 기법이란?', o: ['연구자가 뒤에서 로봇을 조종하면서 참가자에게는 자율로 보이게 하는 것', '로봇이 마법을 부리는 것', '참가자가 로봇을 조종하는 것', '로봇을 두 대 쓰는 것'], a: 0, e: '실험 뒤 디브리핑이 필요합니다(10.6.1절; Riek 2012).' },
+    { q: '집단 내 설계에서 조건 순서를 상쇄 균형하는 이유는?', o: ['첫 로봇을 늘 더 좋아하는 것 같은 순서 효과 때문', '참가자를 더 모으려고', '통계를 쉽게 하려고', '로봇을 아끼려고'], a: 0, e: '같은 사람이 두 조건을 겪으면 잡음이 줄지만 순서 효과가 생깁니다(10.3.2절).' },
+    { q: '조작 점검(manipulation check)은 무엇을 확인하나?', o: ['참가자가 실험 조작을 의도대로 지각했는지 (예: 로봇을 남성형으로 보았는지)', '로봇이 고장 났는지', '참가자가 설문을 끝까지 썼는지', '통계가 유의한지'], a: 0, e: '독립변수가 제대로 조작되었어야 결과가 타당합니다(10.2.1절).' }
+  ],
+  11: [
+    { q: '유의한 결과를 반복하면 반복 연구의 p값은(Cumming 2008)?', o: ['80%의 경우 0.00008에서 0.44 사이 어디든 나올 수 있다', '늘 거의 같다', '늘 더 작아진다', '늘 0.05 근처다'], a: 0, e: 'p값은 결과의 견고함을 말해 주지 않습니다(10.8절).' },
+    { q: 'p값과 효과 크기의 관계는?', o: ['효과 크기는 얼마나 다른지를, p값은 거기에 표본 크기를 더한 것이다', '같은 것이다', 'p값이 작을수록 효과가 크다', '효과 크기는 p값에서 계산한다'], a: 0, e: '4%에서 6%로의 개선은 무좀이면 사소하고 암 생존율이면 중요합니다(10.8절).' },
+    { q: '연구자가 검정력을 높이려고 손댈 수 있는 것은?', o: ['표본 크기', '효과의 경향', '자료의 변산', 'p값'], a: 0, e: '셋 중 표본 크기만 연구자가 정할 수 있습니다(10.8절).' }
+  ],
+  12: [
+    { q: 'Sparrow와 Sparrow(2006)의 주장은?', o: ['완벽한 돌봄 로봇이 있어도 돌봄을 기계에 맡기는 것은 비윤리적이다', '로봇이 사람보다 잘 돌본다', '돌봄 로봇은 불가능하다', '돌봄 로봇은 반드시 사람 모양이어야 한다'], a: 0, e: '관계는 서로 정서와 관심을 주고받을 수 있는 둘 사이에서만 의미가 있다는 논거입니다(12.2.2절).' },
+    { q: 'Asimov의 세 법칙에 대한 교재의 평가는?', o: ['널리 알려졌지만 실용적인 윤리 지침은 아니다', '모든 로봇에 구현되어 있다', '법으로 제정되었다', '완벽한 지침이다'], a: 0, e: '이야기 자체가 법칙의 한계를 보여 줍니다(12.2절).' },
+    { q: '최근 연구가 로봇에 대한 태도를 어떻게 보나(Stapels & Eyssel)?', o: ['긍정과 부정이 함께 있는 양가적 태도', '중립', '늘 긍정', '늘 부정'], a: 0, e: '도움에 대한 기대와 일자리·사생활에 대한 두려움이 함께 있습니다(12.2.4절).' }
+  ]
+};
+const KEY = 'hri-guide-progress-v1';
+let prog = { solved: {}, tried: {} };
+try { const s = localStorage.getItem(KEY); if (s) prog = Object.assign({ solved: {}, tried: {} }, JSON.parse(s)); } catch (e) { /* 저장소를 쓸 수 없으면 이번 방문 동안만 기억 */ }
+const save = () => { try { localStorage.setItem(KEY, JSON.stringify(prog)); } catch (e) { /* 무시 */ } };
+function chState(ch) {
+  const qs = QUIZ[ch], solved = qs.filter((_, i) => prog.solved[ch + '-' + i]).length, tried = qs.some((_, i) => prog.tried[ch + '-' + i]);
+  return { solved, total: qs.length, done: solved === qs.length, started: solved > 0 || tried };
+}
+function paintProgress() {
+  let done = 0;
+  Object.keys(QUIZ).forEach(ch => {
+    const s = chState(ch); if (s.done) done++;
+    $$(`.dot[data-ch="${ch}"]`).forEach(d => { d.classList.toggle('done', s.done); d.classList.toggle('half', !s.done && s.started); d.title = `확인 문제 ${s.solved}/${s.total}`; });
+    const hd = $(`.quiz[data-ch="${ch}"] .quiz-state`); if (hd) hd.textContent = `${s.solved}/${s.total} 정답`;
+  });
+  $('#prog-count').textContent = done;
+}
+function renderQuiz(box) {
+  const ch = box.dataset.ch, qs = QUIZ[ch];
+  box.innerHTML = `<div class="quiz-head"><span>확인 문제 · ${ch}장</span><span class="quiz-state"></span></div>` + qs.map((q, i) => {
+    const id = ch + '-' + i, ok = prog.solved[id];
+    return `<div class="q" data-id="${id}"><p class="qt"><span class="qn">${i + 1}.</span>${q.q}</p><div class="opts">${q.o.map((o, j) =>
+      `<button class="opt ${ok && j === q.a ? 'right' : ''}" data-j="${j}" ${ok ? 'disabled' : ''}>${o}</button>`).join('')}</div>
+      <p class="why" ${ok ? '' : 'hidden'} aria-live="polite">${ok ? `<b>정답.</b> ${q.e}` : ''}</p></div>`;
+  }).join('');
+  box.addEventListener('click', e => {
+    const b = e.target.closest('.opt'); if (!b || b.disabled) return;
+    const qd = b.closest('.q'), id = qd.dataset.id, i = +id.split('-')[1], q = qs[i], j = +b.dataset.j, why = $('.why', qd);
+    prog.tried[id] = true;
+    if (j === q.a) {
+      prog.solved[id] = true;
+      $$('.opt', qd).forEach(o => { o.disabled = true; o.classList.remove('wrong'); });
+      b.classList.add('right'); why.hidden = false; why.innerHTML = `<b>정답.</b> ${q.e}`;
+    } else {
+      b.classList.add('wrong'); why.hidden = false; why.innerHTML = '<b>다시 생각해 보세요.</b> 다른 보기를 골라 보세요.';
+    }
+    save(); paintProgress();
+  });
+}
+/* 보기 순서를 섞어 정답이 늘 첫 번째에 오지 않게 한다 (문항마다 고정된 순서) */
+Object.keys(QUIZ).forEach(ch => QUIZ[ch].forEach((q, i) => {
+  const r = rng(ch * 37 + i * 11 + 5), idx = q.o.map((_, k) => k);
+  for (let k = idx.length - 1; k > 0; k--) { const j = Math.floor(r() * (k + 1)); [idx[k], idx[j]] = [idx[j], idx[k]]; }
+  q.o = idx.map(k => q.o[k]); q.a = idx.indexOf(q.a);
+}));
+$$('.quiz[data-ch]').forEach(renderQuiz);
+paintProgress();
+
+(function resetUI() {
+  const wrap = $('#reset-wrap');
+  function idle() { wrap.innerHTML = '<button class="btn quiet" id="prog-reset">진도 지우기</button>'; $('#prog-reset').addEventListener('click', ask); }
+  function ask() {
+    wrap.innerHTML = '<span>모든 정답 기록을 지울까요?</span> <button class="btn danger" id="prog-yes">지우기</button> <button class="btn quiet" id="prog-no">취소</button>';
+    $('#prog-yes').addEventListener('click', () => { prog = { solved: {}, tried: {} }; save(); $$('.quiz[data-ch]').forEach(b => { const c = b.cloneNode(false); b.replaceWith(c); renderQuiz(c); }); paintProgress(); idle(); });
+    $('#prog-no').addEventListener('click', idle);
+  }
+  idle();
+})();
+
+(function railSpy() {
+  if (!('IntersectionObserver' in window)) return;
+  const ol = $('#rail-list'), links = $$('a', ol), map = {}; links.forEach(a => { map[a.getAttribute('href').slice(1)] = a; });
+  const io = new IntersectionObserver(es => {
+    es.forEach(e => {
+      if (!e.isIntersecting) return;
+      links.forEach(a => a.classList.remove('cur'));
+      const a = map[e.target.id]; if (!a) return;
+      a.classList.add('cur');
+      if (ol.scrollWidth > ol.clientWidth) ol.scrollLeft = a.offsetLeft - ol.offsetLeft - (ol.clientWidth - a.offsetWidth) / 2;
+    });
+  }, { rootMargin: '-30% 0px -60% 0px' });
+  $$('main > section').forEach(s => io.observe(s));
+})();
+
+/* ════════════ 용어집 ════════════ */
+(function glossary() {
+  const G = [
+    ['인간–로봇 상호작용 (HRI)', 'human–robot interaction', '로봇이 사람의 사회 세계 안에서 사람과 상호작용하고 사람이 로봇에 반응하는 방식을 연구하는 분야.', 1],
+    ['체현', 'embodiment', '로봇이 물리적인 몸을 가진다는 것. 감지와 행동을 제약하고, 사람이 로봇을 사람처럼 대하게 한다.', 1],
+    ['사회적 로봇', 'social robot', '사람과 사회적으로 상호작용하도록 설계된 로봇. 1978년 로봇의 뜻으로 처음 쓰였다.', 1],
+    ['Kismet', 'Kismet', '1997년 MIT의 초기 사회적 로봇. 얼굴과 목으로 사람에게 반응했다.', 1],
+    ['밖에서 안으로 설계', 'outside-in design', '로봇이 할 상호작용에서 출발해 겉모습과 행동을 정하고 기술을 채우는 설계.', 2],
+    ['프랑켄슈타인 접근', 'Frankenstein approach', '있는 기술을 모아 붙이고 겉모습은 나중에 씌우는 설계. 사용자와 맥락을 놓친다.', 2],
+    ['행동 유도성', 'affordance', '어떤 행동이 가능한지 알려 주는, 눈에 보이는 관계. 로봇의 겉모습은 능력에 대한 기대를 만든다.', 2],
+    ['설계 패턴', 'design pattern', '되풀이되는 상호작용 문제와 그 해법의 핵심을 추상적으로 적은 것 (Kahn 외 2008).', 2],
+    ['로브젝트', 'robject', '생물이 아니라 물건에서 출발한 로봇 설계. 사회적 쓰레기통, 로봇 오토만.', 2],
+    ['미니멀 로봇', 'minimalist robot', '사회적 상호작용을 일으키는 최소 요건을 탐색하는 로봇. Keepon, Muu.', 2],
+    ['의인화', 'anthropomorphization', '사람이 아닌 것에 사람의 특성, 감정, 의도를 붙이는 것.', 3],
+    ['파레이돌리아', 'pareidolia', '무작위 무늬나 물건에서 얼굴 같은 사람의 특징을 보는 것.', 3],
+    ['효능 동기 · 사회성 동기 · 유발된 행위자 지식', 'Epley’s three factors', 'Epley 등(2007)이 제안한 의인화의 세 요인.', 3],
+    ['미디어 방정식', 'media equation', '사람이 컴퓨터와 미디어를 사회적 행위자처럼 대한다는 Reeves와 Nass(1996)의 발견.', 3],
+    ['마음 지각', 'mind perception', '행위성(생각하고 계획함)과 경험(느낌)의 두 차원으로 상대에게 마음을 부여하는 것 (Gray 외 2007).', 3],
+    ['따뜻함 · 유능함', 'warmth / competence', '사람에 대한 사회적 판단의 두 핵심 차원. 로봇 평가에도 쓰인다.', 3],
+    ['불쾌한 골짜기', 'uncanny valley', '거의 사람 같지만 완전히는 아닌 지점에서 친밀감이 급락한다는 Mori(1970)의 가설.', 3],
+    ['Godspeed 설문', 'Godspeed questionnaire', '의인화, 활기, 호감, 지각된 지능, 지각된 안전을 재는 HRI 설문 (Bartneck 외 2009).', 3],
+    ['근접학', 'proxemics', '사람이 다른 사람에 대해 공간을 쓰는 방식을 다루는 연구 (Hall).', 4],
+    ['개인 공간', 'personal space', '친밀 거리와 개인 거리를 합친, 사람이 자기 것으로 여기는 공간 (약 1.2 m 안).', 4],
+    ['F-형성', 'F-formation', '둘 이상이 공동의 공간에 집중하며 서는 배치. o-, p-, r-공간으로 이루어진다 (Kendon 1990).', 4],
+    ['사회적 항법', 'social navigation', '사람을 장애물이 아니라 사람으로 보고 거리와 방향의 규칙을 지키며 움직이는 로봇 항법.', 4],
+    ['비언어 단서', 'nonverbal cue', '시선, 표정, 몸짓, 자세, 소리처럼 말의 내용 밖의 신호.', 5],
+    ['공동 주의', 'joint attention', '두 상대가 같은 대상을 함께 보는 것. 학습과 협업의 바탕.', 5],
+    ['지시적 · 도상적 · 상징적 · 박자 몸짓', 'gesture types', '가리키기, 내용을 그리기, 그 자체로 뜻이 있기, 말의 리듬 따르기.', 5],
+    ['모방 · 카멜레온 효과', 'mimicry / chameleon effect', '상대의 자세를 무의식적으로 따라 하는 것과, 그것이 설득을 돕는 효과 (Chartrand & Bargh 1999).', 5],
+    ['가독성 · 예측 가능성', 'legibility / predictability', '보면서 목표를 빨리 알 수 있는 동작과, 목표를 알 때 예상되는 효율적 동작 (Dragan 외 2013).', 5],
+    ['자동 음성 인식 (ASR)', 'automatic speech recognition', '녹음된 말을 글로 바꾸는 기술. 이해는 아니다.', 6],
+    ['단어 오류율 (WER)', 'word error rate', '음성 인식이 틀린 단어의 비율.', 6],
+    ['음성 활동 검출 (VAD)', 'voice activity detection', '말과 침묵, 다른 소리를 구분하는 기술.', 6],
+    ['대화 관리자', 'dialogue manager', '여러 차례 주고받는 대화의 상태를 추적하는 부품.', 6],
+    ['백채널', 'back-channel', '듣는 동안 "응", 끄덕임처럼 듣고 있음을 알리는 신호.', 6],
+    ['음성 합성 (TTS)', 'text-to-speech', '글을 소리로 바꾸는 기술.', 6],
+    ['원형 모델', 'circumplex model', '감정을 유인가와 각성의 2차원 평면 위에 놓는 Russell(1980)의 모델.', 7],
+    ['PAD 모델', 'pleasure–arousal–dominance', '쾌, 각성, 지배의 3차원 감정 공간. Kismet이 썼다.', 7],
+    ['OCC 모델', 'OCC model', '상황 평가로 22개 감정 범주를 정의하는 모델 (Ortony 외 1988).', 7],
+    ['얼굴 동작 부호화 체계 (FACS)', 'Facial Action Coding System', '얼굴 근육을 동작 단위(AU)로 묶고 표정을 그 조합으로 적는 체계 (Ekman & Friesen 1978).', 7],
+    ['안면 피드백 가설', 'facial feedback hypothesis', '표정이 거꾸로 느끼는 감정에 영향을 준다는 가설.', 7],
+    ['신뢰', 'trust', '상대가 적절한 행동을 할 것이라는 확신. 자동화에서는 의존을 정한다.', 8],
+    ['신뢰 보정', 'trust calibration', '신뢰를 시스템의 실제 능력에 맞추는 것. 과신과 불신을 피한다 (Lee & See 2004).', 8],
+    ['기술 수용 모델 (TAM)', 'technology acceptance model', '쓰려는 의향이 지각된 유용성과 사용 용이성에 달려 있다는 모델.', 8],
+    ['UTAUT · Almere 모델', 'UTAUT / Almere model', 'TAM에 사회적 영향과 촉진 조건을 더한 모델, 노인용 보조 기술을 위해 신뢰와 즐거움을 더한 모델.', 8],
+    ['신기성 효과', 'novelty effect', '처음 만난 로봇에 대한 반응이 장기 반응과 다른 현상.', 8],
+    ['안내 로봇', 'tour guide robot', '전시물 사이를 다니며 설명하는 초기 HRI 응용.', 9],
+    ['Paro', 'Paro', '요양 시설에서 쓰이는 물개 로봇. 장기 효과가 보고되었다.', 9],
+    ['협동 로봇', 'collaborative robot (cobot)', '울타리 없이 사람과 같은 공간에서 일하는 로봇.', 9],
+    ['독립변수 · 종속변수', 'independent / dependent variable', '연구자가 조작하는 것과 측정하는 것.', 10],
+    ['집단 간 · 집단 내 설계', 'between- / within-subjects design', '참가자를 조건에 나누는 설계와 같은 사람이 모든 조건을 겪는 설계.', 10],
+    ['상쇄 균형', 'counterbalancing', '순서 효과를 없애려고 조건의 순서를 참가자마다 바꾸는 것.', 10],
+    ['조작 점검', 'manipulation check', '실험 조작이 의도대로 지각되었는지 확인하는 질문.', 10],
+    ['리커트 척도 · 의미 분별 척도', 'Likert / semantic differential scale', '진술에 대한 동의 정도, 반대말 사이의 위치를 묻는 척도.', 10],
+    ['오즈의 마법사 (WoZ)', 'Wizard of Oz', '연구자가 뒤에서 로봇을 조종하면서 자율로 보이게 하는 기법. 디브리핑이 필요하다 (Riek 2012).', 10],
+    ['포화', 'saturation', '질적 연구에서 새 자료가 기존 주제를 되풀이하기 시작하는 시점.', 10],
+    ['p값', 'p-value', '실제 효과가 없을 때 지금 자료가 나올 확률. 결과의 견고함이나 크기가 아니다.', 11],
+    ['효과 크기', 'effect size', '두 조건이 얼마나 다른지. Cohen의 d, η², 조정 R².', 11],
+    ['신뢰구간', 'confidence interval', '추정의 정밀도를 함께 보여 주는 구간.', 11],
+    ['검정력', 'statistical power', '실제 효과를 찾아낼 확률. 표본 크기로 조절한다.', 11],
+    ['p-해킹', 'p-hacking', '검정을 많이 돌려 우연히 유의한 결과를 찾는 것.', 11],
+    ['사전 등록', 'preregistration', '가설과 분석을 미리 등록해 p-해킹을 막고 반복을 돕는 것.', 11],
+    ['프랑켄슈타인 콤플렉스', 'Frankenstein complex', '로봇이 세상을 차지할 것이라는 두려움에 Asimov가 붙인 이름.', 12],
+    ['Asimov의 세 법칙', 'Three Laws of Robotics', '사람을 해치지 말 것, 명령에 따를 것, 자신을 지킬 것. 실용적 지침은 아니다.', 12],
+    ['양가적 태도', 'ambivalent attitude', '로봇에 대한 기대와 두려움이 함께 있는 태도 (Stapels & Eyssel).', 12],
+    ['디브리핑', 'debriefing', '실험 뒤 참가자에게 기만을 포함한 연구의 실제 내용을 알리는 것.', 12]
+  ];
+  const list = $('#gl-list'), q = $('#gl-q'), empty = $('#gl-empty');
+  function render() {
+    const s = q.value.trim().toLowerCase();
+    const items = G.filter(g => !s || (g[0] + ' ' + g[1] + ' ' + g[2]).toLowerCase().includes(s));
+    list.innerHTML = items.map(g => `<dt>${g[0]}<small>${g[1]} · <a href="#ch${g[3]}">${g[3]}장</a></small></dt><dd>${g[2]}</dd>`).join('');
+    empty.hidden = items.length > 0;
+  }
+  q.addEventListener('input', render);
+  render();
+})();
+
+/* ════════════ 본문 수식 조판 ════════════ */
+if (window.renderMathInElement) {
+  renderMathInElement(document.body, {
+    delimiters: [{ left: '\\[', right: '\\]', display: true }, { left: '\\(', right: '\\)', display: false }],
+    throwOnError: false, strict: 'ignore', ignoredClasses: ['quiz', 'gloss']
+  });
+}
+})();
+
+</script>
+</body>
+</html>
